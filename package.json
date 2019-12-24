@@ -18,7 +18,7 @@
     },
     "scripts": {
         "prepublish": "babel src --out-dir lib",
-        "deploy": "npm version patch && npm publich --access=public",
+        "deploy": "npm version patch && npm publish --access=public",
         "start": "npm run prepublish && cls && node lib/index.js"
     },
     "babel": {
