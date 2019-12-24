@@ -1,5 +1,2 @@
-import Core from "./core/package";
-
-export default {
-    Core
-};
+require = require("esm")(module/*, options*/)
+module.exports = require("./main.js");

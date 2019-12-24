@@ -23,7 +23,5 @@ export default {
     NumberAttribute,
 
     Condition,
-    Proposition,
-
-    ImageSequencer
+    Proposition
 };
