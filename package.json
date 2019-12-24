@@ -1,0 +1,14 @@
+{
+    "name": "@lespantsfancy/lux",
+    "version": "0.1.1",
+    "description": "Removes all spaces from a string",
+    "license": "UNLICENSED",
+    "repository": "mjnrock/lux",
+    "main": "index.js",
+    "keywords": [
+        "tiny",
+        "npm",
+        "package",
+        "bamblehorse"
+    ]
+}
