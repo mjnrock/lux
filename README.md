@@ -1,6 +1,26 @@
 # Setup
 All files should be placed in the `/src/` directory.  Upon running the `npm run prepublish` command (either directly or indirectly), any files and folders under `/src/` will be sent through `babel` to the `/lib/` directory.  The `package.json` file specifies the entry point of the package to the `/lib/index.js` point.  `/lib/index.js` will be a `babel` copy of `/src/index.js`.
 
+## Project Structure
+### Directory
+```
+lux [root]
+  └─ /lib   [dynamically copied from /src]
+  └─ /src
+    └─ /core
+    └─ index.js
+```
+
+### Namespace
+`import Lux from "@lespantsfancy/lux";`
+
+Gives access to the following `namespaces`:
+```
+Lux
+  └─ Core
+    └─ ...
+```
+
 ### Purpose of Babel
 As of the time of this package, I don't know enough about how this (Node, packages, etc.) works and `babel` ensured (tested and verified) that `es6` files and structure would compile and be available *both* in a `NodeJS` level execution (i.e. an `express` sever) *and* in a `React` application.
 
@@ -13,6 +33,9 @@ Because this is a scoped package, you must install it with the `@lespantsfancy` 
 |---|---|
 |Production|`npm install --save @lespantsfancy/lux`|
 |Development|`npm install --save-dev @lespantsfancy/lux`|
+
+### Example Usage
+`import Lux from "@lespantsfancy/lux";`
 
 # NPM
 These are all `cli` level commands and require a terminal to execute.
