@@ -6,10 +6,9 @@
     "repository": "mjnrock/lux",
     "main": "lib/index.js",
     "keywords": [
-        "tiny",
         "npm",
         "package",
-        "bamblehorse"
+        "lespantsfancy"
     ],
     "dependencies": {},
     "devDependencies": {
