@@ -1,7 +1,7 @@
 {
     "name": "@lespantsfancy/lux",
     "version": "0.1.14",
-    "description": "Removes all spaces from a string",
+    "description": "Adds some functionality to stuff to be used in ways consistent with that added functionality",
     "license": "UNLICENSED",
     "repository": "mjnrock/lux",
     "main": "lib/index.js",
