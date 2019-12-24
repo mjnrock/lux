@@ -13,6 +13,17 @@
     ],
     "dependencies": {},
     "devDependencies": {
+        "babel-cli": "^6.26.0",
+        "babel-core": "^6.26.3",
+        "babel-preset-es2015": "^6.24.1",
         "esm": "^3.2.25"
+    },
+    "scripts": {
+        "prepublish": "babel src --out-dir lib"
+    },
+    "babel": {
+        "presets": [
+            "es2015"
+        ]
     }
 }

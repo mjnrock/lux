@@ -1,4 +1,4 @@
-import Core from "./core/package";
+import Core from "./src/core/package";
 
 export default {
     Core
