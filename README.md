@@ -7,27 +7,44 @@ As of the time of this package, I don't know enough about how this (Node, packag
 At this point, it has not been tested with `React Native`.
 
 # Installation
-### **`@lespantsfancy/lux`**
+### **`npm install @lespantsfancy/lux`**
 Because this is a scoped package, you must install it with the `@lespantsfancy` prefix.
 |Scope|Command|
 |---|---|
 |Production|`npm install --save @lespantsfancy/lux`|
 |Development|`npm install --save-dev @lespantsfancy/lux`|
-|Generic|`npm install @lespantsfancy/lux`|
 
-# Commands
-#### `npm start`
-This will run the `npm run prepublish` command, `cls` the screen, then execute `node lib/index.js`
-
-#### `npm run deploy`
-This will update the **patch** of the build via `npm version patch`, and will the run the `npm publish --access=public` command.  Behind the scenes, the `prepublish` command will be run automatically.
+# NPM
+These are all `cli` level commands and require a terminal to execute.
+## NPM Login
+#### `npm login`
+Follow the prompts to login with `username`, `password`, and `email`.
 
 ## NPM Packaging Commands
-* `npm version patch|minor|major`
-* `npm publish --access=public`
+#### `npm version patch|minor|major`
+This will increment the version of the package
 
-## Build & Publish Commands
-* `npm run deploy`
+#### `npm publish --access=public`
+This will deploy the package to `npm`
 
+# Commands
 ## Development Commands
-* `npm start`
+#### `npm start`
+This is a *custom script* that will run the `prepublish` command before executing `node lib/index.js`
+
+**Command Execution Steps**
+
+    1) `npm run prepublish`
+    2) `cls`
+    3) `node lib/index.js`
+
+
+## Publishing Commands
+#### `npm run deploy`
+This is a *custom script* to both increment the `patch` and `publish` to `npm`.
+
+**Command Execution Steps**
+
+    1) `npm version patch`
+    2) `npm publish --access=public`
+       a) `babel` apparently knows to `npm run prepublish` behind the scenes here
