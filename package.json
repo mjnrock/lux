@@ -1,6 +1,6 @@
 {
     "name": "@lespantsfancy/lux",
-    "version": "0.1.10",
+    "version": "0.1.11",
     "description": "Removes all spaces from a string",
     "license": "UNLICENSED",
     "repository": "mjnrock/lux",
