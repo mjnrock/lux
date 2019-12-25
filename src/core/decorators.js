@@ -62,7 +62,7 @@ export function Events(target = {}) {
                 let result = fn(this, ...args),
                     _this = this;
 
-                (async function() {
+                setTimeout(() => {
                     for(let i in _this._listeners[ event ]) {
                         let listener = _this._listeners[ event ][ i ];
 
@@ -72,7 +72,7 @@ export function Events(target = {}) {
                             _this.call("error", `Listener<${ event }> has no method`);
                         }
                     }
-                })();
+                }, 1);
 
                 return result;
             }
