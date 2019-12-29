@@ -182,7 +182,7 @@ const Events = (Events) => class extends Events {
         
         return uuid;
     }
-    unwatch(prop, uuid) {
+    unwatch(uuid) {
         // throw new Error("This method has not been setup yet.  Implement a search system, maybe use UUIDs?");
         if(typeof this._listeners[ "prop-change" ] === "object") {
             delete this._listeners[ "prop-change" ][ uuid ];
