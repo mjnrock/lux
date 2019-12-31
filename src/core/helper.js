@@ -1,3 +1,15 @@
+export const Bitmask = {
+    Add(base, flag) {
+        return base |= flag;
+    },
+    Remove(base, flag) {
+        return base &= ~flag;
+    },
+    Has(base, flag) {
+        return (base & flag) === flag;
+    }
+};
+
 export function GenerateUUID() {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
         // eslint-disable-next-line
@@ -101,5 +113,6 @@ export default {
     GenerateUUID,
     LoadImage,
     LoadImages,
-    Clamp
+    Clamp,
+    Bitmask
 };
