@@ -233,11 +233,43 @@ const State = (State) => class extends State {
      * @param {any} ?value
      */
     prop(prop, value) {
-        if(value === void 0) {
-            return this.getProp(prop);
+        if(value !== void 0) {
+            return this.setProp(prop, value);
         }
         
-        return this.setProp(prop, value);
+        return this.getProp(prop);
+    }
+
+    aprop(prop, index, value) {
+        if(index !== void 0) {
+            if(value !== void 0) {
+                let arr = this.getProp(prop);
+
+                arr[ +index ] = value;
+
+                return this.setProp(prop, arr);
+            } else {
+                return this.getProp(prop)[ +index ];
+            }
+        }
+            
+        return this.getProp(prop);
+    }
+
+    oprop(prop, key, value) {
+        if(key !== void 0) {
+            if(value !== void 0) {
+                let arr = this.getProp(prop);
+
+                arr[ key ] = value;
+
+                return this.setProp(prop, arr);
+            } else {
+                return this.getProp(prop)[ key ];
+            }
+        }
+            
+        return this.getProp(prop);
     }
 };
 
