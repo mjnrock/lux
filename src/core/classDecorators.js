@@ -311,7 +311,8 @@ const Progeny = (Progeny) => class extends Progeny {
     constructor() {
         super();
         
-        this._children = {};
+        this._children = [];
+        // this._children = {};     //TODO Change this module to be UUID-based
         this._parent = null;
 
         this._registerModule("progeny");
