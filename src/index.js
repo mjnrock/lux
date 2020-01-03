@@ -1,6 +1,6 @@
 import Core from "./core/package";
 
-export default {
+const Lux = {
     Core,
 
     InjectLux() {
@@ -12,3 +12,5 @@ export default {
         }
     }
 };
+
+export default Lux;
