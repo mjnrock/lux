@@ -17,3 +17,8 @@ if(global !== void 0) {
 }
 
 export default Lux;
+
+//? Original - Probably sufficient with React::Context
+// export default {
+//     Core
+// };
