@@ -1,24 +1,22 @@
 import Core from "./core/package";
+import Node from "./node/package";
 
-const Lux = {
-    Core
+let n1 = new Node.Node();
+let n2 = new Node.Node();
+
+n2.setNext((event, result) => {
+    console.log("---------------");
+    console.log(event);
+    console.log(result);
+    console.log("---------------");
+});
+n1.subscribe(n2);
+// n1.listen("prop-change", (r, [ e ]) => console.log(e, r));
+
+n1.prop("Cat", 5);
+n1.prop("Cat", 6);
+
+export default {
+    Core,
+    Node
 };
-
-const Lumen = new Core.ClassDecorators.StateEvents();
-
-//Inject Lux into globals
-if(window !== void 0) {
-    window.Lux = Lux;
-    window.Lumen = Lumen;
-}
-if(global !== void 0) {
-    global.Lux = Lux;
-    global.Lumen = Lumen;
-}
-
-export default Lux;
-
-//? Original - Probably sufficient with React::Context
-// export default {
-//     Core
-// };
