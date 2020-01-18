@@ -99,7 +99,7 @@ export default class Node {
             let result = fn(this, ...args),
                 _this = this;
 
-            setTimeout(() => {
+            (async () => {
                 for (let i in _this._listeners[ event] ) {
                     let listener = _this._listeners[ event ][ i ];
 
@@ -117,7 +117,26 @@ export default class Node {
                         subscriber.next(event, result, this);
                     }
                 }
-            }, 1);
+            })();
+            // setTimeout(() => {
+            //     for (let i in _this._listeners[ event] ) {
+            //         let listener = _this._listeners[ event ][ i ];
+
+            //         if (typeof listener === "function") {
+            //             listener(result, [ event, _this ]);
+            //         } else {
+            //             _this.call("error", "Listener<" + event + "> has no method");
+            //         }
+            //     }
+
+            //     for (let uuid in _this._subscribers) {
+            //         let subscriber = _this._subscribers[ uuid ];
+
+            //         if (typeof subscriber._next === "function") {
+            //             subscriber.next(event, result, this);
+            //         }
+            //     }
+            // }, 1);
 
             return result;
         }
@@ -333,12 +352,18 @@ export default class Node {
 
     //* PROGENY
     adopt(child) {
-        this._children.push(child);
+        if(child instanceof Node) {
+            this._children[ child.UUID() ] = child;
+        }
 
         return this;
     }
-    abandon(uuid) {
-        this._children.splice(uuid, 1);
+    abandon(childOrUUID) {
+        if(childOrUUID instanceof Node) {
+            delete this._children[ child.UUID() ];
+        } else if(typeof childOrUUID === "string" || childOrUUID instanceof String) {
+            delete this._children[ childOrUUID ];
+        }
 
         return this;
     }
