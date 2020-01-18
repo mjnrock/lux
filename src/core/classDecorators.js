@@ -93,17 +93,28 @@ const Events = (Events) => class extends Events {
             let result = fn(this, ...args),
                 _this = this;
 
-            setTimeout(() => {
-                for (var i in _this._listeners[event]) {
-                    var listener = _this._listeners[event][i];
+            // setTimeout(() => {
+            //     for (var i in _this._listeners[event]) {
+            //         var listener = _this._listeners[event][i];
 
-                    if (typeof listener === "function") {
-                        listener(result, [event, _this]);
+            //         if (typeof listener === "function") {
+            //             listener(result, [event, _this]);
+            //         } else {
+            //             _this.call("error", "Listener<" + event + "> has no method");
+            //         }
+            //     }
+            // }, 1);
+            (async () => {
+                for(let i in _this._listeners[ event ]) {
+                    let listener = _this._listeners[ event ][ i ];
+
+                    if(typeof listener === "function") {
+                        listener(result, [ event, _this ]);
                     } else {
-                        _this.call("error", "Listener<" + event + "> has no method");
+                        _this.call("error", `Listener<${ event }> has no method`);
                     }
                 }
-            }, 1);
+            })();
 
             return result;
         }
