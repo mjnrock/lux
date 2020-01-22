@@ -128,6 +128,7 @@ export default class Node {
             this._events[ event ](e);
         }
 
+        let _this = this;
         (async () => {
             for (let i in _this._listeners[ event] ) {
                 let listener = _this._listeners[ event ][ i ];
