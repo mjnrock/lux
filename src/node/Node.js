@@ -14,8 +14,8 @@ export default class Node {
 
         //* EVENTS
         this._events = {
-            "error": (target, ...args) => args,
-            "prop-change": (target, ...args) => args
+            "error": (e) => e,
+            "prop-change": (e) => e
         };
 
         this._listeners = {};       // Listeners receive a *specific* event (i.e. the listened event)
@@ -168,38 +168,30 @@ export default class Node {
     }
     
     /**
-     * Attach a listener to an event
-     * a.listen("error", ([ message ], [ event, target ]) => {
-     *    console.log(event)
-     *    console.log(message)
-     *    console.log(target)
-     * });
      * @param {string} event 
      * @param {fn} callback 
-     * @returns {uuid}
+     * @returns {Listener}
      */
     listen(event, callback) {
-        if(typeof this._listeners[ event ] !== "object") {
-            this._listeners[ event ] = {};
+        if(!Array.isArray(this._listeners[ event ])) {
+            this._listeners[ event ] = [];
         }
-        // if(!Array.isArray(this._listeners[ event ])) {
-        //     this._listeners[ event ] = [];
-        // }
 
-        let listener = new Listener(callback);
-        this._listeners[ event ][ listener.UUID() ] = listener;
+        let listener = new Listener(event, callback);
+        this._listeners[ event ].push(listener);
 
         return listener;
     }
-    unlisten(event, listenerOrUUID) {
-        // throw new Error("This method has not been setup yet.  Implement a search system, maybe use UUIDs?");        
-        if(typeof this._listeners[ event ] === "object") {
-            if(listenerOrUUID instanceof Listener) {
-                delete this._listeners[ event ][ listenerOrUUID.UUID() ];
-            } else {
-                delete this._listeners[ event ][ listenerOrUUID ];
+    unlisten(listener) {
+        if(listener instanceof Listener) {
+            let index = this._listeners[ listener.getEvent() ].findIndex(l => {
+                return l.UUID() === listener.UUID();
+            });
+
+            if(index > -1) {
+                this._listeners[ listener.getEvent() ].splice(index, 1);
             }
-            
+
             return true;
         }
         
@@ -222,37 +214,32 @@ export default class Node {
         }
     }
 
+    /**
+     * @param {Node} subscriber
+     */
     subscribe(subscriber) {
         if(subscriber instanceof Node) {
-            // this._subscribers[ subscriber.UUID() ] = subscriber;
-            this._subscribers[ subscriber.UUID() ] = new Subscription(subscriber, this);
+            let subscription = new Subscription(subscriber, this);
 
-            return this;
+            this._subscribers[ subscription.UUID() ] = subscription;
+
+            return subscription;
         }
 
         return false;
     }
-    unsubcriber(subscriberOrUUID) {
-        if(typeof subscriberOrUUID === "string" || subscriberOrUUID instanceof String) {
-            delete this._subscribers[ subscriberOrUUID ];
-
-            return this;
-        } else if(subscriber instanceof Node) {
-            delete this._subscribers[ subscriberOrUUID.UUID() ];
-
-            return this;
+    /**
+     * @param {Subscription} subscription
+     */
+    unsubscribe(subscription) {
+        if(subscription instanceof Subscription) {
+            delete this._subscribers[ subscription.UUID() ];
         }
 
         return false;
     }
 
     /**
-     * Attach listener(s) to watch a state property, returning the registry UUID(s) of the attachment(s).  If 
-     * 
-     * Example:
-     * a.watch([ "cat", "dog" ], (key, value) => {
-     *     console.log(key, value)
-     * });
      * @param {string|string[]} prop 
      * @param {fn} callback
      * @returns {Watcher|Watcher[]} Array.isArray(prop) ? Watcher[] : Watcher
@@ -292,7 +279,7 @@ export default class Node {
     unwatch(watcher) {
         if(watcher instanceof Watcher) {
             let index = this._watchers[ watcher.getProp() ].findIndex(w => {
-                w.UUID() === watcher.UUID();
+                return w.UUID() === watcher.UUID();
             });
 
             if(index > -1) {
