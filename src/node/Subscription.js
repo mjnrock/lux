@@ -9,6 +9,10 @@ export default class Subscription {
         return Object.freeze(this);
     }
 
+    UUID() {
+        return this._uuid;
+    }
+
     getSubscribor() {
         return this._subscribor;
     }

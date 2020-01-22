@@ -1,6 +1,8 @@
 import { GenerateUUID } from "./../core/helper";
 import Subscription from "./Subscription";
 import Event from "./Event";
+import Listener from "./Listener";
+import Watcher from "./Watcher";
 
 export default class Node {
     constructor() {
@@ -109,7 +111,7 @@ export default class Node {
     }
 
     //! This method has been rewritten to utilize "Event" and "Subscription" and no longer passes the @callback result
-    call(event, ...args) {
+    emit(event, ...args) {
         let e;
         if(event instanceof Event) {
             e = event;
@@ -132,10 +134,20 @@ export default class Node {
             for (let i in _this._listeners[ event] ) {
                 let listener = _this._listeners[ event ][ i ];
 
-                if (typeof listener === "function") {
-                    listener(e);
+                if (listener instanceof Listener) {
+                    listener.runCallback(e);
                 } else {
-                    _this.call("error", "Listener<" + event + "> has no method");
+                    _this.emit("error", "Listener<" + event + "> has no method");
+                }
+            }
+
+            for (let i in _this._watchers[ event] ) {
+                let watcher = _this._watchers[ event ][ i ];
+
+                if (watcher instanceof Listener) {
+                    watcher.runCallback(e);
+                } else {
+                    _this.emit("error", "Listener<" + event + "> has no method");
                 }
             }
 
@@ -170,15 +182,19 @@ export default class Node {
         //     this._listeners[ event ] = [];
         // }
 
-        let uuid = GenerateUUID();
-        this._listeners[ event ][ uuid ] = callback;
+        let listener = new Listener(callback);
+        this._listeners[ event ][ listener.UUID() ] = listener;
 
-        return uuid;
+        return listener;
     }
-    unlisten(event, uuid) {
+    unlisten(event, listenerOrUUID) {
         // throw new Error("This method has not been setup yet.  Implement a search system, maybe use UUIDs?");        
         if(typeof this._listeners[ event ] === "object") {
-            delete this._listeners[ event ][ uuid ];
+            if(listenerOrUUID instanceof Listener) {
+                delete this._listeners[ event ][ listenerOrUUID.UUID() ];
+            } else {
+                delete this._listeners[ event ][ listenerOrUUID ];
+            }
             
             return true;
         }
@@ -196,9 +212,9 @@ export default class Node {
 
         return this;
     }
-    next(caller, event, ...args) {
+    next(event) {
         if(typeof this._next === "function") {
-            return this._next(caller, event, ...args);
+            return this._next(event);
         }
     }
 
@@ -233,41 +249,52 @@ export default class Node {
      * a.watch([ "cat", "dog" ], (key, value) => {
      *     console.log(key, value)
      * });
-     * @param {string|Array} prop 
+     * @param {string|string[]} prop 
      * @param {fn} callback
-     * @returns {uuid|uuids} If `Array.isArray(prop)`, then `@uuids = { prop: uuid, ... }`, else `@uuid = uuid`
+     * @returns {Watcher|Watcher[]} Array.isArray(prop) ? Watcher[] : Watcher
      */
     watch(prop, callback) {
         if(Array.isArray(prop)) {
-            let uuids = {};
+            let watchers = {};
 
             prop.forEach(p => {
-                uuids[ p ] = this.listen("prop-change", ([ key, value ], [ event, target ]) => {
-                    if(p === key && typeof callback === "function") {
-                        callback(key, value, target);
-                    }
-                });
+                if(!Array.isArray(this._watchers[ p ])) {
+                    this._watchers[ p ] = [];
+                }
+
+                //  Populate this._watchers
+                let watcher = new Watcher(p, callback);
+                this._watchers[ p ].push(watcher);
+
+                //  Populate the return variable
+                if(!Array.isArray(watchers[ p ])) {
+                    watchers[ p ] = [];
+                }
+                watchers[ p ].push(watcher);
             });
 
-            return uuids;
-        }
-        
-        let uuid = this.listen("prop-change", ([ key, value ], [ event, target ]) => {
-            if(prop === key && typeof callback === "function") {
-                callback(key, value, target);
+            return watchers;
+        } else {
+            if(!Array.isArray(this._watchers[ prop ])) {
+                this._watchers[ prop ] = [];
             }
-        });
 
-        this._watchers[ uuid ] = prop;
-        
-        return uuid;
+            let watcher = new Watcher(prop, callback);
+            this._watchers[ prop ].push(watcher);
+
+            return watcher;
+        }
     }
-    unwatch(uuid) {
-        // throw new Error("This method has not been setup yet.  Implement a search system, maybe use UUIDs?");
-        if(typeof this._listeners[ "prop-change" ] === "object") {
-            delete this._listeners[ "prop-change" ][ uuid ];
-            delete this._watchers[ uuid ];
-            
+    unwatch(watcher) {
+        if(watcher instanceof Watcher) {
+            let index = this._watchers[ watcher.getProp() ].findIndex(w => {
+                w.UUID() === watcher.UUID();
+            });
+
+            if(index > -1) {
+                this._watchers[ watcher.getProp() ].splice(index, 1);
+            }
+
             return true;
         }
         
@@ -291,7 +318,7 @@ export default class Node {
         this._state[ prop ] = value;
 
         if(Object.keys(this._listeners).length || Object.keys(this._subscribers).length) {
-            this.call("prop-change", prop, value, oldValue);
+            this.emit("prop-change", prop, value, oldValue);
         }
 
         return this;

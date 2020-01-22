@@ -1,5 +1,8 @@
+import { GenerateUUID } from "./../core/helper";
+
 export default class Event {
     constructor(type, payload, emitter = null) {
+        this._uuid = GenerateUUID();
         this._type = type;
         this._payload = payload;
 
@@ -9,6 +12,10 @@ export default class Event {
         ] : [];
 
         return Object.freeze(this);
+    }
+
+    UUID() {
+        return this._uuid;
     }
 
     getType() {
