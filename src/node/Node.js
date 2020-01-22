@@ -29,7 +29,7 @@ export default class Node {
 
 
         //* PROGENY        
-        this._children = {};        // Children Nodes for create Node clusters
+        this._children = {};        // Children Nodes for create Node clusters (will un/subscribe to child on .adopt()/.abandon())
         this._parent = null;        // A convenience reference to the Node's parent
 
         this._registerModule("progeny");
@@ -74,6 +74,7 @@ export default class Node {
 
         return this;
     }
+
 
     //* EVENTS
     hasEvent(name) {
@@ -357,6 +358,8 @@ export default class Node {
     adopt(child) {
         if(child instanceof Node) {
             this._children[ child.UUID() ] = child;
+            
+            this.subscribe(child);
         }
 
         return this;
@@ -364,8 +367,12 @@ export default class Node {
     abandon(childOrUUID) {
         if(childOrUUID instanceof Node) {
             delete this._children[ child.UUID() ];
+            
+            this.unsubscribe(childOrUUID);
         } else if(typeof childOrUUID === "string" || childOrUUID instanceof String) {
             delete this._children[ childOrUUID ];
+            
+            this.unsubscribe(childOrUUID);
         }
 
         return this;
