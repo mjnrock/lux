@@ -128,8 +128,7 @@ export default class Node {
             this._events[ event ](e);
         }
 
-        let _this = this;
-        (async () => {
+        (async (_this) => {
             for (let i in _this._listeners[ event] ) {
                 let listener = _this._listeners[ event ][ i ];
 
@@ -147,7 +146,7 @@ export default class Node {
                     subscriber.next(e);
                 }
             }
-        })();
+        })(this);
 
         return this;
     }

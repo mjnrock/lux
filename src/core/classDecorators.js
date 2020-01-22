@@ -90,21 +90,9 @@ const Events = (Events) => class extends Events {
         let fn = this._events[ event ];
 
         if(typeof fn === "function") {
-            let result = fn(this, ...args),
-                _this = this;
+            let result = fn(this, ...args);
 
-            // setTimeout(() => {
-            //     for (var i in _this._listeners[event]) {
-            //         var listener = _this._listeners[event][i];
-
-            //         if (typeof listener === "function") {
-            //             listener(result, [event, _this]);
-            //         } else {
-            //             _this.call("error", "Listener<" + event + "> has no method");
-            //         }
-            //     }
-            // }, 1);
-            (async () => {
+            (async (_this) => {
                 for(let i in _this._listeners[ event ]) {
                     let listener = _this._listeners[ event ][ i ];
 
@@ -114,7 +102,7 @@ const Events = (Events) => class extends Events {
                         _this.call("error", `Listener<${ event }> has no method`);
                     }
                 }
-            })();
+            })(this);
 
             return result;
         }

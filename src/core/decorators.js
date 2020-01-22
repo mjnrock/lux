@@ -59,21 +59,9 @@ export function Events(target = {}) {
             let fn = this._events[ event ];
 
             if(typeof fn === "function") {
-                let result = fn(this, ...args),
-                    _this = this;
-
-                // setTimeout(() => {
-                //     for(let i in _this._listeners[ event ]) {
-                //         let listener = _this._listeners[ event ][ i ];
-
-                //         if(typeof listener === "function") {
-                //             listener(result, [ event, _this]);
-                //         } else {
-                //             _this.call("error", `Listener<${ event }> has no method`);
-                //         }
-                //     }
-                // }, 1);
-                (async () => {
+                let result = fn(this, ...args);
+                
+                (async (_this) => {
                     for(let i in _this._listeners[ event ]) {
                         let listener = _this._listeners[ event ][ i ];
 
@@ -83,7 +71,7 @@ export function Events(target = {}) {
                             _this.call("error", `Listener<${ event }> has no method`);
                         }
                     }
-                })();
+                })(this);
 
                 return result;
             }
