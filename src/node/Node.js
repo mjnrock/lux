@@ -3,9 +3,10 @@ import { GenerateUUID } from "./../core/helper";
 export default class Node {
     constructor() {
         //* BASE
-        this._id = null;   // A generic id for any purpose
-        this._uuid = GenerateUUID();
-        this._modules = [];
+        this._id = null;                // A generic id for any purpose
+        this._uuid = GenerateUUID();    // A UUID for this Node
+        this._modules = [];             // A meta-tracker for "loaded modules"
+        
 
         //* EVENTS
         this._events = {
@@ -13,21 +14,23 @@ export default class Node {
             "prop-change": (target, ...args) => args
         };
 
-        this._listeners = {};
-        this._subscribers = {};
-        this._watchers = {};
-        this._next = null;
+        this._listeners = {};       // Listeners receive a *specific* event (i.e. the listened event)
+        this._subscribers = {};     // Subscribers receive *all* events
+        this._watchers = {};        // Watchers receive the "prop-change" event when a specific prop changes (i.e. the watched prop)
+        this._next = null;          // The Subscriber's method that is called when an event fires
 
         this._registerModule("events");
+
         
         //* STATE
-        this._state = {};
+        this._state = {};           // A contained state object for storing data within the Node
 
         this._registerModule("state");
 
+
         //* PROGENY        
-        this._children = {};
-        this._parent = null;
+        this._children = {};        // Children Nodes for create Node clusters
+        this._parent = null;        // A convenience reference to the Node's parent
 
         this._registerModule("progeny");
     }
