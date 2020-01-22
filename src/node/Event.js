@@ -26,6 +26,15 @@ export default class Event {
     }
 
     getPayload() {
+        // Specialized helper case for "prop-change"
+        if(this._type === "prop-change") {
+            try {
+                return this._payload[ 0 ];
+            } catch(e) {
+                throw new Error(`[Non-Conventional Payload]: A "prop-change" event must conform its payload to the standard shape`);
+            }
+        }
+        
         return this._payload;
     }
 

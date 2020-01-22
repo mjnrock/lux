@@ -19,7 +19,8 @@ export default class Listener {
     getCallback() {
         return this._callback;
     }
-    runCallback(...args) {
-        return this._callback(...args);
+    runCallback(event) {
+        
+        return this._callback(event);
     }
 };

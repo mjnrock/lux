@@ -131,23 +131,27 @@ export default class Node {
         }
 
         (async (_this) => {
-            for (let i in _this._listeners[ event] ) {
+            for (let i in _this._listeners[ event ] ) {
                 let listener = _this._listeners[ event ][ i ];
 
                 if (listener instanceof Listener) {
-                    listener.runCallback(e);
+                    listener.runCallback(e, listener);
                 } else {
                     _this.emit("error", "Listener<" + event + "> has no method");
                 }
             }
 
-            for (let i in _this._watchers[ event] ) {
-                let watcher = _this._watchers[ event ][ i ];
-
-                if (watcher instanceof Listener) {
-                    watcher.runCallback(e);
-                } else {
-                    _this.emit("error", "Listener<" + event + "> has no method");
+            if(event === "prop-change" && e instanceof Event) {
+                let { prop } = e.getPayload();  // In "prop-change" payload object, { prop, previous, current } exist
+                
+                for (let i in _this._watchers[ prop ] ) {
+                    let watcher = _this._watchers[ prop ][ i ];
+    
+                    if (watcher instanceof Watcher) {
+                        watcher.runCallback(e, watcher);
+                    } else {
+                        _this.emit("error", "Listener<" + prop+ "> has no method");
+                    }
                 }
             }
 
@@ -155,7 +159,7 @@ export default class Node {
                 let subscriber = _this._subscribers[ uuid ].getSubscribor();
 
                 if (typeof subscriber._next === "function") {
-                    subscriber.next(e);
+                    subscriber.next(e, subscriber);
                 }
             }
         })(this);
@@ -317,9 +321,14 @@ export default class Node {
 
         this._state[ prop ] = value;
 
-        if(Object.keys(this._listeners).length || Object.keys(this._subscribers).length) {
-            this.emit("prop-change", prop, value, oldValue);
-        }
+        this.emit(
+            "prop-change",
+            {
+                prop: prop,
+                previous: oldValue,
+                current: value
+            }
+        );
 
         return this;
     }
