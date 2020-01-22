@@ -5,6 +5,8 @@ export default class Subscription {
         this._uuid = GenerateUUID();
         this._subscribor = subscribor;
         this._subscribee = subscribee;
+
+        return Object.freeze(this);
     }
 
     getSubscribor() {

@@ -1,4 +1,6 @@
 import { GenerateUUID } from "./../core/helper";
+import Subscription from "./Subscription";
+import Event from "./Event";
 
 export default class Node {
     constructor() {
@@ -81,9 +83,19 @@ export default class Node {
         return typeof this._events[ name ] === "function";
     }
 
+    addEvent(...events) {
+        for(let name of events) {
+            if(typeof name === "string" || name instanceof String) {
+                this._events[ name ] = null;
+            }
+        }
+
+        return this;
+    }
+
     on(event, callback) {
         if(typeof callback !== "function") {
-            callback = (...args) => [ ...args ];
+            callback = null;
         }
         
         this._events[ event ] = callback;
@@ -96,56 +108,47 @@ export default class Node {
         return this;
     }
 
+    //! This method has been rewritten to utilize "Event" and "Subscription" and no longer passes the @callback result
     call(event, ...args) {
-        let fn = this._events[ event ];
+        let e;
+        if(event instanceof Event) {
+            e = event;
+            event = e.getType();    // This is to avoid passing a class to the objects below (in the case of chain event calling) and I'm otherwise too lazy to refactor, as I don't see the need
 
-        if(typeof fn === "function") {
-            let result = fn(this, ...args),
-                _this = this;
-
-            (async () => {
-                for (let i in _this._listeners[ event] ) {
-                    let listener = _this._listeners[ event ][ i ];
-
-                    if (typeof listener === "function") {
-                        listener(result, [ event, _this ]);
-                    } else {
-                        _this.call("error", "Listener<" + event + "> has no method");
-                    }
-                }
-
-                for (let uuid in _this._subscribers) {
-                    let subscriber = _this._subscribers[ uuid ];
-
-                    if (typeof subscriber._next === "function") {
-                        subscriber.next(event, result, this);
-                    }
-                }
-            })();
-            // setTimeout(() => {
-            //     for (let i in _this._listeners[ event] ) {
-            //         let listener = _this._listeners[ event ][ i ];
-
-            //         if (typeof listener === "function") {
-            //             listener(result, [ event, _this ]);
-            //         } else {
-            //             _this.call("error", "Listener<" + event + "> has no method");
-            //         }
-            //     }
-
-            //     for (let uuid in _this._subscribers) {
-            //         let subscriber = _this._subscribers[ uuid ];
-
-            //         if (typeof subscriber._next === "function") {
-            //             subscriber.next(event, result, this);
-            //         }
-            //     }
-            // }, 1);
-
-            return result;
+            e.addEmitter(this);     // Add this Node to the emitter list
+        } else if(typeof event === "string" || event instanceof String) {
+            e = new Event(event, args, this);
         }
 
-        throw new Error(`"${ event }" has no method.`);
+        if(!(event in this._events)) {
+            throw new Error(`[Invalid Event]: "${ event }" has not been registered`);
+        }
+
+        if(typeof this._events[ event ] === "function") {
+            this._events[ event ](e);
+        }
+
+        (async () => {
+            for (let i in _this._listeners[ event] ) {
+                let listener = _this._listeners[ event ][ i ];
+
+                if (typeof listener === "function") {
+                    listener(e);
+                } else {
+                    _this.call("error", "Listener<" + event + "> has no method");
+                }
+            }
+
+            for (let uuid in _this._subscribers) {
+                let subscriber = _this._subscribers[ uuid ].getSubscribor();
+
+                if (typeof subscriber._next === "function") {
+                    subscriber.next(e);
+                }
+            }
+        })();
+
+        return this;
     }
     
     /**
@@ -201,7 +204,8 @@ export default class Node {
 
     subscribe(subscriber) {
         if(subscriber instanceof Node) {
-            this._subscribers[ subscriber.UUID() ] = subscriber;
+            // this._subscribers[ subscriber.UUID() ] = subscriber;
+            this._subscribers[ subscriber.UUID() ] = new Subscription(subscriber, this);
 
             return this;
         }

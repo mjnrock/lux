@@ -1,10 +1,14 @@
 export default class Event {
-    constructor(type, payload, emitter) {
+    constructor(type, payload, emitter = null) {
         this._type = type;
         this._payload = payload;
-        this._emitters = [
+
+        // This is intentionally not safe, as is meant for tracking emitters in an otherwise-secured scope
+        this._emitters = emitter ? [
             emitter
-        ];
+        ] : [];
+
+        return Object.freeze(this);
     }
 
     getType() {
