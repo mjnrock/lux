@@ -4,11 +4,11 @@ import Node from "./node/package";
 let n1 = new Node.Node();
 let n2 = new Node.Node();
 
-// n2.setNext(e => {
-//     console.log("---------------");
-//     console.log(e);
-//     console.log("---------------");
-// });
+n2.setNext(e => {
+    console.log("---------------");
+    console.log(e);
+    console.log("---------------");
+});
 n1.subscribe(n2);
 n1.listen("prop-change", (e) => console.log("LISTEN:", e.getPayload()));
 n1.watch("Cat", (e) => console.log("WATCH:", e.getPayload()));
