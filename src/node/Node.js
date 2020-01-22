@@ -80,7 +80,7 @@ export default class Node {
 
     //* EVENTS
     hasEvent(name) {
-        return typeof this._events[ name ] === "function";
+        return name in this._events;
     }
 
     addEvent(...events) {
