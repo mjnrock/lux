@@ -1,3 +1,5 @@
+import fetch from "node-fetch";     // Required for the async prop setters
+
 import { GenerateUUID } from "./../core/helper";
 import Subscription from "./Subscription";
 import Event from "./Event";
@@ -10,6 +12,12 @@ export default class Node {
         this._id = null;                // A generic id for any purpose
         this._uuid = GenerateUUID();    // A UUID for this Node
         this._modules = [];             // A meta-tracker for "loaded modules"
+
+
+        //* META
+        this._meta = {};
+
+        this._registerModule("meta");
         
 
         //* EVENTS
@@ -77,6 +85,24 @@ export default class Node {
         }
 
         return this;
+    }
+
+
+    //* META
+    setMeta(meta = {}) {
+        this._meta = meta;
+
+        return this;
+    }
+    getMeta() {
+        return this._meta;
+    }
+    meta(prop, value) {
+        if(value === void 0) {
+            return this.getMeta(prop);
+        }
+        
+        return this.setMeta(prop, value);
     }
 
 
@@ -322,6 +348,7 @@ export default class Node {
     getProp(prop) {
         return this._state[ prop ];
     }
+
     /**
      * Acts as a getter/setter for this.state[ @prop ] = @value
      * @param {string} prop 
@@ -378,6 +405,66 @@ export default class Node {
         }
             
         return this.getProp(prop);
+    }
+
+    /**
+     * This will grab a URL that expects JSON response data
+     * @param {string} prop 
+     * @param {string} url 
+     * @param {fn} reducer A reducer function to modify the data (i.e. prop = reducer(data))
+     * @param {obj} opts An options object to send to the .fetch(url, opts) [ DEFAULT: { method: "GET", mode: "cors" } ]
+     */
+    jsonGet(prop, url, { reducer = null, opts = { method: "GET", mode: "cors" }} = {}) {
+        fetch(url, opts)
+            .then(response => response.json())
+            .then(data => {
+                let value;
+
+                if(typeof reducer === "function") {
+                    value = reducer(data);
+                } else {
+                    value = data;
+                }
+
+                this.setProp(prop, value);
+            });
+    }
+    /**
+     * This will grab a URL that expects Blob response data
+     * @param {string} prop 
+     * @param {string} url 
+     * @param {fn} reducer A reducer function to modify the data (i.e. prop = reducer(data))
+     * @param {obj} opts An options object to send to the .fetch(url, opts) [ DEFAULT: { method: "GET", mode: "cors" } ]
+     */
+    blobGet(prop, url, { reducer = null, opts = { method: "GET", mode: "cors" }} = {}) {
+        fetch(url, opts)
+            .then(response => response.blob())
+            .then(data => {
+                let value;
+
+                if(typeof reducer === "function") {
+                    value = reducer(data);
+                } else {
+                    value = data;
+                }
+
+                this.setProp(prop, value);
+            });
+    }
+
+    //TODO Not sure if this works, need to test on reliable endpoint
+    async jsonPost(prop, url) {
+        let poster = async (prop, url) => {
+            let response = await fetch(url, {
+                method: "POST",
+                mode: "cors",
+                body: JSON.stringify(this.getProp(prop))
+            });
+
+            return await response;
+        };
+
+        return await poster(prop, url);
     }
 
 
