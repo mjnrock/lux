@@ -419,6 +419,10 @@ export default class Node {
             .then(response => response[ jsonResponse ? json : blob ]())
             .then(data => {
                 let value;
+                
+                if(data === void 0) {
+                    return false;
+                }
 
                 if(typeof reducer === "function") {
                     value = reducer(data);
@@ -452,6 +456,8 @@ export default class Node {
             this._children[ child.UUID() ] = child;
             
             this.subscribe(child);
+
+            child.setParent(this);
         }
 
         return this;
@@ -461,6 +467,8 @@ export default class Node {
             delete this._children[ child.UUID() ];
             
             this.unsubscribe(childOrUUID);
+            
+            child.setParent(null);
         } else if(typeof childOrUUID === "string" || childOrUUID instanceof String) {
             delete this._children[ childOrUUID ];
             
