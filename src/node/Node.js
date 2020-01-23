@@ -6,6 +6,10 @@ import Event from "./Event";
 import Listener from "./Listener";
 import Watcher from "./Watcher";
 
+//TODO Create a "prop fetch progress" object to allow for things like "Loading..." in React [ PENDING, COMPLETED, FAILURE ]
+    //? Maybe create a Transaction class that gets created whenever a .fetch() is called and updates its progress as changes occur? (store Tx history in local array)
+    //? Maybe erase the prop data completely whenever a new .fetch() is invoked and replace with standard/static Enum text flags (e.g. PENDING = UUID, etc.)
+
 export default class Node {
     constructor() {
         //* BASE
