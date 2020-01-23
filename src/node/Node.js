@@ -414,31 +414,9 @@ export default class Node {
      * @param {fn} reducer A reducer function to modify the data (i.e. prop = reducer(data))
      * @param {obj} opts An options object to send to the .fetch(url, opts) [ DEFAULT: { method: "GET", mode: "cors" } ]
      */
-    jsonGet(prop, url, { reducer = null, opts = { method: "GET", mode: "cors" }} = {}) {
+    $prop(prop, url, { reducer = null, opts = { method: "GET", mode: "cors" }, jsonResponse = true } = {}) {
         fetch(url, opts)
-            .then(response => response.json())
-            .then(data => {
-                let value;
-
-                if(typeof reducer === "function") {
-                    value = reducer(data);
-                } else {
-                    value = data;
-                }
-
-                this.setProp(prop, value);
-            });
-    }
-    /**
-     * This will grab a URL that expects Blob response data
-     * @param {string} prop 
-     * @param {string} url 
-     * @param {fn} reducer A reducer function to modify the data (i.e. prop = reducer(data))
-     * @param {obj} opts An options object to send to the .fetch(url, opts) [ DEFAULT: { method: "GET", mode: "cors" } ]
-     */
-    blobGet(prop, url, { reducer = null, opts = { method: "GET", mode: "cors" }} = {}) {
-        fetch(url, opts)
-            .then(response => response.blob())
+            .then(response => response[ jsonResponse ? json : blob ]())
             .then(data => {
                 let value;
 
@@ -453,7 +431,7 @@ export default class Node {
     }
 
     //TODO Not sure if this works, need to test on reliable endpoint
-    async jsonPost(prop, url) {
+    async $propPost(prop, url) {
         let poster = async (prop, url) => {
             let response = await fetch(url, {
                 method: "POST",

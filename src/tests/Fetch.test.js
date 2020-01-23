@@ -5,7 +5,7 @@ export function RunTest() {
 
     n1.watch("ToDo", e => console.log(e.getPayload().current));
 
-    n1.jsonGet("ToDo", "https://jsonplaceholder.typicode.com/todos/1");   // Some random JSON test site (remove the /1 to get a bunch of todos)
+    n1.asyncJsonProp("ToDo", "https://jsonplaceholder.typicode.com/todos/1");   // Some random JSON test site (remove the /1 to get a bunch of todos)
 
     setTimeout(() => {
         console.log(n1.prop("ToDo"));
