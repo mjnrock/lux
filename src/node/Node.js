@@ -382,7 +382,11 @@ export default class Node {
             if(value !== void 0) {
                 let arr = this.getProp(prop);
 
-                arr[ +index ] = value;
+                if(index === -1) {
+                    arr.push(value);
+                } else {
+                    arr[ +index ] = value;
+                }
 
                 return this.setProp(prop, arr);
             } else {
@@ -527,7 +531,7 @@ export default class Node {
     }
 
 
-    //  SYSTEM
+    //*  SYSTEM
     link(...nodes) {
         for(let node of nodes) {
             if(node instanceof Node) {
