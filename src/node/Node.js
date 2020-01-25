@@ -49,6 +49,10 @@ export default class Node {
         this._parent = null;        // A convenience reference to the Node's parent
 
         this._registerModule("progeny");
+
+
+        //* SYSTEM
+        this._registerModule("system");     // Functions that facilitate node-to-node interactions
     }
 
     //* BASE
@@ -522,6 +526,8 @@ export default class Node {
         return this.setParent(value);
     }
 
+
+    //  SYSTEM
     link(...nodes) {
         for(let node of nodes) {
             if(node instanceof Node) {
@@ -531,4 +537,7 @@ export default class Node {
 
         return this;
     }
+    //TODO .copy()  // Make a copy of the node
+    //TODO .copyState(node) // Copy this._state into @node._state
+    //TODO ...etc of similar convenience methods
 };

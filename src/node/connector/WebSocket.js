@@ -31,7 +31,7 @@ export default class WebSocket extends Node {
 
     Connect() {
         if(this.propIsEmpty("WSS")) {
-            this.prop("WSS", new WS.Server(this.getUrl()));
+            this.prop("WSS", new WS(this.getUrl()));
 
             this.prop("WSS").on("open", () => this.emit("open"));
             this.prop("WSS").on("message", (msg) => this.emit("message", msg));
@@ -48,6 +48,18 @@ export default class WebSocket extends Node {
 
             this.emit("destroy");
         }
+
+        return this;
+    }
+
+    Send(payload) {
+        let data = payload;
+        
+        if(typeof payload === "object" || Array.isArray(payload))  {
+            data = JSON.stringify(payload);
+        }
+
+        this.prop("WSS").send(data);
 
         return this;
     }

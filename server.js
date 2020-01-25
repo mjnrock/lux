@@ -3,6 +3,7 @@ import Lux from "./src/index";
 const express = require("express");
 const path = require("path");
 const app = express();
+const expressWs = require("express-ws")(app);
 const port = 3000;
 
 app.use(express.static(path.join(__dirname, "/public")));
@@ -50,7 +51,7 @@ let debug = (...args) => {
 // console.log(" ----- END: Fetch -----");
 
 console.log(" ----- TESTS: Connectors -----");
-Lux.Tests.WebAPI.RunTest();
+Lux.Tests.WebSocket.RunTest();
 console.log(" ----- END: Connectors -----");
 
 // console.log(" ----- TESTS: Connectors -----");
@@ -81,5 +82,11 @@ app.get("/logs", (req, res) => {
     res.end();
 });
 // ======================================
+
+app.ws("/", function (ws, req) {
+    ws.on("message", function (msg) {
+        console.log(msg);
+    });
+});
 
 app.listen(port, () => console.log(`Server listening on port ${ port }!`));
