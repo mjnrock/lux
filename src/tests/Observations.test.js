@@ -12,10 +12,10 @@ export function RunTest() {
     });
     let s1 = n1.subscribe(n2);
     let s2 = n1.subscribe(n3);
-    let l1 = n1.listen("prop-change", (e) => console.log("LISTEN:", e.getPayload()));
-    let l2 = n1.listen("prop-change", (e) => console.log("LISTEN2:", e.getPayload()));
-    let w1 = n1.watch("Cat", (e) => console.log("WATCH:", e.getPayload()));
-    let w2 = n1.watch("Cat", (e) => console.log("WATCH2:", e.getPayload()));
+    let l1 = n1.listen("prop-change", (e) => console.log("LISTEN", e.getPayload()));
+    let l2 = n1.listen("prop-change", (e) => console.log("LISTEN2", e.getPayload()));
+    let w1 = n1.watch("Cat", (e) => console.log("WATCH", e.getPayload()));
+    let w2 = n1.watch("Cat", (e) => console.log("WATCH2", e.getPayload()));
 
     console.log(n1);
 

@@ -353,6 +353,13 @@ export default class Node {
         return this._state[ prop ];
     }
 
+    propIsEmpty(prop) {
+        return this._state[ prop ] === null || this._state[ prop ] === void 0;
+    }
+    propIsType(prop, type) {
+        return typeof this._state[ prop ] === type;
+    }
+
     /**
      * Acts as a getter/setter for this.state[ @prop ] = @value
      * @param {string} prop 
@@ -420,7 +427,7 @@ export default class Node {
      */
     $prop(prop, url, { reducer = null, opts = { method: "GET", mode: "cors" }, jsonResponse = true } = {}) {
         fetch(url, opts)
-            .then(response => response[ jsonResponse ? json : blob ]())
+            .then(response => response[ jsonResponse ? "json" : "blob" ]())
             .then(data => {
                 let value;
                 
@@ -513,5 +520,15 @@ export default class Node {
         }
         
         return this.setParent(value);
+    }
+
+    link(...nodes) {
+        for(let node of nodes) {
+            if(node instanceof Node) {
+                this.subscribe(node);
+            }
+        }
+
+        return this;
     }
 };
