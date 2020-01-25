@@ -1,5 +1,5 @@
 import Channel from "./Channel";
-import Node from "./../Node";
+import Node from "../Node";
 
 export default class MultiChannel extends Node {
     constructor() {
@@ -11,7 +11,7 @@ export default class MultiChannel extends Node {
             "channel-message"
         );
 
-        this._registerModule("chat.multichannel");
+        this._registerModule("chat-message.multichannel");
     }
 
     CreateChannel(name) {

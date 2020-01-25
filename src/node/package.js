@@ -4,7 +4,9 @@ import Listener from "./Listener";
 import Watcher from "./Watcher";
 import Node from "./Node";
 
-import Connector from "./connector/package";
+import DataConnector from "./data-connector/package";
+import ChatMessage from "./chat-message/package";
+import InputController from "./input-controller/package";
 
 export default {
     Event,
@@ -13,5 +15,7 @@ export default {
     Watcher,
     Node,
 
-    Connector
+    DataConnector,
+    ChatMessage,
+    InputController
 };

@@ -1,4 +1,4 @@
-import { GenerateUUID } from "./../../core/helper";
+import { GenerateUUID } from "../../core/helper";
 
 export default class Message {
     constructor(creator, payload, ts = null, uuid = null) {

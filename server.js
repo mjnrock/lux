@@ -50,12 +50,12 @@ let debug = (...args) => {
 // Lux.Tests.Fetch.RunTest();
 // console.log(" ----- END: Fetch -----");
 
-console.log(" ----- TESTS: Connectors -----");
+console.log(" ----- TESTS: DataConnectors -----");
 Lux.Tests.WebSocket.RunTest();
-console.log(" ----- END: Connectors -----");
+console.log(" ----- END: DataConnectors -----");
 
-// console.log(" ----- TESTS: Connectors -----");
-// let api = new Lux.Node.Connector.WebAPI("localhost", port);
+// console.log(" ----- TESTS: DataConnectors -----");
+// let api = new Lux.Node.DataConnector.WebAPI("localhost", port);
 
 // api.GetJson(`/api/`, {
 //     test: "hey",
@@ -63,7 +63,7 @@ console.log(" ----- END: Connectors -----");
 // }, console.log);
 // // api.GET(`api`).then(r => console.log(r));
 
-// console.log(" ----- END: Connectors -----");
+// console.log(" ----- END: DataConnectors -----");
 
 // app.get("/api", (req, res) => {
 //     res.send("Hello");

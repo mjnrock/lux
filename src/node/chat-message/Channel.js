@@ -1,5 +1,5 @@
 import Message from "./Message";
-import Node from "./../Node";
+import Node from "../Node";
 import Member from "./Member";
 
 export default class Channel extends Node {
@@ -17,7 +17,7 @@ export default class Channel extends Node {
             "member-remove"
         );
 
-        this._registerModule("chat.channel");
+        this._registerModule("chat-message.channel");
     }
 
     SyncChannel(messages) {
