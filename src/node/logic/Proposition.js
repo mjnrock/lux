@@ -23,9 +23,7 @@ export default class Proposition extends Node {
 
         let results = [];
 
-        for(let i in this.prop("conditions")) {
-            let cond = this.prop("conditions")[ i ];
-
+        for(let cond of this.prop("conditions")) {
             if(cond instanceof Condition) {
                 if(cond.IsAssigned() && !overrideAssignments) {
                     results.push(cond.Run());
@@ -49,7 +47,7 @@ export default class Proposition extends Node {
 
         let resultObj = {
             result: result,
-            results: result,
+            results: results,
             options: {
                 useDysjunction,
                 negateResult,
@@ -57,14 +55,12 @@ export default class Proposition extends Node {
             }
         };
 
-        if(this.hasEvent("run")) {
-            this.call("run", resultObj);
-        }
+        this.emit("run", resultObj);
 
-        if(result && this.hasEvent("true")) {
-            this.call("true", resultObj);
-        } else if(!result && this.hasEvent("false")) {
-            this.call("false", resultObj);
+        if(result) {
+            this.emit("true", resultObj);
+        } else {
+            this.emit("false", resultObj);
         }
 
         return resultObj;

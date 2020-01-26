@@ -1,3 +1,4 @@
+import Enum from "./enum/package";
 
 import Attribute from "./Attribute";
 import TextAttribute from "./TextAttribute";
@@ -7,10 +8,12 @@ import Condition from "./Condition";
 import Proposition from "./Proposition";
 
 export default {
-    Attribute,          //! Untested
+    Enum,
+    
+    Attribute,
     TextAttribute,      //! Untested
-    NumberAttribute,    //! Untested
+    NumberAttribute,
 
-    Condition,          //! Untested
-    Proposition         //! Untested
+    Condition,
+    Proposition
 };

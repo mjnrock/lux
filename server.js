@@ -50,9 +50,13 @@ let debug = (...args) => {
 // Lux.Tests.Fetch.RunTest();
 // console.log(" ----- END: Fetch -----");
 
-console.log(" ----- TESTS: DataConnectors -----");
-Lux.Tests.WebSocket.RunTest();
-console.log(" ----- END: DataConnectors -----");
+// console.log(" ----- TESTS: DataConnectors -----");
+// Lux.Tests.WebSocket.RunTest();
+// console.log(" ----- END: DataConnectors -----");
+
+console.log(" ----- TESTS: Logic -----");
+Lux.Tests.Logic.RunTest();
+console.log(" ----- END: Logic -----");
 
 // console.log(" ----- TESTS: DataConnectors -----");
 // let api = new Lux.Node.DataConnector.WebAPI("localhost", port);

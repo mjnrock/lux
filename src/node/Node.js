@@ -130,11 +130,11 @@ export default class Node {
     }
 
     on(event, callback) {
-        if(typeof callback !== "function") {
-            callback = null;
+        if(typeof callback === "function") {
+            this._events[ event ] = callback;
+        } else {
+            this._events[ event ] = null;
         }
-        
-        this._events[ event ] = callback;
 
         return this;
     }

@@ -5,7 +5,7 @@ class Condition extends Node {
     constructor(type, ...args) {
         super();
         
-        //  Use Condition.EnumTypes.[ ... ] as @type argument
+        //  Use Enum.ConditionType[ ... ] as @type argument
         this.prop("type", type);
         //  Variable amount of arguments, specified by Condition.EnumTypes.[ ... ][ 1 ]
         this.prop("args", args);
@@ -14,7 +14,9 @@ class Condition extends Node {
         //  Optionally use .Assign() to store an <Attribute> association locally
         this.prop("attribute", null);
 
-        this.on("run");
+        this.addEvent(
+            "run"
+        );
 
         this._registerModule("logic");
     }
@@ -62,7 +64,7 @@ class Condition extends Node {
                 }
 
                 if(typeof this.hasEvent("run")) {
-                    this.call("run", this.prop("result"));
+                    this.emit("run", this.prop("result"));
                 }
 
                 return this.prop("result");
@@ -188,8 +190,7 @@ class Condition extends Node {
 
     Match(attribute) {
         if(attribute instanceof Attribute) {
-            let [ exp, flags ] = this.prop("args"),
-                regex = new RegExp(exp, flags),
+            let regex = RegExp(this.prop("args")[ 0 ]),
                 value = attribute.Value();
 
             return regex.test(value);
@@ -203,29 +204,11 @@ class Condition extends Node {
             let [ var1 ] = this.prop("args"),
                 value = attribute.Value();
 
-            return value.UUID === var1;
+            return value.UUID() === var1;
         }
 
         return false;
     }
-};
-
-
-//? [ Function, Expected this.args.length, Supported types ]
-Condition.EnumType = {
-    EQUALS: [ "Equals", 1, [ "string", "number", "boolean" ] ],
-    NOT_EQUALS: [ "NotEquals", 1, [ "string", "number", "boolean" ] ],
-    BETWEEN: [ "Between", 2, [ "number" ] ],
-    IN: [ "In", null, [ "any" ] ],
-    NOT_IN: [ "NotIn", null, [ "any" ] ],
-    GT: [ "GT", 1, [ "number" ] ],
-    GTE: [ "GTE", 1, [ "number" ] ],
-    LT: [ "LT", 1, [ "number" ] ],
-    LTE: [ "LTE", 1, [ "number" ] ],
-    CONTAINS: [ "Contains", 1, [ "any" ] ],
-    NOT_CONTAINS: [ "NotContains", 1, [ "any" ] ],
-    MATCH: [ "Match", 1, [ "string", "number", "boolean" ] ],
-    UUID: [ "UUID", 1, [ "string" ] ],
 };
 
 export default Condition;

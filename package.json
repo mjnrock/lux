@@ -11,7 +11,8 @@
         "lespantsfancy"
     ],
     "dependencies": {
-        "node-fetch": "^2.6.0"
+        "node-fetch": "^2.6.0",
+        "peerjs": "^1.2.0"
     },
     "devDependencies": {
         "babel-cli": "^6.26.0",
@@ -25,6 +26,7 @@
         "grunt-contrib-uglify": "^4.0.1",
         "grunt-contrib-uglify-es": "github:gruntjs/grunt-contrib-uglify#harmony",
         "grunt-contrib-watch": "^1.1.0",
+        "window": "^4.2.6",
         "ws": "^7.2.1"
     },
     "scripts": {

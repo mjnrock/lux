@@ -25,7 +25,23 @@ export default class Event {
         return this._type === type;
     }
 
-    getPayload() {
+    getPayload(...indexes) {
+        if(indexes.length) {
+            let arr = [];
+
+            for(let index of indexes) {
+                if(typeof index === "number") {
+                    arr.push(this._payload[ index ]);
+                }
+            }
+
+            if(indexes.length === 1) {
+                return arr[ 0 ];
+            } else {
+                return arr;
+            }
+        }
+
         // Specialized helper case for "prop-change"
         if(this._type === "prop-change") {
             try {

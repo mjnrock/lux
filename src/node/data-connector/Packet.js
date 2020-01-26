@@ -63,5 +63,3 @@ export default class Packet {
         return msg;
     }
 }
-
-export default Packet;

@@ -1,11 +1,11 @@
 import Message from "./Message";
 import Member from "./Member";
 import Channel from "./Channel";
-import ChannelManager from "./ChannelManager";
+import MultiChannel from "./MultiChannel";
 
 export default {
     Message,            //! Untested
     Member,             //! Untested
     Channel,            //! Untested
-    ChannelManager      //! Untested
+    MultiChannel      //! Untested
 };
