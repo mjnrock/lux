@@ -9,13 +9,13 @@ import Controller from "./Controller";
 import MultiController from "./MultiController";
 
 export default {
-    AControl,
-    ActiveControl,
+    AControl,           //! Untested
+    ActiveControl,      //! Untested
 
-    Button,
-    ButtonGroup,
-    DPad,
+    Button,             //! Untested
+    ButtonGroup,        //! Untested
+    DPad,               //! Untested
 
-    Controller,
-    MultiController
+    Controller,         //! Untested
+    MultiController     //! Untested
 };

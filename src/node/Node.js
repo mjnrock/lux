@@ -541,7 +541,7 @@ export default class Node {
 
         return this;
     }
-    //TODO .copy()  // Make a copy of the node
-    //TODO .copyState(node) // Copy this._state into @node._state
+    //TODO .copy(qty = 1)  // Make a copy of the node
+    //TODO .replicate(node) // Copy this._state into @node._state
     //TODO ...etc of similar convenience methods
 };

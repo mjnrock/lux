@@ -4,8 +4,8 @@ import Channel from "./Channel";
 import ChannelManager from "./ChannelManager";
 
 export default {
-    Message,
-    Member,
-    Channel,
-    ChannelManager
+    Message,            //! Untested
+    Member,             //! Untested
+    Channel,            //! Untested
+    ChannelManager      //! Untested
 };

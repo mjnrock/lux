@@ -4,6 +4,7 @@ import Listener from "./Listener";
 import Watcher from "./Watcher";
 import Node from "./Node";
 
+import Logic from "./logic/package";
 import DataConnector from "./data-connector/package";
 import ChatMessage from "./chat-message/package";
 import InputController from "./input-controller/package";
@@ -15,7 +16,8 @@ export default {
     Watcher,
     Node,
 
+    Logic,
     DataConnector,
-    ChatMessage,    //! Untested
-    InputController //! Untested
+    ChatMessage,
+    InputController
 };
