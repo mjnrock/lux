@@ -54,6 +54,8 @@ export default class MultiController extends Node {
             "onclick",
             "ondblclick",
         ]);
+
+        this._registerModule("input-controller");
     }
 
     AttemptHTMLBindings(bindings = [

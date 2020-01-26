@@ -6,7 +6,7 @@ export default class Attribute extends ClassDecorators.StateEvents {
         
         this.prop("value", value);
 
-        return this;
+        this._registerModule("logic");
     }
 
     Value(input) {

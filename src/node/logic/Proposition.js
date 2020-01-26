@@ -13,6 +13,8 @@ export default class Proposition extends ClassDecorators.StateEvents {
         this.on("true", onTrue);
         this.on("false", onFalse);
         this.on("run", onRun);
+
+        this._registerModule("logic");
     }
 
     Run(attribute, { useDysjunction = true, negateResult = false, overrideAssignments = false } = {}) {

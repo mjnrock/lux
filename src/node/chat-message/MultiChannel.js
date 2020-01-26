@@ -11,7 +11,7 @@ export default class MultiChannel extends Node {
             "channel-message"
         );
 
-        this._registerModule("chat-message.multichannel");
+        this._registerModule("chat-message");
     }
 
     CreateChannel(name) {

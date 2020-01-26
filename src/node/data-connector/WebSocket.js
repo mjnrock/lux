@@ -20,7 +20,7 @@ export default class WebSocket extends Node {
             "close"
         );
 
-        this._registerModule("connector.websocket");
+        this._registerModule("data-connector");
     }
 
     getUrl() {

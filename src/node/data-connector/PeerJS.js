@@ -36,6 +36,8 @@ export default class PeerClient extends Node {
             "connect",
             "destroy"
         );
+
+        this._registerModule("data-connector");
     }
 
     ReceiveJSON(json) {

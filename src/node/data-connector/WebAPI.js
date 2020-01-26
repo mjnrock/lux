@@ -16,7 +16,7 @@ export default class WebAPI extends Node {
             "json"
         );
 
-        this._registerModule("connector.webapi");
+        this._registerModule("data-connector");
     }
 
     getUrl(endpoint, params = {}) {

@@ -5,5 +5,7 @@ export default class AControl extends Node {
         super();
 
         this.prop("Name", name);
+
+        this._registerModule("input-controller");
     }
 };

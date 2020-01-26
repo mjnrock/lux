@@ -16,6 +16,8 @@ class Condition extends ClassDecorators.StateEvents {
         this.prop("attribute", null);
 
         this.on("run");
+
+        this._registerModule("logic");
     }
 
     IsAssigned() {

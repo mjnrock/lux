@@ -17,7 +17,7 @@ export default class Channel extends Node {
             "member-remove"
         );
 
-        this._registerModule("chat-message.channel");
+        this._registerModule("chat-message");
     }
 
     SyncChannel(messages) {
