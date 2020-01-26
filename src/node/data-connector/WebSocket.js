@@ -1,6 +1,7 @@
 import WS from "ws";
 
 import Node from "./../Node";
+import Packet from "./Packet";
 
 export default class WebSocket extends Node {
     constructor(host, port, isSSL = false) {
@@ -59,7 +60,9 @@ export default class WebSocket extends Node {
             data = JSON.stringify(payload);
         }
 
-        this.prop("WSS").send(data);
+        let packet = new Packet(this.UUID(), null, data);
+        this.prop("WSS").send(packet);
+        // this.prop("WSS").send(packet.toJSON());
 
         return this;
     }

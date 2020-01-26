@@ -16,6 +16,6 @@ export default {
     Node,
 
     DataConnector,
-    ChatMessage,
-    InputController
+    ChatMessage,    //! Untested
+    InputController //! Untested
 };
