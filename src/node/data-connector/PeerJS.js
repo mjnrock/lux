@@ -1,8 +1,8 @@
 import Peer from "peerjs";
 
-import { GenerateUUID } from "../../src/core/helper";
-import Node from "../../src/node/Node";
-import Packet from "../../src/node/data-connector/Packet";
+import { GenerateUUID } from "./../../core/helper";
+import Node from "./../Node";
+import Packet from "./Packet";
 
 export default class PeerClient extends Node {
     constructor(server = null) {

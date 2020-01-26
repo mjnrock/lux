@@ -1,4 +1,6 @@
-import Lux from "./src/index";
+// import Lux from "./src/index";
+require("browser-env")();
+const Lux = require("./src/index")[ "default" ];
 
 const express = require("express");
 const path = require("path");
