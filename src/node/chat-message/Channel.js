@@ -1,5 +1,5 @@
 import Message from "./Message";
-import Node from "../Node";
+import Node from "./../Node";
 import Member from "./Member";
 
 export default class Channel extends Node {

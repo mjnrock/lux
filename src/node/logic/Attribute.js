@@ -1,6 +1,6 @@
-import ClassDecorators from "./classDecorators";
+import Node from "./../Node";
 
-export default class Attribute extends ClassDecorators.StateEvents {
+export default class Attribute extends Node {
     constructor(value) {
         super();
         

@@ -1,8 +1,7 @@
-import ClassDecorators from "./classDecorators";
-
+import Node from "./../Node";
 import Attribute from "./Attribute";
 
-class Condition extends ClassDecorators.StateEvents {
+class Condition extends Node {
     constructor(type, ...args) {
         super();
         

@@ -1,9 +1,8 @@
-import ClassDecorators from "./classDecorators";
-
+import Node from "./../Node";
 import Attribute from "./Attribute";
 import Condition from "./Condition";
 
-export default class Proposition extends ClassDecorators.StateEvents {
+export default class Proposition extends Node {
     constructor(conditions, onTrue = null, onFalse = null, onRun = null) {
         super();
         
