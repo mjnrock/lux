@@ -9,6 +9,7 @@ export function RunTest() {
     let mn1 = new Node.MasterNode();
 
     n0.setNext(e => console.log(e.getType(), e.getPayload(0)));
+    mn1.setNext(e => console.log(e.getEmitter().UUID(), e.getType(), e.getPayload(0)));
     mn1.subscribe(n0);
     
     mn1.dominate("Test", n1);
@@ -20,6 +21,8 @@ export function RunTest() {
     mn1.command((node, nodes) => {
         return [ node.ID(), nodes.length ];
     });
+
+    n1.prop("Kitterz", 59);
 }
 
 export default {
