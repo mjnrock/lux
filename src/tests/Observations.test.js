@@ -28,6 +28,20 @@ export function RunTest() {
     n1.unlisten(l1);
     n1.prop("Dog", 19);
     console.log(n1.prop("Dog"));
+
+    n1.prop("Obj", {
+        Cats: {
+            Cat: 1
+        },
+        Dogs: [
+            1, 2
+        ]
+    });
+    n1.listen("prop-change::object", console.log);
+
+    n1.oprop("Obj", "Cats.Cat", 999);
+
+    console.log(n1.oprop("Obj"));
 }
 
 export default {

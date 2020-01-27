@@ -27,7 +27,9 @@ export default class Node {
         //* EVENTS
         this._events = {
             "error": (e) => e,
-            "prop-change": (e) => e
+            "prop-change": (e) => e,
+            "prop-change::object": (e) => e,
+            "prop-change::array": (e) => e
         };
 
         this._listeners = {};       // Listeners receive a *specific* event (i.e. the listened event)
@@ -44,15 +46,10 @@ export default class Node {
         this._registerModule("state");
 
 
-        //* PROGENY        
-        this._children = {};        // Children Nodes for create Node clusters (will un/subscribe to child on .adopt()/.abandon())
-        this._parent = null;        // A convenience reference to the Node's parent
+        //* LINKAGE
+        this._links = {};
 
-        this._registerModule("progeny");
-
-
-        //* SYSTEM
-        this._registerModule("system");     // Functions that facilitate node-to-node interactions
+        this._registerModule("linkage");     // Functions that facilitate node-to-node interactions
     }
 
     //* BASE
@@ -184,7 +181,7 @@ export default class Node {
                     if (watcher instanceof Watcher) {
                         watcher.runCallback(e, watcher);
                     } else {
-                        _this.emit("error", "Listener<" + prop+ "> has no method");
+                        _this.emit("error", `Listener<${ prop }> has no method`);
                     }
                 }
             }
@@ -265,9 +262,11 @@ export default class Node {
     /**
      * @param {Subscription} subscription
      */
-    unsubscribe(subscription) {
-        if(subscription instanceof Subscription) {
-            delete this._subscribers[ subscription.UUID() ];
+    unsubscribe(subscriptionOrUUID) {
+        if(subscriptionOrUUID instanceof Subscription) {
+            delete this._subscribers[ subscriptionOrUUID.UUID() ];
+        } else {
+            delete this._subscribers[ subscriptionOrUUID ];
         }
 
         return false;
@@ -337,18 +336,31 @@ export default class Node {
         return this;
     }
 
-    setProp(prop, value) {
+    setProp(prop, value, typeKey = []) {
         let oldValue = this._state[ prop ];
 
         this._state[ prop ] = value;
 
+        let payload = {
+            prop: prop,
+            previous: oldValue,
+            current: value
+        };
+
+        let [ type, key ] = typeKey,
+            eventType = "prop-change";
+
+        if(type === "a" || type === "A") {
+            eventType = "prop-change::array";
+            payload[ "index" ] = key;
+        } else if(type === "o" || type === "O") {
+            eventType = "prop-change::object";
+            payload[ "key" ] = key;
+        }
+
         this.emit(
-            "prop-change",
-            {
-                prop: prop,
-                previous: oldValue,
-                current: value
-            }
+            eventType,
+            payload
         );
 
         return this;
@@ -388,7 +400,7 @@ export default class Node {
                     arr[ +index ] = value;
                 }
 
-                return this.setProp(prop, arr);
+                return this.setProp(prop, arr, [ "a", index ]);
             } else {
                 return this.getProp(prop)[ +index ];
             }
@@ -417,7 +429,7 @@ export default class Node {
             if(value !== void 0) {
                 schema[ pList[ len - 1 ] ] = value;
 
-                return this.setProp(prop, obj);
+                return this.setProp(prop, obj, [ "o", key ]);
             } else {
                 return schema;
             }
@@ -469,78 +481,39 @@ export default class Node {
     }
 
 
-    //* PROGENY
-    adopt(child) {
-        if(child instanceof Node) {
-            this._children[ child.UUID() ] = child;
-            
-            this.subscribe(child);
-
-            child.setParent(this);
+    //*  LINKAGE
+    addLink(node) {
+        if(node instanceof Node) {
+            this._links[ node.UUID() ] = node;
         }
 
         return this;
     }
-    abandon(childOrUUID) {
-        if(childOrUUID instanceof Node) {
-            delete this._children[ child.UUID() ];
-            
-            this.unsubscribe(childOrUUID);
-            
-            child.setParent(null);
-        } else if(typeof childOrUUID === "string" || childOrUUID instanceof String) {
-            delete this._children[ childOrUUID ];
-            
-            this.unsubscribe(childOrUUID);
+    removeLink(nodeOrUUID) {
+        if(nodeOrUUID instanceof Node) {
+            delete this._links[ nodeOrUUID.UUID() ];
+
+            this.unsubscribe(nodeOrUUID.UUID());
+        } else {
+            delete this._links[ nodeOrUUID ];
+
+            this.unsubscribe(nodeOrUUID);
         }
 
         return this;
     }
 
-    getChild(uuid) {
-        return this._children[ uuid ];
-    }
-    setChild(uuid, child) {
-        this._children[ uuid ] = child;
-
-        return this;
-    }
-
-    getParent() {
-        return this._parent;
-    }
-    setParent(value) {
-        this._parent = value;
-
-        return this;
-    }
-
-    child(uuid, child) {
-        if(child === void 0) {
-            return this.getChild(uuid);
-        }
-        
-        return this.setChild(uuid, child);
-    }
-    parent(value) {
-        if(value === void 0) {
-            return this.getParent();
-        }
-        
-        return this.setParent(value);
-    }
-
-
-    //*  SYSTEM
     link(...nodes) {
         for(let node of nodes) {
             if(node instanceof Node) {
+                this.addLink(node);
                 this.subscribe(node);
             }
         }
 
         return this;
     }
+
     //TODO .copy(qty = 1)  // Make a copy of the node
     //TODO .replicate(node) // Copy this._state into @node._state
     //TODO ...etc of similar convenience methods

@@ -44,9 +44,9 @@ let debug = (...args) => {
     return arr;
 };
 // console.log = debug;
-// console.log(" ----- TESTS: Observations -----");
-// Lux.Tests.Observations.RunTest();
-// console.log(" ----- END: Observations -----");
+console.log(" ----- TESTS: Observations -----");
+Lux.Tests.Observations.RunTest();
+console.log(" ----- END: Observations -----");
 
 // console.log(" ----- TESTS: Fetch -----");
 // Lux.Tests.Fetch.RunTest();
@@ -56,9 +56,9 @@ let debug = (...args) => {
 // Lux.Tests.WebSocket.RunTest();
 // console.log(" ----- END: DataConnectors -----");
 
-console.log(" ----- TESTS: Logic -----");
-Lux.Tests.Logic.RunTest();
-console.log(" ----- END: Logic -----");
+// console.log(" ----- TESTS: Logic -----");
+// Lux.Tests.Logic.RunTest();
+// console.log(" ----- END: Logic -----");
 
 // console.log(" ----- TESTS: DataConnectors -----");
 // let api = new Lux.Node.DataConnector.WebAPI("localhost", port);
