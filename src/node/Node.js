@@ -387,25 +387,32 @@ export default class Node {
             current: value
         };
 
-        let [ type, key, oldValueSpecialCase, newValueSpecialCase ] = typeKey,
-            eventType = "prop-change";
-
-        if(type === "a" || type === "A") {
-            eventType = "prop-change::array";
-            payload[ "selector" ] = key;
-            payload[ "previous" ] = oldValueSpecialCase;
-            payload[ "current" ] = newValueSpecialCase;
-        } else if(type === "o" || type === "O") {
-            eventType = "prop-change::object";
-            payload[ "selector" ] = key;
-            payload[ "previous" ] = oldValueSpecialCase;
-            payload[ "current" ] = newValueSpecialCase;
-        }
+        let [ type, key, oldValueSpecialCase, newValueSpecialCase ] = typeKey;
 
         this.emit(
-            eventType,
+            "prop-change",
             payload
         );
+
+        if(type === "a" || type === "A") {
+            payload[ "selector" ] = key;
+            payload[ "previous" ] = oldValueSpecialCase;
+            payload[ "current" ] = newValueSpecialCase;
+
+            this.emit(
+                "prop-change::array",
+                payload
+            );
+        } else if(type === "o" || type === "O") {
+            payload[ "selector" ] = key;
+            payload[ "previous" ] = oldValueSpecialCase;
+            payload[ "current" ] = newValueSpecialCase;
+
+            this.emit(
+                "prop-change::object",
+                payload
+            );
+        }
 
         return this;
     }

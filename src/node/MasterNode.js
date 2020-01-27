@@ -1,5 +1,6 @@
 import Node from "./Node";
 import Reaction from "./Reaction";
+import Event from "./Event";
 
 export default class MasterNode extends Node {
     constructor() {
@@ -25,7 +26,8 @@ export default class MasterNode extends Node {
             "command",
             "spy",
             "action",
-            "reaction"
+            "reaction",
+            "substate-change"
         );
     }
 
@@ -283,8 +285,17 @@ export default class MasterNode extends Node {
             if(reaction instanceof Reaction) {
                 let result = reaction.run(...args);
 
-                if(reaction === true) {
+                if(result === true) {
                     this.emit("reaction", name);
+
+                    if(name === "SaveState") {
+                        if(args[ 0 ] instanceof Event) {
+                            let event = args[ 0 ],
+                                subName = this.getNodeName(event.getEmitter());
+
+                            this.emit("substate-change", this.getSubState(subName));
+                        }
+                    }
                 }
 
                 return result;
@@ -299,20 +310,18 @@ export default class MasterNode extends Node {
         if(!this.hasReaction("SaveState") || !this.hasProp("SubState")) {
             this.prop("SubState", {});
 
-            this.reaction("SaveState", Reaction.createEventReaction(
-                "prop-change",
-                e => {
-                    let name = this.getNodeName(e.getEmitter());
+            let reaction = e => {
+                let name = this.getNodeName(e.getEmitter());
 
-                    if(name) {
-                        this.oprop(
-                            "SubState",
-                            name,
-                            Object.freeze(e.getEmitter()._state)
-                        );
-                    }
+                if(name) {
+                    this.oprop(
+                        "SubState",
+                        name,
+                        Object.freeze(e.getEmitter()._state)
+                    );
                 }
-            ));
+            };
+            this.reaction("SaveState", Reaction.createEventReaction("prop-change", reaction));
         }
 
         return this;
