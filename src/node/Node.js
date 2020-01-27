@@ -212,8 +212,8 @@ export default class Node {
                 }
             }
 
-            if(event === "prop-change" && e instanceof Event) {
-                let { prop } = e.getPayload();  // In "prop-change" payload object, { prop, previous, current } exist
+            if((event === "prop-change" || event === "prop-change::object" || event === "prop-change::array") && e instanceof Event) {
+                let { prop } = e.getPayload(0);  // In "prop-change" payload object, { prop, previous, current } exist
                 
                 for (let i in _this._watchers[ prop ] ) {
                     let watcher = _this._watchers[ prop ][ i ];
@@ -387,15 +387,19 @@ export default class Node {
             current: value
         };
 
-        let [ type, key ] = typeKey,
+        let [ type, key, oldValueSpecialCase, newValueSpecialCase ] = typeKey,
             eventType = "prop-change";
 
         if(type === "a" || type === "A") {
             eventType = "prop-change::array";
-            payload[ "index" ] = key;
+            payload[ "selector" ] = key;
+            payload[ "previous" ] = oldValueSpecialCase;
+            payload[ "current" ] = newValueSpecialCase;
         } else if(type === "o" || type === "O") {
             eventType = "prop-change::object";
-            payload[ "key" ] = key;
+            payload[ "selector" ] = key;
+            payload[ "previous" ] = oldValueSpecialCase;
+            payload[ "current" ] = newValueSpecialCase;
         }
 
         this.emit(
@@ -432,15 +436,18 @@ export default class Node {
     aprop(prop, index, value) {
         if(index !== void 0) {
             if(value !== void 0) {
-                let arr = this.getProp(prop);
+                let arr = this.getProp(prop),
+                    oldValue;
 
                 if(index === -1) {
                     arr.push(value);
                 } else {
+                    oldValue = arr[ +index ] ;
+
                     arr[ +index ] = value;
                 }
 
-                return this.setProp(prop, arr, [ "a", index ]);
+                return this.setProp(prop, arr, [ "a", index, oldValue, value ]);
             } else {
                 return this.getProp(prop)[ +index ];
             }
@@ -467,9 +474,10 @@ export default class Node {
             }
 
             if(value !== void 0) {
+                let oldValue = schema[ pList[ len - 1 ] ];
                 schema[ pList[ len - 1 ] ] = value;
 
-                return this.setProp(prop, obj, [ "o", key ]);
+                return this.setProp(prop, obj, [ "o", key, oldValue, value ]);
             } else {
                 return schema;
             }

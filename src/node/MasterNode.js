@@ -13,7 +13,8 @@ export default class MasterNode extends Node {
             "dominate",
             "reject",
             "direct",
-            "command"
+            "command",
+            "spy"
         )
     }
 
@@ -124,5 +125,24 @@ export default class MasterNode extends Node {
         this.emit("command", results);
 
         return this;
+    }
+
+    /**
+     * An elevated .watch to spy on subordinates' props
+     */
+    spy(name, prop, callback) {
+        let node = this.getSubordinate(name);
+
+        if(node instanceof Node) {
+            node.watch(prop, e => {
+                this.emit("spy", node, e);
+                
+                callback(e);
+            });
+
+            return true;
+        }
+
+        return false;
     }
 };
