@@ -71,14 +71,14 @@ export default class Node {
         return this._modules.includes(code);
     }
 
-    ID(id = null) {
-        if(id !== null && id !== void 0) {
-            this._id = id;
-
-            return this;
+    ID(id) {
+        if(id === void 0) {
+            return this._id;
         }
+        
+        this._id = id;
 
-        return this._id;
+        return this;
     }
 
     UUID(uuid = null) {
@@ -577,6 +577,7 @@ export default class Node {
             if(node instanceof Node) {
                 this.addLink(node);
                 this.subscribe(node);
+                node.subscribe(this);
             }
         }
 
@@ -587,6 +588,7 @@ export default class Node {
             if(node instanceof Node) {
                 this.removeLink(node);
                 this.unsubscribe(node);
+                node.unsubscribe(this);
             }
         }
 

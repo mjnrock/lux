@@ -44,9 +44,9 @@ let debug = (...args) => {
     return arr;
 };
 // console.log = debug;
-console.log(" ----- TESTS: Observations -----");
-Lux.Tests.Observations.RunTest();
-console.log(" ----- END: Observations -----");
+console.log(" ----- TESTS: MasterNode -----");
+Lux.Tests.MasterNode.RunTest();
+console.log(" ----- END: MasterNode -----");
 
 // console.log(" ----- TESTS: Fetch -----");
 // Lux.Tests.Fetch.RunTest();

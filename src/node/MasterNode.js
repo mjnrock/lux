@@ -12,7 +12,8 @@ export default class MasterNode extends Node {
         this.addEvent(
             "dominate",
             "reject",
-            "manipulated"
+            "direct",
+            "command"
         )
     }
 
@@ -32,7 +33,7 @@ export default class MasterNode extends Node {
 
     dominate(name, node) {
         this.setSubordinate(name, node);
-        this.link(node);
+        node.subscribe(this);
 
         this.emit("dominate", name, node);
 
@@ -40,7 +41,7 @@ export default class MasterNode extends Node {
     }
     reject(name) {
         this.removeSubordinate(name, node);
-        this.unlink(node);
+        node.unsubscribe(this);
 
         this.emit("reject", name);
 
@@ -65,14 +66,45 @@ export default class MasterNode extends Node {
         return nodes;
     }
 
-    manipulate(name, fn) {
+    /**
+     * result = @fn(node, @name)
+     * 
+     * @param {string} name 
+     * @param {function} fn
+     */
+    direct(name, fn) {
         let node = this.getSubordinate(name);
 
         if(node instanceof Node && typeof fn === "function") {
-            let result = fn(node, name, this);
+            let result = fn(node, name);
 
-            this.emit("manipulated", result, node, name);
+            this.emit("direct", result, node.UUID(), name);
         }
+
+        return this;
+    }
+    /**
+     * result = @fn(node, nodes)
+     * 
+     * @param {function} fn 
+     */
+    command(fn) {
+        if(typeof fn !== "function") {
+            return false;
+        }
+
+        let results = {},
+            nodes = Object.values(this._subordinates);
+
+        for(let node of nodes) {
+            if(node instanceof Node) {
+                let result = fn(node, nodes);
+
+                results[ node.UUID() ] = result;
+            }
+        }
+    
+        this.emit("command", results);
 
         return this;
     }

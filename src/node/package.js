@@ -3,6 +3,7 @@ import Subscription from "./Subscription";
 import Listener from "./Listener";
 import Watcher from "./Watcher";
 import Node from "./Node";
+import MasterNode from "./MasterNode";
 
 import Logic from "./logic/package";
 import DataConnector from "./data-connector/package";
@@ -15,6 +16,7 @@ export default {
     Listener,
     Watcher,
     Node,
+    MasterNode,
 
     Logic,
     DataConnector,
