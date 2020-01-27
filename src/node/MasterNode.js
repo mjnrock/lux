@@ -281,15 +281,15 @@ export default class MasterNode extends Node {
             let reaction = this.getReaction(name);
 
             if(reaction instanceof Reaction) {
-                reaction.run(...args);
+                let result = reaction.run(...args);
 
                 if(reaction === true) {
                     this.emit("reaction", name);
                 }
+
+                return result;
             }
         }
-
-        return this;
     }
 
     flagOnIsReactionary() {
@@ -329,11 +329,11 @@ export default class MasterNode extends Node {
 
     respond(e) {
         if(this.isReactionary()) {
-            let reactions = Object.values(this._reactions),
+            let keys = Object.keys(this._reactions),
                 responses = [];
 
-            for(let reaction of reactions) {
-                let response = reaction.run(e);
+            for(let key of keys) {
+                let response = this.react(key, e);
 
                 if(response === true) {
                     responses.push(e);
