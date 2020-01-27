@@ -1,4 +1,5 @@
 import Node from "./Node";
+import Reaction from "./Reaction";
 
 export default class MasterNode extends Node {
     constructor() {
@@ -9,20 +10,33 @@ export default class MasterNode extends Node {
 
         this._registerModule("hive");
 
+
+        //* BEHAVIOR
+        this._isReactionary = false;
+        this._actions = {};
+        this._reactions = {};
+
+        this._registerModule("behavior");
+
         this.addEvent(
             "dominate",
             "reject",
             "direct",
             "command",
-            "spy"
-        )
+            "spy",
+            "action",
+            "reaction"
+        );
     }
 
+    //* HIVE
     getSubordinate(name) {
         return this._subordinates[ name ];
     }
     setSubordinate(name, node) {
-        this._subordinates[ name ] = node;
+        if(name !== null && name !== void 0 && node !== null && node !== void 0 && arguments.length === 2) {
+            this._subordinates[ name ] = node;
+        }
 
         return this;
     }
@@ -33,24 +47,28 @@ export default class MasterNode extends Node {
     }
 
     dominate(name, node) {
-        this.setSubordinate(name, node);
-        node.subscribe(this);
+        if(name !== null && name !== void 0 && node instanceof Node && arguments.length === 2) {
+            this.setSubordinate(name, node);
+            node.subscribe(this);
 
-        this.emit("dominate", name, node);
+            this.emit("dominate", name, node);
+        }
 
         return this;
     }
     reject(name) {
-        this.removeSubordinate(name, node);
-        node.unsubscribe(this);
+        if(name !== null && name !== void 0 && arguments.length === 2) {
+            this.removeSubordinate(name, node);
+            node.unsubscribe(this);
 
-        this.emit("reject", name);
+            this.emit("reject", name);
+        }
 
         return this;
     }
 
     node(name, node) {
-        if(node === void 0) {
+        if(name !== null && name !== void 0 && arguments.length === 1) {
             return this.getSubordinate(name);
         }
 
@@ -127,8 +145,10 @@ export default class MasterNode extends Node {
         return this;
     }
 
+
     /**
-     * An elevated .watch to spy on subordinates' props
+     * An elevated .watch to spy on subordinates' state
+     * @returns {bool} Allows determinant of success
      */
     spy(name, prop, callback) {
         let node = this.getSubordinate(name);
@@ -144,5 +164,199 @@ export default class MasterNode extends Node {
         }
 
         return false;
+    }
+    /**
+     * An elevated .prop for the subordinate
+     * @param {string} name 
+     * @param {string} prop 
+     * @param {any} value 
+     * @returns {<prop result>|false} Allows determinant of success
+     */
+    sprop(name, prop, value) {
+        let node = this.getSubordinate(name);
+
+        if(node instanceof Node) {
+            return node.prop(prop, value);
+        }
+
+        return false;
+    }
+    /**
+     * An elevated .aprop for the subordinate
+     * @param {string} name 
+     * @param {string} prop 
+     * @param {string} key 
+     * @param {any} value 
+     * @returns {<prop result>|false} Allows determinant of success
+     */
+    saprop(name, prop, key, value) {
+        let node = this.getSubordinate(name);
+
+        if(node instanceof Node) {
+            return node.aprop(prop, key, value);
+        }
+
+        return false;
+    }
+    /**
+     * An elevated .oprop for the subordinate
+     * @param {string} name 
+     * @param {string} prop 
+     * @param {string} key 
+     * @param {any} value 
+     * @returns {<prop result>|false} Allows determinant of success
+     */
+    soprop(name, prop, key, value) {
+        let node = this.getSubordinate(name);
+
+        if(node instanceof Node) {
+            return node.oprop(prop, key, value);
+        }
+
+        return false;
+    }
+
+
+    //* BEHAVIOR
+    hasAction(name) {
+        return this._actions[ name ] !== void 0;
+    }
+    getAction(name) {
+        return this._actions[ name ];
+    }
+    setAction(name, fn) {
+        if(name !== null && name !== void 0 && typeof fn === "function" && arguments.length === 2) {
+            this._actions[ name ] = fn;
+        }
+    }
+    action(name, fn) {
+        if(name !== null && name !== void 0 && arguments.length === 1) {
+            return this.getAction(name);
+        }
+
+        return this.setAction(name, fn);
+    }
+
+    do(name, ...args) {
+        if(name !== null && name !== void 0) {
+            let action = this.getAction(name);
+
+            if(typeof action === "function") {
+                let result = action(...args);
+
+                this.emit("action", name, result);
+            }
+        }
+
+        return this;
+    }
+
+    hasReaction(name) {
+        return this._reactions[ name ] instanceof Reaction;
+    }
+    getReaction(name) {
+        return this._reactions[ name ];
+    }
+    setReaction(name, fn, cond = true) {
+        if(name !== null && name !== void 0 && typeof cond === "function" && typeof fn === "function" && arguments.length === 3) {
+            this._reactions[ name ] = new Reaction(name, fn, cond);
+        }
+        
+        if(fn instanceof Reaction) {
+            this._reactions[ name ] = fn;
+        }
+
+        return this;
+    }
+    reaction(name, fn, cond) {
+        if(name !== null && name !== void 0 && arguments.length === 1) {
+            return this.getReaction(name);
+        }
+
+        return this.setReaction(name, fn, cond);
+    }
+
+    react(name, ...args) {
+        if(name !== null && name !== void 0) {
+            let reaction = this.getReaction(name);
+
+            if(reaction instanceof Reaction) {
+                reaction.run(...args);
+
+                if(reaction === true) {
+                    this.emit("reaction", name);
+                }
+            }
+        }
+
+        return this;
+    }
+
+    flagOnIsReactionary() {
+        this._isReactionary = true;
+        this.setNext(this.respond);
+        
+        if(!this.hasReaction("SaveState") || !this.hasProp("SubState")) {
+            this.prop("SubState", {});
+
+            this.reaction("SaveState", Reaction.createEventReaction(
+                "prop-change",
+                e => {
+                    let name = this.getNodeName(e.getEmitter());
+
+                    if(name) {
+                        this.oprop(
+                            "SubState",
+                            name,
+                            Object.freeze(e.getEmitter()._state)
+                        );
+                    }
+                }
+            ));
+        }
+
+        return this;
+    }
+    flagOffIsReactionary() {
+        this._isReactionary = false;
+        this.setNext(null);
+
+        return this;
+    }
+    isReactionary() {
+        return this._isReactionary;
+    }
+
+    respond(e) {
+        if(this.isReactionary()) {
+            let reactions = Object.values(this._reactions),
+                responses = [];
+
+            console.log(reactions)
+
+            for(let reaction of reactions) {
+                let response = reaction.run(e);
+
+                if(response === true) {
+                    responses.push(e);
+                }
+            }
+
+            return responses;
+        }
+
+        return false;
+    }
+
+    /**
+     * @name supports dot-notation for deeper dives
+     * @param {string|selector} name 
+     */
+    getSubState(name) {
+        if(name === void 0) {
+            return this.prop("SubState");
+        }
+
+        return this.oprop("SubState", name);
     }
 };

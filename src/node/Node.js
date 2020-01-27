@@ -412,6 +412,9 @@ export default class Node {
     getProp(prop) {
         return this._state[ prop ];
     }
+    hasProp(prop) {
+        return this._state[ prop ] !== void 0;
+    }
 
     propIsEmpty(prop) {
         return this._state[ prop ] === null || this._state[ prop ] === void 0;
@@ -479,7 +482,7 @@ export default class Node {
 
                 return this.setProp(prop, obj, [ "o", key, oldValue, value ]);
             } else {
-                return schema;
+                return schema[ pList[ len - 1 ] ];
             }
         }
             
