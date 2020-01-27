@@ -45,7 +45,7 @@ export function RunTest() {
     
     let mn1 = new Node.MasterNode();
 
-    mn1.listen("substate-change", console.log)
+    mn1.listen("substate-change", console.log);
 
     mn1.flagOnIsReactionary();
     mn1.listen("dominate", e => console.log(
