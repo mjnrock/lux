@@ -13,7 +13,7 @@ import Watcher from "./Watcher";
 export default class Node {
     constructor() {
         //* BASE
-        this._id = null;                // A generic id for any purpose
+        this._ids = {};                // A generic id for any purpose, attached to a category (e.g. [ cat ] = id)
         this._uuid = GenerateUUID();    // A UUID for this Node
         this._modules = [];             // A meta-tracker for "loaded modules"
 
@@ -26,10 +26,11 @@ export default class Node {
 
         //* EVENTS
         this._events = {
-            "error": (e) => e,
-            "prop-change": (e) => e,
-            "prop-change::object": (e) => e,
-            "prop-change::array": (e) => e
+            "error": e => e,
+            "meta-change": e => e,
+            "prop-change": e => e,
+            "prop-change::object": e => e,
+            "prop-change::array": e => e
         };
 
         this._listeners = {};       // Listeners receive a *specific* event (i.e. the listened event)
@@ -71,12 +72,30 @@ export default class Node {
         return this._modules.includes(code);
     }
 
-    ID(id) {
-        if(id === void 0) {
-            return this._id;
+    getIDs() {
+        return this._ids;
+    }
+    getID(cat) {
+        return this._ids[ cat ];
+    }
+    setID(cat, id) {
+        if(cat !== null && cat !== void 0 && id !== null && id !== void 0 && arguments.length === 2) {
+            this._ids[ cat ] = id;
         }
-        
-        this._id = id;
+
+        return this;
+    }
+
+    ID(cat, id) {
+        if(cat === void 0 || cat === null) {
+            return this.getIDs();
+        }
+
+        if(id === void 0) {
+            return this.getID(cat);
+        }
+
+        this.setID(cat, id);
 
         return this;
     }
@@ -101,13 +120,26 @@ export default class Node {
 
 
     //* META
-    setMeta(meta = {}) {
-        this._meta = meta;
+    setMeta(prop, value) {
+        let oldValue = this._meta[ prop ];
+
+        this._meta[ prop ] = value;
+
+        let payload = {
+            prop: prop,
+            previous: oldValue,
+            current: value
+        };
+
+        this.emit(
+            "meta-change",
+            payload
+        );
 
         return this;
     }
-    getMeta() {
-        return this._meta;
+    getMeta(prop) {
+        return this._meta[ prop ];
     }
     meta(prop, value) {
         if(value === void 0) {
@@ -572,10 +604,42 @@ export default class Node {
         return this;
     }
 
+    /**
+     * Creates a uni-directional link and subscription
+     */
     link(...nodes) {
         for(let node of nodes) {
             if(node instanceof Node) {
                 this.addLink(node);
+                node.subscribe(this);
+            }
+        }
+
+        return this;
+    }
+    /**
+     * Destroys links and subscriptions uni-directionally
+     */
+    unlink(...nodes) {
+        for(let node of nodes) {
+            if(node instanceof Node) {
+                this.removeLink(node);
+                node.unsubscribe(this);
+            }
+        }
+
+        return this;
+    }    
+    /**
+     * Creates a bi-directional link and subscription
+     * NOTE: This is not subscription safe and could result in multiple subscriptions
+     */
+    bilink(...nodes) {
+        for(let node of nodes) {
+            if(node instanceof Node) {
+                this.addLink(node);
+                node.addLink(this);
+
                 this.subscribe(node);
                 node.subscribe(this);
             }
@@ -583,10 +647,15 @@ export default class Node {
 
         return this;
     }
-    unlink(...nodes) {
+    /**
+     * Destroys links and subscriptions bi-directionally
+     */
+    unbilink(...nodes) {
         for(let node of nodes) {
             if(node instanceof Node) {
                 this.removeLink(node);
+                node.removeLink(this);
+
                 this.unsubscribe(node);
                 node.unsubscribe(this);
             }

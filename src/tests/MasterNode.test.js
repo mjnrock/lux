@@ -19,10 +19,15 @@ export function RunTest() {
         return [ node.ID(), name ];
     });
     mn1.command((node, nodes) => {
-        return [ node.ID(), nodes.length ];
+        return [ node.ID(mn1.UUID()), nodes.length ];
     });
 
     n1.prop("Kitterz", 59);
+
+    console.log(mn1.getNodeID(n1));
+    console.log(mn1.getNodeID(n1.UUID()));
+    console.log(mn1.getNodeID(n2));
+    console.log(mn1.getNodeID(n2.UUID()));
 }
 
 export default {

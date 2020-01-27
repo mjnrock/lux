@@ -22,6 +22,7 @@ export default class MasterNode extends Node {
     }
     setSubordinate(name, node) {
         this._subordinates[ name ] = node;
+        node.ID(this.UUID(), name);
 
         return this;
     }
@@ -66,6 +67,24 @@ export default class MasterNode extends Node {
         return nodes;
     }
 
+    getNodeID(input) {
+        let node;
+
+        if(input instanceof Node) {
+            node = input;
+        } else if(typeof input === "string" || input instanceof String) {
+            let pNode = Object.values(this._subordinates).filter(n => n.UUID() === input);
+
+            if(Array.isArray(pNode) && pNode.length === 1) {
+                node = pNode[ 0 ];
+            }
+        } else {
+            return false;
+        }
+
+        return node.getID(this.UUID());
+    }
+
     /**
      * result = @fn(node, @name)
      * 
@@ -78,7 +97,7 @@ export default class MasterNode extends Node {
         if(node instanceof Node && typeof fn === "function") {
             let result = fn(node, name);
 
-            this.emit("direct", result, node.UUID(), name);
+            this.emit("direct", name, result, node.UUID());
         }
 
         return this;
@@ -100,7 +119,7 @@ export default class MasterNode extends Node {
             if(node instanceof Node) {
                 let result = fn(node, nodes);
 
-                results[ node.UUID() ] = result;
+                results[ node.ID(this.UUID()) ] = result;
             }
         }
     
