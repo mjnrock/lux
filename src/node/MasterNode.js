@@ -66,12 +66,12 @@ export default class MasterNode extends Node {
         return nodes;
     }
 
-    getNodeName(input) {
+    getNodeName(nodeOrUUID) {
         let nodes = Object.entries(this._subordinates),
-            value = input;
+            value = nodeOrUUID;
 
-        if(input instanceof Node) {
-            value = input.UUID();
+        if(nodeOrUUID instanceof Node) {
+            value = nodeOrUUID.UUID();
         }
 
         let [ pNode ] = nodes.filter(([ k, v ]) => v.UUID() === value);
