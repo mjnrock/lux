@@ -13,7 +13,8 @@ import Watcher from "./Watcher";
 export default class Node {
     constructor() {
         //* BASE
-        this._ids = {};                // A generic id for any purpose, attached to a category (e.g. [ cat ] = id)
+        this._ids = {};                // A generic id container for any purpose, attached to a category (e.g. [ category ] = id) (i.e. MasterNode entries)
+
         this._uuid = GenerateUUID();    // A UUID for this Node
         this._modules = [];             // A meta-tracker for "loaded modules"
 

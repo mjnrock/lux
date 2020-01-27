@@ -22,7 +22,6 @@ export default class MasterNode extends Node {
     }
     setSubordinate(name, node) {
         this._subordinates[ name ] = node;
-        node.ID(this.UUID(), name);
 
         return this;
     }
@@ -67,22 +66,21 @@ export default class MasterNode extends Node {
         return nodes;
     }
 
-    getNodeID(input) {
-        let node;
+    getNodeName(input) {
+        let nodes = Object.entries(this._subordinates),
+            value = input;
 
         if(input instanceof Node) {
-            node = input;
-        } else if(typeof input === "string" || input instanceof String) {
-            let pNode = Object.values(this._subordinates).filter(n => n.UUID() === input);
-
-            if(Array.isArray(pNode) && pNode.length === 1) {
-                node = pNode[ 0 ];
-            }
-        } else {
-            return false;
+            value = input.UUID();
         }
 
-        return node.getID(this.UUID());
+        let [ pNode ] = nodes.filter(([ k, v ]) => v.UUID() === value);
+
+        if(Array.isArray(pNode) && pNode.length === 2) {
+            return pNode[ 0 ];
+        }
+
+        return false;
     }
 
     /**
@@ -95,7 +93,7 @@ export default class MasterNode extends Node {
         let node = this.getSubordinate(name);
 
         if(node instanceof Node && typeof fn === "function") {
-            let result = fn(node, name);
+            let result = fn(name, node);
 
             this.emit("direct", name, result, node.UUID());
         }
@@ -113,13 +111,13 @@ export default class MasterNode extends Node {
         }
 
         let results = {},
-            nodes = Object.values(this._subordinates);
+            entries = Object.entries(this._subordinates);
 
-        for(let node of nodes) {
+        for(let [ name, node ] of entries) {
             if(node instanceof Node) {
-                let result = fn(node, nodes);
+                let result = fn(name, node);
 
-                results[ node.ID(this.UUID()) ] = result;
+                results[ name ] = [ result, node.UUID() ];
             }
         }
     
