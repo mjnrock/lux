@@ -332,8 +332,6 @@ export default class MasterNode extends Node {
             let reactions = Object.values(this._reactions),
                 responses = [];
 
-            console.log(reactions)
-
             for(let reaction of reactions) {
                 let response = reaction.run(e);
 
