@@ -135,9 +135,9 @@ export default class MasterNode extends Node {
 
         if(node instanceof Node) {
             node.watch(prop, e => {
-                this.emit("spy", node, e);
-                
-                callback(e);
+                this.emit("spy", name, e);
+
+                callback(name, e);
             });
 
             return true;
