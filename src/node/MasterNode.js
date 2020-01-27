@@ -4,72 +4,76 @@ export default class MasterNode extends Node {
     constructor() {
         super();
 
-        //* LINEAGE        
-        this._children = {};        // Children Nodes for create Node clusters (will un/subscribe to child on .adopt()/.abandon())
-        this._parent = null;        // A convenience reference to the Node's parent
+        //* HIVE
+        this._subordinates = {};
 
-        this._registerModule("lineage");
+        this._registerModule("hive");
+
+        this.addEvent(
+            "dominate",
+            "reject",
+            "manipulated"
+        )
     }
 
-
-    //* LINEAGE
-    adopt(child) {
-        if(child instanceof Node) {
-            this._children[ child.UUID() ] = child;
-            
-            this.subscribe(child);
-
-            child.setParent(this);
-        }
+    getSubordinate(name) {
+        return this._subordinates[ name ];
+    }
+    setSubordinate(name, node) {
+        this._subordinates[ name ] = node;
 
         return this;
     }
-    abandon(childOrUUID) {
-        if(childOrUUID instanceof Node) {
-            delete this._children[ child.UUID() ];
-            
-            this.unsubscribe(childOrUUID);
-            
-            child.setParent(null);
-        } else if(typeof childOrUUID === "string" || childOrUUID instanceof String) {
-            delete this._children[ childOrUUID ];
-            
-            this.unsubscribe(childOrUUID);
-        }
+    removeSubordinate(name) {
+        delete this._subordinates[ name ];
 
         return this;
     }
 
-    getChild(uuid) {
-        return this._children[ uuid ];
+    dominate(name, node) {
+        this.setSubordinate(name, node);
+        this.link(node);
+
+        this.emit("dominate", name, node);
+
+        return this;
     }
-    setChild(uuid, child) {
-        this._children[ uuid ] = child;
+    reject(name) {
+        this.removeSubordinate(name, node);
+        this.unlink(node);
+
+        this.emit("reject", name);
 
         return this;
     }
 
-    getParent() {
-        return this._parent;
+    node(name, node) {
+        if(node === void 0) {
+            return this.getSubordinate(name);
+        }
+
+        return this.dominate(name, node);
     }
-    setParent(value) {
-        this._parent = value;
+    nodes(...names) {
+        let nodes = [];
+        for(let name of names) {
+            let node = this.node(name);
+
+            nodes.push(node);
+        }
+
+        return nodes;
+    }
+
+    manipulate(name, fn) {
+        let node = this.getSubordinate(name);
+
+        if(node instanceof Node && typeof fn === "function") {
+            let result = fn(node, name, this);
+
+            this.emit("manipulated", result, node, name);
+        }
 
         return this;
-    }
-
-    child(uuid, child) {
-        if(child === void 0) {
-            return this.getChild(uuid);
-        }
-        
-        return this.setChild(uuid, child);
-    }
-    parent(value) {
-        if(value === void 0) {
-            return this.getParent();
-        }
-        
-        return this.setParent(value);
     }
 };
