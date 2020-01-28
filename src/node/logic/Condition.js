@@ -210,7 +210,18 @@ class Condition extends Node {
         return false;
     }
 
-    Evaluate()
+    Evaluate() {
+        if(attribute instanceof Attribute) {
+            let [ fn ] = this.prop("args"),
+                value = attribute.Value();
+
+            if(typeof fn === "function") {
+                return fn(value);
+            }
+        }
+
+        return false;
+    }
 };
 
 export default Condition;
