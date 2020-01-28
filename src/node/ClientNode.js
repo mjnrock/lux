@@ -58,12 +58,16 @@ export default class ClientNode extends MasterNode {
         }
     }
 
-    async fetch(name, url, params = {}, reducer = null) {
+    async fetch(endpoint, params = {}, { name = "WebAPI", reducer = null } = {}) {
         let webApi = this.getSubordinate(name);
 
         if(webApi) {
-            let data = await webApi.JSON(url, params);
+            let data = await webApi.JSON(endpoint, params);
 
+            if(typeof reducer === "function") {
+                data = reducer(reducer);
+            }
+            
             this.processSubStateChange(name, data);
         }
     }
