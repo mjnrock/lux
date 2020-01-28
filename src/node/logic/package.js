@@ -13,6 +13,7 @@ export default {
     Attribute,
     TextAttribute,      //! Untested
     NumberAttribute,
+    FunctionAttribute,  //! Untested
 
     Condition,
     Proposition

@@ -9,7 +9,6 @@ export default class WebAPI extends Node {
         this.prop("Host", host);
         this.prop("Port", port);
         this.prop("Protocol", isSSL ? `https:` : `http:`);
-        this.prop("WebSocket", null);
 
         this.addEvent(
             "request",
@@ -33,7 +32,7 @@ export default class WebAPI extends Node {
         return `${ url }${ p }`;
     }
 
-    async GetJson(endpoint, params = {}) {
+    async JSON(endpoint, params = {}) {
         let url = this.getUrl(endpoint, params);
         
         this.emit("request", { endpoint, params, url });

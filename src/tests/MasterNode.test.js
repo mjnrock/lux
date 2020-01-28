@@ -12,8 +12,8 @@ export function RunTest() {
     // mn1.subscribe(n0);
     
     // mn1.setNext(e => console.log(e.getEmitter().UUID(), e.getType(), e.getPayload(0)));
-    // mn1.dominate("Test", n1);
-    // mn1.dominate("Cat", n2);
+    // mn1.load("Test", n1);
+    // mn1.load("Cat", n2);
 
     // mn1.direct("Cat", (name, node) => {
     //     return [ node.ID(), name ];
@@ -48,12 +48,12 @@ export function RunTest() {
     mn1.listen("substate-change", console.log);
 
     mn1.flagOnIsReactionary();
-    mn1.listen("dominate", e => console.log(
+    mn1.listen("load", e => console.log(
         "DOMINATED"
     ));
 
-    mn1.dominate("Cat", n1);
-    mn1.dominate("Dog", n2);
+    mn1.load("Cat", n1);
+    mn1.load("Dog", n2);
 
     n1.prop("Meow", {
         "submeow": "kitties!",

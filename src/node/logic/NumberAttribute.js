@@ -1,9 +1,10 @@
 import Attribute from "./Attribute";
 
 export default class NumberAttribute extends Attribute {
-    constructor(value = 0, min = null, max = null) {
+    constructor(value = 0, { min = null, max = null, name = null } = {}) {
         super(value);
 
+        this.prop("name", name);
         this.prop("min", min);
         this.prop("max", max);
 
@@ -24,13 +25,21 @@ export default class NumberAttribute extends Attribute {
         return this;
     }
 
+    Name(name) {
+        if(name === void 0) {
+            return this.prop("name");
+        }
+
+        return this.prop("name", name);
+    }
+
     //  The clamping is mediated by this.Change()
     Value(value) {
         if(value === void 0) {
             return this.prop("value");
         }
 
-        return this.Change(value, this.prop("value"));
+        return this.change(value, this.prop("value"));
     }
     Min(min) {
         if(min === void 0) {
@@ -57,11 +66,11 @@ export default class NumberAttribute extends Attribute {
         return this;
     }
 
-    ToFixed(precision = 2) {
+    toFixed(precision = 2) {
         return this.Value().toFixed(precision);
     }
 
-    Add(...values) {
+    add(...values) {
         let val = this.Value();
         for(let value of values) {
             if(value instanceof NumberAttribute) {
@@ -73,7 +82,7 @@ export default class NumberAttribute extends Attribute {
 
         return this.Value(val);
     }
-    Subtract(...values) {
+    subtract(...values) {
         let val = this.Value();
         for(let value of values) {
             if(value instanceof NumberAttribute) {
@@ -85,7 +94,7 @@ export default class NumberAttribute extends Attribute {
 
         return this.Value(val);
     }
-    Multiply(...values) {
+    multiply(...values) {
         let val = this.Value();
         for(let value of values) {
             if(value instanceof NumberAttribute) {
@@ -97,7 +106,7 @@ export default class NumberAttribute extends Attribute {
 
         return this.Value(val);
     }
-    Divide(...values) {
+    divide(...values) {
         let val = this.Value();
         for(let value of values) {
             if(value instanceof NumberAttribute) {
@@ -110,14 +119,14 @@ export default class NumberAttribute extends Attribute {
         return this.Value(val);
     }
 
-    ToPercent(asText = false) {
+    toPercent(asText = false) {
         if(asText) {
             return `${ this.ToRate() * 100 }%`;
         }
 
         return this.ToRate() * 100;
     }
-    ToRate() {
+    toRate() {
         let value = this.Value(),
             min = this.prop("min"),
             max = this.prop("max");
@@ -129,27 +138,27 @@ export default class NumberAttribute extends Attribute {
         return (value - min) / (max - min);
     }
     
-    IsAtMin() {
+    isMin() {
         return this.prop("value") === this.prop("min");
     }
-    IsAtMax() {
+    isMax() {
         return this.prop("value") === this.prop("max");
     }
 
-    Inc(value = 1) {
+    inc(value = 1) {
         let oldValue = this.Value(),
             newValue = oldValue + value;
 
-        return this.Change(newValue, oldValue);
+        return this.change(newValue, oldValue);
     }
-    Dec(value = 1) {
+    dec(value = 1) {
         let oldValue = this.Value(),
             newValue = oldValue - value;            
 
-        return this.Change(newValue, oldValue);
+        return this.change(newValue, oldValue);
     }
 
-    Change(newValue, oldValue) {
+    change(newValue, oldValue) {
         if(!Number.isSafeInteger(newValue)) {
             this.emit("prop-change::unsafe-integer", `${ newValue }`, oldValue);
         }

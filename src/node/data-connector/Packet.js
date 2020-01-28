@@ -35,14 +35,21 @@ export default class Packet {
         return this._timestamp;
     }
 
+    getDataType() {
+        return this._payload._type;
+    }
+    getData() {
+        return this._payload._data;
+    }
+
     toJSON() {
         return JSON.stringify({
-            UUID: this.UUID(),
-            Type: this.getType(),
-            Sender: this.getSender(),
-            Receiver: this.getReceiver(),
-            Payload: this.getPayload(),
-            Timestamp: this.getTimestamp()
+            _uuid: this.UUID(),
+            _type: this.getType(),
+            _sender: this.getSender(),
+            _receiver: this.getReceiver(),
+            _payload: this.getPayload(),
+            _timestamp: this.getTimestamp()
         });
     }
 

@@ -13,6 +13,7 @@ const ConditionType = {
     NOT_CONTAINS: [ "NotContains", 1, [ "any" ] ],
     MATCH: [ "Match", 1, [ "string", "number", "boolean" ] ],
     UUID: [ "UUID", 1, [ "string" ] ],
+    EVALUATE: [ "Evaluate", 1, [ "function" ] ]
 };
 
 export default ConditionType;

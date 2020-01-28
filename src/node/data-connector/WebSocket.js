@@ -10,13 +10,14 @@ export default class WebSocket extends Node {
         this.prop("Host", host);
         this.prop("Port", port);
         this.prop("Protocol", isSSL ? `wss:` : `ws:`);
-        this.prop("WebSocket", null);
+        this.prop("Connection", null);
 
         this.addEvent(
             "connect",
             "destroy",
             "open",
             "message",
+            "packet",
             "close"
         );
 
@@ -30,22 +31,42 @@ export default class WebSocket extends Node {
         return url;
     }
 
-    Connect() {
-        if(this.propIsEmpty("WSS")) {
-            this.prop("WSS", new WS(this.getUrl()));
+    connect() {
+        if(this.propIsEmpty("Connection")) {
+            this.prop("Connection", new WS(this.getUrl()));
 
-            this.prop("WSS").on("open", () => this.emit("open"));
-            this.prop("WSS").on("message", (msg) => this.emit("message", msg));
-            this.prop("WSS").on("close", () => this.emit("close"));
+            this.prop("Connection").on("open", () => this.emit("open"));
+            this.prop("Connection").on("message", (msg) => {
+                let obj = msg;
+                
+                try {
+                    while(typeof obj === "string" || obj instanceof String) {
+                        obj = JSON.parse(obj);
+                    }
+                } catch (e) {
+                    if(typeof msg === "string" || msg instanceof String) {
+                        obj = msg;
+                    }
+                }
+
+                if(msg._type && msg._type === "data-connector.packet") {
+                    let packet = Packet.fromJSON(msg);
+
+                    this.emit("packet", packet);   // Special case of "onmessage" to conform to Lux <Node>
+                } else {
+                    this.emit("message", msg);
+                }
+            });
+            this.prop("Connection").on("close", () => this.emit("close"));
 
             this.emit("connect");
         }
 
         return this;
     }
-    Destroy() {
-        if(!this.propIsEmpty("WSS")) {
-            this.prop("WSS").terminate();
+    destroy() {
+        if(!this.propIsEmpty("Connection")) {
+            this.prop("Connection").terminate();
 
             this.emit("destroy");
         }
@@ -53,7 +74,7 @@ export default class WebSocket extends Node {
         return this;
     }
 
-    Send(payload) {
+    send(payload) {
         let data = payload;
         
         if(typeof payload === "object" || Array.isArray(payload))  {
@@ -61,8 +82,8 @@ export default class WebSocket extends Node {
         }
 
         let packet = new Packet(this.UUID(), null, data);
-        this.prop("WSS").send(packet);
-        // this.prop("WSS").send(packet.toJSON());
+        this.prop("Connection").send(packet);
+        // this.prop("Connection").send(packet.toJSON());
 
         return this;
     }

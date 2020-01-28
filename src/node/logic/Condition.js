@@ -34,7 +34,7 @@ class Condition extends Node {
             this.prop("attribute", attribute);
 
             if(addChangeListener) {
-                this.prop("attribute").listen("prop-change", ([ t, n, o ]) => this.Run(this.prop("attribute")));
+                this.prop("attribute").listen("prop-change", () => this.Run(this.prop("attribute")));
             }
         }
 
@@ -209,6 +209,8 @@ class Condition extends Node {
 
         return false;
     }
+
+    Evaluate()
 };
 
 export default Condition;

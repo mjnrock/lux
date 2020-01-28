@@ -1,7 +1,7 @@
 import Attribute from "./Attribute";
 
 export default class TextAttribute extends Attribute {
-    constructor(value, name = null) {
+    constructor(value, { name = null } = {}) {
         super(value);
 
         this.prop("name", name);
@@ -24,65 +24,65 @@ export default class TextAttribute extends Attribute {
         return this.prop("name", name);
     }
 
-    Replace(search, repl) {
+    replace(search, repl) {
         return this.Name(this.Name().replace(search, repl));
     }
-    Concat(...strings) {
+    concat(...strings) {
         let str = this.Name().concat(...strings);
 
         return this.Name(str);
     }
-    Trim() {
+    trim() {
         return this.Name(this.Name().trim());
     }
 
-    ToLowerCase() {
+    toLowerCase() {
         return this.Name(this.Name().toLowerCase());
     }
-    ToUpperCase() {
+    toUpperCase() {
         return this.Name(this.Name().toUpperCase());
     }
 
-    Char(index) {
+    char(index) {
         return this.Name().charAt(index);
     }
-    CharCode(index) {
+    charCode(index) {
         return this.Name().charCodeAt(index);
     }
     
-    FromCharCode(...codes) {
+    fromCharCode(...codes) {
         return this.Name(String.fromCharCode(...codes));
     }
 
-    Normalize(form) {
+    normalize(form) {
         return this.Name(this.Name().normalize(form));
     }
 
-    SubString(start = 0, length = null) {
+    subString(start = 0, length = null) {
         return this.Name().substr(start, length);
     }
-    Split(sep, limit) {
+    split(sep, limit) {
         return this.Name().split(sep, limit);
     }
 
-    Includes(search, pos) {
+    includes(search, pos) {
         return this.Name().includes(search, pos);
     }
-    Search(regex) {
+    search(regex) {
         return this.Name().search(regex);
     }
-    Match(regex) {
+    match(regex) {
         return this.Name().match(regex);
     }
-    MatchAll(regex) {
+    matchAll(regex) {
         return this.Name().matchAll(regex);
     }
-    Test(regex, flags) {
+    test(regex, flags) {
         let rx = RegExp(regex, flags);
 
         return rx.test(this.Name());
     }
-    Find(search, start, isLastIndexOf = false) {
+    find(search, start, isLastIndexOf = false) {
         if(isLastIndexOf) {
             return this.Name().lastIndexOf(search, start);
         }

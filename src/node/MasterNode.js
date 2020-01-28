@@ -13,15 +13,19 @@ export default class MasterNode extends Node {
 
 
         //* BEHAVIOR
-        this._isReactionary = false;
+        this.prop("SubState", {});
+        this._behavioralFlags = {
+            isReactionary: false,
+            isReactionStateSave: false
+        }
         this._actions = {};
-        this._reactions = {};
+        this._reactions = {};   //? The main purpose of Reactions are to formalize the event listening between the <MasterNode> and a subordinate <Node> with default behavior and conditional executions.  Since <Nodes> are .subscribed to, this makes multi-listening more practical and formalizable.
 
         this._registerModule("behavior");
 
         this.addEvent(
-            "dominate",
-            "reject",
+            "load",
+            "unload",
             "direct",
             "command",
             "spy",
@@ -48,22 +52,22 @@ export default class MasterNode extends Node {
         return this;
     }
 
-    dominate(name, node) {
+    load(name, node) {
         if(name !== null && name !== void 0 && node instanceof Node && arguments.length === 2) {
             this.setSubordinate(name, node);
             node.subscribe(this);
 
-            this.emit("dominate", name, node);
+            this.emit("load", name, node);
         }
 
         return this;
     }
-    reject(name) {
+    unload(name) {
         if(name !== null && name !== void 0 && arguments.length === 2) {
             this.removeSubordinate(name, node);
             node.unsubscribe(this);
 
-            this.emit("reject", name);
+            this.emit("unload", name);
         }
 
         return this;
@@ -74,7 +78,7 @@ export default class MasterNode extends Node {
             return this.getSubordinate(name);
         }
 
-        return this.dominate(name, node);
+        return this.load(name, node);
     }
     nodes(...names) {
         let nodes = [];
@@ -288,14 +292,14 @@ export default class MasterNode extends Node {
                 if(result === true) {
                     this.emit("reaction", name);
 
-                    if(name === "SaveState") {
-                        if(args[ 0 ] instanceof Event) {
-                            let event = args[ 0 ],
-                                subName = this.getNodeName(event.getEmitter());
+                    // if(name === "SaveState") {
+                    //     if(args[ 0 ] instanceof Event) {
+                    //         let event = args[ 0 ],
+                    //             subName = this.getNodeName(event.getEmitter());
 
-                            this.emit("substate-change", this.getSubState(subName));
-                        }
-                    }
+                    //         this.emit("substate-change", this.getSubState(subName));
+                    //     }
+                    // }
                 }
 
                 return result;
@@ -303,41 +307,61 @@ export default class MasterNode extends Node {
         }
     }
 
+    eventReaction(name, eventType, reaction) {
+        return this.reaction(name, Reaction.createEventReaction(eventType, reaction));
+    }
+
+    processSubStateChange(name, data) {
+        let newValue = Object.freeze(data),
+            oldValue = this.oprop("SubState", name);
+
+        this.oprop(
+            "SubState",
+            name,
+            newValue
+        );
+
+        this.emit("substate-change", newValue, oldValue);
+    }
+
     flagOnIsReactionary() {
-        this._isReactionary = true;
+        this._behavioralFlags.isReactionary = true;
         this.setNext(this.respond);
         
-        if(!this.hasReaction("SaveState") || !this.hasProp("SubState")) {
-            this.prop("SubState", {});
-
+        if(this._behavioralFlags.isReactionStateSave) {
             let reaction = e => {
                 let name = this.getNodeName(e.getEmitter());
 
                 if(name) {
-                    this.oprop(
-                        "SubState",
-                        name,
-                        Object.freeze(e.getEmitter()._state)
-                    );
+                    this.processSubStateChange(name, e.getEmitter()._state);
                 }
             };
-            this.reaction("SaveState", Reaction.createEventReaction("prop-change", reaction));
+            
+            this.eventReaction("SaveState", "prop-change", reaction);
         }
 
         return this;
     }
     flagOffIsReactionary() {
-        this._isReactionary = false;
+        this._behavioralFlags.isReactionary = false;
         this.setNext(null);
 
         return this;
     }
-    isReactionary() {
-        return this._isReactionary;
+
+    flagOnIsReactionStateSave() {
+        this._behavioralFlags.isReactionStateSave = true;
+
+        return this;
+    }
+    flagOffIsReactionStateSave() {
+        this._behavioralFlags.isReactionStateSave = false;
+
+        return this;
     }
 
     respond(e) {
-        if(this.isReactionary()) {
+        if(this._behavioralFlags.isReactionary) {
             let keys = Object.keys(this._reactions),
                 responses = [];
 
