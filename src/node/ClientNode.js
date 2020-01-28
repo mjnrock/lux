@@ -4,6 +4,8 @@ import Packet from "./data-connector/Packet";
 
 export default class ClientNode extends MasterNode {
     constructor({ api = {}, ws = {} } = {}) {
+        super();
+        
         if(Object.entries(api).length === 0 && api.constructor === Object) {
             this.loadWebAPI("WebAPI", api.host, api.port, api.iSSL);
         }
@@ -67,7 +69,7 @@ export default class ClientNode extends MasterNode {
             if(typeof reducer === "function") {
                 data = reducer(reducer);
             }
-            
+
             this.processSubStateChange(name, data);
         }
     }
