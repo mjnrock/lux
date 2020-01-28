@@ -5,44 +5,20 @@ import Packet from "./data-connector/Packet";
 export default class ClientNode extends MasterNode {
     constructor({ api = {}, ws = {} } = {}) {
         if(Object.entries(api).length === 0 && api.constructor === Object) {
-            this.load("WebAPI", new DataConnector.WebAPI(
-                api.host,
-                api.port || 80,
-                api.isSSL || false
-            ));
+            this.loadWebAPI("WebAPI", api.host, api.port, api.iSSL);
         }
         if(Object.entries(ws).length === 0 && ws.constructor === Object) {
-            this.load("WebSocket", new DataConnector.WebSocket(
-                api.host,
-                api.port || 80,
-                api.isSSL || false
-            ));
+            this.loadWebSocket("WebSocket", ws.host, ws.port, ws.iSSL);
         }
 
         this.flagOnIsReactionary();
 
         this.prop("Messages", {});
-        this.eventReaction(
-            "ws-message",
-            "message",
-            e => {
-                return this.enqueue(e.getPayload(), this.getNodeName(e.getEmitter()))
-            }
-        );
-        this.eventReaction(
-            "ws-packet",
-            "packet",
-            e => {
-                return this.enqueue(e.getPayload(), this.getNodeName(e.getEmitter()))
-            }
-        );
-        this.eventReaction(
-            "api-json",
-            "json",
-            e => {
-                return this.receiveJson(e.getPayload(), this.getNodeName(e.getEmitter()))
-            }
-        );
+
+        let eventExtractor = (e, fn) => fn(e.getPayload(), this.getNodeName(e.getEmitter()));
+        this.eventReaction("message", e => eventExtractor(e, this.enqueue));
+        this.eventReaction("packet", e => eventExtractor(e, this.enqueue));
+        this.eventReaction("json", e => eventExtractor(e, this.receiveJson));
 
         this.addEvent(
             "enqueue",
@@ -51,6 +27,21 @@ export default class ClientNode extends MasterNode {
         );
 
         this._registerModule("client");
+    }
+
+    loadWebAPI(name, host, port = 80, isSSL = false) {
+        this.load(name, new DataConnector.WebAPI(
+            host,
+            port,
+            isSSL
+        ));
+    }
+    loadWebSocket(name, host, port = 80, isSSL = false) {
+        this.load(name, new DataConnector.WebSocket(
+            host,
+            port,
+            isSSL
+        ));
     }
 
     receiveJson(json, name = "WebAPI") {
