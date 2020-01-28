@@ -1,6 +1,8 @@
-import DataConnector from "./data-connector/package";
-import MasterNode from "./MasterNode";
-import Packet from "./data-connector/Packet";
+import MasterNode from "./../MasterNode";
+
+import Packet from "./Packet";
+import WebAPI from "./WebAPI";
+import WebSocket from "./WebSocket";
 
 export default class ClientNode extends MasterNode {
     constructor({ api = {}, ws = {} } = {}) {
@@ -32,14 +34,14 @@ export default class ClientNode extends MasterNode {
     }
 
     loadWebAPI({ host, port = 80, isSSL = false, name = "WebAPI", node = null } = {}) {
-        this.load(name, node || new DataConnector.WebAPI(
+        this.load(name, node || new WebAPI(
             host,
             port,
             isSSL
         ));
     }
     loadWebSocket({ host, port = 80, isSSL = false, name = "WebAPI", node = null } = {}) {
-        this.load(name, node || new DataConnector.WebSocket(
+        this.load(name, node || new WebSocket(
             host,
             port,
             isSSL
@@ -115,7 +117,7 @@ export default class ClientNode extends MasterNode {
         let WS = this.node(name),
             conn = WS.prop("Connection");
 
-        if(WS && WS instanceof DataConnector.WebSocket && !conn) {
+        if(WS && WS instanceof WebSocket && !conn) {
             WS.connect();
         }
     }
@@ -123,7 +125,7 @@ export default class ClientNode extends MasterNode {
         let WS = this.node(name),
             conn = WS.prop("Connection");
 
-        if(WS && WS instanceof DataConnector.WebSocket && conn) {
+        if(WS && WS instanceof WebSocket && conn) {
             WS.destroy();
         }
     }
@@ -132,7 +134,7 @@ export default class ClientNode extends MasterNode {
         let WS = this.node(name),
             conn = WS.prop("Connection");
 
-        if(WS && WS instanceof DataConnector.WebSocket && conn && packet instanceof Packet) {
+        if(WS && WS instanceof WebSocket && conn && packet instanceof Packet) {
             conn.send(packet.toJSON());
         }
     }

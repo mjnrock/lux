@@ -5,8 +5,6 @@ import Watcher from "./Watcher";
 import Reaction from "./Reaction";
 import Node from "./Node";
 import MasterNode from "./MasterNode";
-import ClientNode from "./ClientNode";
-import ServerNode from "./ServerNode";
 
 import Logic from "./logic/package";
 import DataConnector from "./data-connector/package";
@@ -21,8 +19,6 @@ export default {
     Reaction,
     Node,
     MasterNode,
-    ClientNode,
-    ServerNode,
 
     Logic,
     DataConnector,

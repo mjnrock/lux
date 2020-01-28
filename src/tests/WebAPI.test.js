@@ -1,4 +1,4 @@
-import Node from "../node/package";
+import Node from "./../node/package";
 
 export function RunTest() {
     let n1 = new Node.Node();
