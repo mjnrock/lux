@@ -5,7 +5,7 @@ import Packet from "./data-connector/Packet";
 export default class ClientNode extends MasterNode {
     constructor({ api = {}, ws = {} } = {}) {
         super();
-        
+
         if(Object.entries(api).length === 0 && api.constructor === Object) {
             this.loadWebAPI("WebAPI", api.host, api.port, api.iSSL);
         }
@@ -31,14 +31,14 @@ export default class ClientNode extends MasterNode {
         this._registerModule("client");
     }
 
-    loadWebAPI(name, { host, port = 80, isSSL = false, node = null } = {}) {
+    loadWebAPI({ host, port = 80, isSSL = false, name = "WebAPI", node = null } = {}) {
         this.load(name, node || new DataConnector.WebAPI(
             host,
             port,
             isSSL
         ));
     }
-    loadWebSocket(name, { host, port = 80, isSSL = false, node = null } = {}) {
+    loadWebSocket({ host, port = 80, isSSL = false, name = "WebAPI", node = null } = {}) {
         this.load(name, node || new DataConnector.WebSocket(
             host,
             port,
