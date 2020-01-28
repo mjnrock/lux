@@ -29,15 +29,15 @@ export default class ClientNode extends MasterNode {
         this._registerModule("client");
     }
 
-    loadWebAPI(name, host, port = 80, isSSL = false) {
-        this.load(name, new DataConnector.WebAPI(
+    loadWebAPI(name, { host, port = 80, isSSL = false, node = null } = {}) {
+        this.load(name, node || new DataConnector.WebAPI(
             host,
             port,
             isSSL
         ));
     }
-    loadWebSocket(name, host, port = 80, isSSL = false) {
-        this.load(name, new DataConnector.WebSocket(
+    loadWebSocket(name, { host, port = 80, isSSL = false, node = null } = {}) {
+        this.load(name, node || new DataConnector.WebSocket(
             host,
             port,
             isSSL
@@ -55,6 +55,16 @@ export default class ClientNode extends MasterNode {
             this.processSubStateChange(name, obj);
         } catch (e) {
             this.emit("error", e);
+        }
+    }
+
+    async fetch(name, url, params = {}, reducer = null) {
+        let webApi = this.getSubordinate(name);
+
+        if(webApi) {
+            let data = await webApi.JSON(url, params);
+
+            this.processSubStateChange(name, data);
         }
     }
 
