@@ -6,9 +6,11 @@ export default class WebAPI extends Node {
     constructor(host, port, isSSL = false) {
         super();
 
-        this.prop("Host", host);
-        this.prop("Port", port);
-        this.prop("Protocol", isSSL ? `https:` : `http:`);
+        this.meta("Host", host);
+        this.meta("Port", port);
+        this.meta("Protocol", isSSL ? `https:` : `http:`);
+
+        this.prop("LastResponse", null);
 
         this.addEvent(
             "request",
@@ -18,9 +20,13 @@ export default class WebAPI extends Node {
         this._registerModule("data-connector");
     }
 
+    getLastResponse() {
+        return this.prop("LastResponse");
+    }
+
     getUrl(endpoint, params = {}) {
-        let host = `${ this.prop("Host") }:${ this.prop("Port") }`,
-            url = `${ this.prop("Protocol")  }//${ host }/${ endpoint.replace(/\/$/, "").replace(/^\/+/g, "") }/`,
+        let host = `${ this.meta("Host") }:${ this.meta("Port") }`,
+            url = `${ this.meta("Protocol")  }//${ host }/${ endpoint.replace(/\/$/, "").replace(/^\/+/g, "") }/`,
             p = Object.entries(params).reduce((a, [ k, v ], i) => {
                 if(i > 0) {
                     return `${ a }&${ k }=${ v }`;
@@ -39,6 +45,8 @@ export default class WebAPI extends Node {
         
         let response = await fetch(url, { method: "GET", mode: "cors", headers: { "Content-Type": "application/json" } }),
             data = await response.json();
+
+        this.prop("LastResponse", data);
 
         this.emit("json", { endpoint, params, data });
 

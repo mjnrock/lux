@@ -150,6 +150,13 @@ export default class Node {
         return this.setMeta(prop, value);
     }
 
+    metaIsEmpty(prop) {
+        return this._meta[ prop ] === null || this._meta[ prop ] === void 0;
+    }
+    metaIsType(prop, type) {
+        return typeof this._meta[ prop ] === type;
+    }
+
 
     //* EVENTS
     hasEvent(name) {

@@ -7,10 +7,12 @@ export default class WebSocket extends Node {
     constructor(host, port, isSSL = false) {
         super();
         
-        this.prop("Host", host);
-        this.prop("Port", port);
-        this.prop("Protocol", isSSL ? `wss:` : `ws:`);
-        this.prop("Connection", null);
+        this.meta("Host", host);
+        this.meta("Port", port);
+        this.meta("Protocol", isSSL ? `wss:` : `ws:`);
+        this.meta("Connection", null);
+
+        this.prop("LastResponse", null);
 
         this.addEvent(
             "connect",
@@ -24,19 +26,23 @@ export default class WebSocket extends Node {
         this._registerModule("data-connector");
     }
 
+    getLastResponse() {
+        return this.prop("LastResponse");
+    }
+
     getUrl() {
-        let host = `${ this.prop("Host") }:${ this.prop("Port") }`,
-            url = `${ this.prop("Protocol")  }//${ host }/`;
+        let host = `${ this.meta("Host") }:${ this.meta("Port") }`,
+            url = `${ this.meta("Protocol")  }//${ host }/`;
 
         return url;
     }
 
     connect() {
-        if(this.propIsEmpty("Connection")) {
-            this.prop("Connection", new WS(this.getUrl()));
+        if(this.metaIsEmpty("Connection")) {
+            this.meta("Connection", new WS(this.getUrl()));
 
-            this.prop("Connection").on("open", () => this.emit("open"));
-            this.prop("Connection").on("message", (msg) => {
+            this.meta("Connection").on("open", () => this.emit("open"));
+            this.meta("Connection").on("message", (msg) => {
                 let obj = msg;
                 
                 try {
@@ -52,12 +58,16 @@ export default class WebSocket extends Node {
                 if(msg._type && msg._type === "data-connector.packet") {
                     let packet = Packet.fromJSON(msg);
 
+                    this.prop("LastResponse", packet);
+
                     this.emit("packet", packet);   // Special case of "onmessage" to conform to Lux <Node>
                 } else {
+                    this.prop("LastResponse", msg);
+
                     this.emit("message", msg);
                 }
             });
-            this.prop("Connection").on("close", () => this.emit("close"));
+            this.meta("Connection").on("close", () => this.emit("close"));
 
             this.emit("connect");
         }
@@ -65,8 +75,8 @@ export default class WebSocket extends Node {
         return this;
     }
     destroy() {
-        if(!this.propIsEmpty("Connection")) {
-            this.prop("Connection").terminate();
+        if(!this.metaIsEmpty("Connection")) {
+            this.meta("Connection").terminate();
 
             this.emit("destroy");
         }
@@ -82,8 +92,8 @@ export default class WebSocket extends Node {
         }
 
         let packet = new Packet(this.UUID(), null, data);
-        this.prop("Connection").send(packet);
-        // this.prop("Connection").send(packet.toJSON());
+        this.meta("Connection").send(packet);
+        // this.meta("Connection").send(packet.toJSON());
 
         return this;
     }
