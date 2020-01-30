@@ -1,8 +1,8 @@
-import { MutatorFactory } from "./MutatorFactory";
-import { Mutator } from "./Mutator";
-import { ModelContainer } from "./ModelContainer";
+import MutatorFactory from "./MutatorFactory";
+import Mutator from "./Mutator";
+import ModelContainer from "./ModelContainer";
 
-class Model extends Mutator {
+export default class Model extends Mutator {
 	constructor() {
 		super();
 		this.Tag = new this.PTO.Tag.TagCompound("Model");
@@ -52,6 +52,4 @@ class Model extends Mutator {
 
 		return this;
 	}
-}
-
-export { Model };
+};

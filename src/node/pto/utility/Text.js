@@ -1,6 +1,6 @@
 import PTO from "./../package";
 
-class Text {
+export default class Text {
 	static get COMPATIBILITY() {
 		return [
 			PTO.Enum.TagType.CHARACTER,
@@ -129,6 +129,4 @@ class Text {
 		
 		return value;
 	}
-}
-
-export { Text };
+};

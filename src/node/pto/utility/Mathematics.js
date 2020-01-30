@@ -1,6 +1,6 @@
 import PTO from "./../package";
 
-class Mathematics {
+export default class Mathematics {
 	static get COMPATIBILITY() {
 		return [
 			PTO.Enum.TagType.TINY,
@@ -162,6 +162,4 @@ class Mathematics {
         
         return eval(string);
     }
-}
-
-export { Mathematics };
+};

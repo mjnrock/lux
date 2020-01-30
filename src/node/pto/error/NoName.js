@@ -1,9 +1,7 @@
-import { AException } from "./AException";
+import AException from "./AException";
 
-class NoName extends AException {
+export default class NoName extends AException {
 	constructor(passedValue) {
 		super(`The 'name' attribute is required on this function.`, passedValue);
 	}
-}
-
-export { NoName };
+};

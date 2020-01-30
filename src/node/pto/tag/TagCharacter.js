@@ -1,8 +1,8 @@
-import { ATag } from "./ATag";
+import ATag from "./ATag";
 import Enum from "./../enum/package";
-import { IncorrectParameterCount } from "./../error/IncorrectParameterCount";
+import IncorrectParameterCount from "./../error/IncorrectParameterCount";
 
-class TagCharacter extends ATag {
+export default class TagCharacter extends ATag {
 	constructor(key, value) {
 		super(Enum.TagType.CHARACTER, key, null);
 
@@ -91,6 +91,4 @@ class TagCharacter extends ATag {
 			this.GetOrdinality()
 		);
 	}
-}
-
-export { TagCharacter };
+};

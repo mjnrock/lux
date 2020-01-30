@@ -1,8 +1,8 @@
-import { ATag } from "./ATag";
+import ATag from "./ATag";
 import Enum from "./../enum/package";
 import Error from "./../error/package";
 
-class TagFloat extends ATag {
+export default class TagFloat extends ATag {
 	constructor(key, value) {
 		super(Enum.TagType.FLOAT, key, null);
 
@@ -131,6 +131,4 @@ class TagFloat extends ATag {
 	GetBytePerValue() {
 		return super.GetBytePerValue(4) * this.Value.length;
 	}
-}
-
-export { TagFloat };
+};

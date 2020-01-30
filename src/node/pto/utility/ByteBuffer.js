@@ -1,4 +1,4 @@
-class ByteBuffer {
+export default class ByteBuffer {
 	constructor() {
 		let size = 0;
 		if (arguments.length > 1) {
@@ -233,6 +233,4 @@ class ByteBuffer {
 
 		return str;
 	}
-}
-
-export { ByteBuffer };
+};

@@ -1,7 +1,7 @@
 import PTO from "./../package";
 // import Mutator from "./package";
 
-class MutatorFactory {
+export default class MutatorFactory {
 	constructor() {
 		this.PTO = PTO;
 	}
@@ -203,7 +203,7 @@ class MutatorFactory {
 		// Download the created file
 		if(downloadFile === true) {
 			lines = [
-				`import { Mutator } from "./Mutator";\n\n`,
+				`Mutator from "./Mutator";\n\n`,
 				...lines,
 				`\n\nexport { ${ saniRootKey } };`
 			];
@@ -307,9 +307,9 @@ class MutatorFactory {
 	// 	let currentVariable = "this.Tag",
 	// 		currentParentID = 1,
 	// 		lines = [
-	// 			// `import { Mutator } from "./Mutator";\n\n`,
-	// 			// `import { Mutator } from "./Mutator";\n`,
-	// 			// `// import { Mutator } from "./path/to/mutator/";\n\n`,
+	// 			// `Mutator from "./Mutator";\n\n`,
+	// 			// `Mutator from "./Mutator";\n`,
+	// 			// `// Mutator from "./path/to/mutator/";\n\n`,
 
 	// 			`class ${ saniRootKey } extends Mutator {\n`,
 	// 			`\tconstructor() {\n`,
@@ -374,6 +374,4 @@ class MutatorFactory {
 
 	// 	return lines.join("");
 	// }
-}
-
-export { MutatorFactory };
+};

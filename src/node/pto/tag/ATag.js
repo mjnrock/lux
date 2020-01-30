@@ -4,7 +4,7 @@ import Enum from "./../enum/package";
 import Error from "./../error/package";
 import Tag from "./package";
 
-class ATag extends Node {
+export default class ATag extends Node {
 	constructor(type, key, value) {
         super();
 
@@ -172,6 +172,4 @@ class ATag extends Node {
 
 		return this;
 	};
-}
-
-export { ATag };
+};

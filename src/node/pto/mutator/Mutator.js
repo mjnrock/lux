@@ -1,6 +1,6 @@
 import PTO from "./../package.js"
 
-class Mutator {
+export default class Mutator {
 	constructor() {
 		this.PTO = PTO;
 		this.Tag = null;
@@ -45,6 +45,4 @@ class Mutator {
 
 		return this;
 	}
-}
-
-export { Mutator };
+};

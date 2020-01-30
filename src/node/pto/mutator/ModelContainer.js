@@ -1,7 +1,7 @@
-import { Mutator } from "./Mutator";
-import { ModelComponent } from "./ModelComponent";
+import Mutator from "./Mutator";
+import ModelComponent from "./ModelComponent";
 
-class ModelContainer extends Mutator {
+export default class ModelContainer extends Mutator {
 	constructor() {
 		super();
 
@@ -73,6 +73,4 @@ class ModelContainer extends Mutator {
 
 		return this;
 	}
-}
-
-export { ModelContainer };
+};

@@ -1,7 +1,7 @@
-import { ATag } from "./ATag";
+import ATag from "./ATag";
 import Enum from "./../enum/package";
 
-class TagBoolean extends ATag {
+export default class TagBoolean extends ATag {
 	constructor(key, value) {
 		super(Enum.TagType.BOOL, key, null);
 
@@ -30,6 +30,4 @@ class TagBoolean extends ATag {
 	GetValue(index) {
 		return super.GetValue(index) === 1;
 	}
-}
-
-export { TagBoolean };
+};

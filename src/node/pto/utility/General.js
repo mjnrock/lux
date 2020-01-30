@@ -1,6 +1,6 @@
 import PTO from "./../package";
 
-class General {
+export default class General {
 	/**
 	 * Return the copy of the Tag(s), in an array if $tags > 1.  This will Serialize $tag and seed-Deserialize to create the copies.
 	 * @param {ATag} tag | The Tag to copy
@@ -94,6 +94,4 @@ class General {
 
 		return tag;
 	}
-}
-
-export { General };
+};

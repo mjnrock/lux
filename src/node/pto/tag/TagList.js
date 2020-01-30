@@ -1,8 +1,8 @@
-import { ATag } from "./ATag";
+import ATag from "./ATag";
 import Enum from "./../enum/package";
-import { InvalidDataType } from "./../error/InvalidDataType";
+import InvalidDataType from "./../error/InvalidDataType";
 
-class TagList extends ATag {
+export default class TagList extends ATag {
 	constructor(key, type) {
 		super(Enum.TagType.LIST, key, null);
 
@@ -139,6 +139,4 @@ class TagList extends ATag {
 
 		return this;
 	}
-}
-
-export { TagList };
+};

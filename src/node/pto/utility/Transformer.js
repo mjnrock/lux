@@ -1,9 +1,9 @@
 import Enum from "./../enum/package";
 import Tag from "./../tag/package";
 import Error from "./../error/package";
-import { ByteBuffer } from "./ByteBuffer";
+import ByteBuffer from "./ByteBuffer";
 
-class Transformer {
+export default class Transformer {
 	static GenerateUUID() {
 		let d = new Date().getTime();
 		let uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
@@ -891,6 +891,4 @@ class Transformer {
 
 		return array;
 	}
-}
-
-export { Transformer };
+};

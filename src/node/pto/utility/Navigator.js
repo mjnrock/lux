@@ -1,6 +1,6 @@
-import { Transformer } from "./Transformer";
+import Transformer from "./Transformer";
 
-class Navigator {
+export default class Navigator {
 	//	This is really designed for treating a tag like an object with Dot Notation
 	static FindTag(tag, key) {
 		let schema = Transformer.ToSchema(tag),
@@ -14,6 +14,4 @@ class Navigator {
 	}
 	
 	//	TODO Add a "Selector" function that allows for CSS-style Tag selection
-}
-
-export { Navigator };
+};

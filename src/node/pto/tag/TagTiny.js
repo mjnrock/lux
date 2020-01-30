@@ -1,7 +1,7 @@
-import { ATag } from "./ATag";
+import ATag from "./ATag";
 import Enum from "./../enum/package";
 
-class TagTiny extends ATag {
+export default class TagTiny extends ATag {
 	constructor(key, value) {
 		super(Enum.TagType.TINY, key, null);
 
@@ -34,6 +34,4 @@ class TagTiny extends ATag {
 	GetValue(index) {
 		return super.GetValue(index);
 	}
-}
-
-export { TagTiny };
+};

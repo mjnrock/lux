@@ -1,8 +1,8 @@
-import { ATag } from "./ATag";
+import ATag from "./ATag";
 import Enum from "./../enum/package";
 import Error from "./../error/package";
 
-class TagLong extends ATag {
+export default class TagLong extends ATag {
 	constructor(key, value) {
 		super(Enum.TagType.LONG, key, null);
 
@@ -131,6 +131,4 @@ class TagLong extends ATag {
 	GetBytePerValue() {
 		return super.GetBytePerValue(4) * this.Value.length;
 	}
-}
-
-export { TagLong };
+};

@@ -4,6 +4,7 @@ import WebAPI from "./WebAPI.test";
 import WebSocket from "./WebSocket.test";
 import Logic from "./Logic.test";
 import MasterNode from "./MasterNode.test";
+import PTO from "./PTO.test";
 
 export default {
     Observations,
@@ -11,5 +12,6 @@ export default {
     WebAPI,
     WebSocket,
     Logic,
-    MasterNode
+    MasterNode,
+    PTO
 };

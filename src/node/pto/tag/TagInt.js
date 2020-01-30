@@ -1,7 +1,7 @@
-import { ATag } from "./ATag";
+import ATag from "./ATag";
 import Enum from "./../enum/package";
 
-class TagInt extends ATag {
+export default class TagInt extends ATag {
 	constructor(key, value) {
 		super(Enum.TagType.INT, key, null);
 
@@ -27,6 +27,4 @@ class TagInt extends ATag {
 	GetBytePerValue() {
 		return super.GetBytePerValue(4) * this.Value.length;
 	};
-}
-
-export { TagInt };
+};

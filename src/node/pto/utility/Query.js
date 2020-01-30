@@ -1,6 +1,6 @@
 import PTO from "./../package";
 
-class Query {
+export default class Query {
 	static Analyze(path, tier, schema) {
 		if(tier === "*") {
 			return true;
@@ -108,6 +108,4 @@ class Query {
 
 		return ret;
 	}
-}
-
-export { Query };
+};

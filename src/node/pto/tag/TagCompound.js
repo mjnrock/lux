@@ -1,7 +1,7 @@
-import { ATag } from "./ATag";
+import ATag from "./ATag";
 import Enum from "./../enum/package";
 
-class TagCompound extends ATag {
+export default class TagCompound extends ATag {
 	constructor(key) {
 		super(Enum.TagType.COMPOUND, key, null);
 
@@ -89,6 +89,4 @@ class TagCompound extends ATag {
 
 		return this;
 	}
-}
-
-export { TagCompound };
+};

@@ -1,7 +1,7 @@
-import { TagString } from "./TagString";
+import TagString from "./TagString";
 import Enum from "./../enum/package";
 
-class TagUUID extends TagString {
+export default class TagUUID extends TagString {
 	constructor(key, value) {
 		super(key, value);
 
@@ -28,6 +28,4 @@ class TagUUID extends TagString {
 
 		return this;
 	}
-}
-
-export { TagUUID };
+};
