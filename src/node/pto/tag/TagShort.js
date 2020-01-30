@@ -36,6 +36,6 @@ export default class TagShort extends ATag {
 	}
 
 	GetBytePerValue() {
-		return super.GetBytePerValue(2) * this.Value.length;
+		return super.GetBytePerValue(2) * this.prop("Value").length;
 	}
 };

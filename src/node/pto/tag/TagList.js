@@ -13,8 +13,8 @@ export default class TagList extends ATag {
 	GetSchema(id = 1, pid = 0, depth = "") {
 		let schema = `${id}.${pid}.${this.Type}.${this.ContentType}`;
 		let nid = id;
-		for (let i in this.Value) {
-			let r = `${this.Value[i].GetSchema(nid + 1, id, ":")}`;
+		for (let i in this.prop("Value")) {
+			let r = `${this.prop("Value")[i].GetSchema(nid + 1, id, ":")}`;
 			schema += r;
 			r = r.split(":").filter((e) => e.length > 0);
 			nid = Math.max.apply(Math, r.map((t) => +t.split(".")[0]));
@@ -33,18 +33,18 @@ export default class TagList extends ATag {
 	}
 
 	Has(key) {
-		return this.Value.map((v) => v.Key).includes(key);
+		return this.prop("Value").map((v) => v.Key).includes(key);
 	}
 	Find(key) {
-		return this.Value.map((v) => v.Key).indexOf(key);
+		return this.prop("Value").map((v) => v.Key).indexOf(key);
 	}
 
 	GetValue(input) {
 		if (typeof input === "string" || input instanceof String) {
-			return this.Value.filter((v) => v.Key === input)[0];
+			return this.prop("Value").filter((v) => v.Key === input)[0];
 		}
 
-		return this.Value[input];
+		return this.prop("Value")[input];
 	}
 	
 	AddTag(tag) {
@@ -53,13 +53,13 @@ export default class TagList extends ATag {
 	AddValue(tag) {
 		if (tag instanceof ATag) {
 			if (tag.GetType() === this.GetContentType()) {
-				if (!(this.Value instanceof Array)) {
+				if (!(this.prop("Value") instanceof Array)) {
 					this.prop("Value", []);
 				}
 				if (!this.Has(tag.Key)) {
-					this.Value.push(tag);
+					this.prop("Value").push(tag);
 				} else {
-					this.Value[this.Find(tag.Key)] = tag;
+					this.prop("Value")[this.Find(tag.Key)] = tag;
 				}
 			} else {
 				throw new InvalidDataType(
@@ -72,7 +72,7 @@ export default class TagList extends ATag {
 		return this;
 	}
 	RemoveValue(index) {
-		this.Value.splice(index, 1);
+		this.prop("Value").splice(index, 1);
 
 		return this;
 	}
@@ -99,14 +99,14 @@ export default class TagList extends ATag {
 	}
 
 	Size() {
-		return this.Value.length;
+		return this.prop("Value").length;
 	}
 
 	Serialize(level) {
 		let arr = [];
-		for (let i in this.Value) {
+		for (let i in this.prop("Value")) {
 			arr.push(
-				this.Value[i].Serialize(Enum.Serialization.OBJECT)
+				this.prop("Value")[i].Serialize(Enum.Serialization.OBJECT)
 			);
 		}
 

@@ -66,8 +66,8 @@ export default class TagString extends ATag {
 						.split(s);
 				}
 
-				if (this.Value.length > 0) {
-					arr = [...this.Value]
+				if (this.prop("Value").length > 0) {
+					arr = [...this.prop("Value")]
 						.map((e) => String.fromCharCode(+e))
 						.join("")
 						.split(s);
@@ -92,7 +92,7 @@ export default class TagString extends ATag {
 	}
 
 	GetValues() {
-		return [...this.Value].map((e) => String.fromCharCode(+e)).join("");
+		return [...this.prop("Value")].map((e) => String.fromCharCode(+e)).join("");
 	}
 	GetValue(index) {
 		if (index === null || index === void 0) {

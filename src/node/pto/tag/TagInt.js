@@ -25,6 +25,6 @@ export default class TagInt extends ATag {
 	};
 
 	GetBytePerValue() {
-		return super.GetBytePerValue(4) * this.Value.length;
+		return super.GetBytePerValue(4) * this.prop("Value").length;
 	};
 };

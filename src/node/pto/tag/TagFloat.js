@@ -14,7 +14,7 @@ export default class TagFloat extends ATag {
 			return super.SetValues(Int32Array, value);
 		}
 
-		if (this.Value === null || this.Value === void 0) {
+		if (this.prop("Value") === null || this.prop("Value") === void 0) {
 			this.prop("Value", new Int32Array());
 		}
 
@@ -45,7 +45,7 @@ export default class TagFloat extends ATag {
 				}
 			});
 
-			let arr = [...this.Value];
+			let arr = [...this.prop("Value")];
 			arr[2 * index] = l;
 			arr[2 * index + 1] = r;
 			this.prop("Value", Int32Array.of(...arr));
@@ -75,7 +75,7 @@ export default class TagFloat extends ATag {
 				}
 			});
 
-			let arr = [...this.Value];
+			let arr = [...this.prop("Value")];
 			arr.push(l);
 			arr.push(r);
 			this.prop("Value", Int32Array.of(...arr));
@@ -86,20 +86,20 @@ export default class TagFloat extends ATag {
 		return this;
 	}
 	GetValue(index) {
-		if (this.Value !== null && this.Value !== void 0) {
-			console.log([this.Value, index]);
+		if (this.prop("Value") !== null && this.prop("Value") !== void 0) {
+			console.log([this.prop("Value"), index]);
 			return +"".concat(
-				this.Value[2 * index].toString(),
+				this.prop("Value")[2 * index].toString(),
 				".",
-				this.Value[2 * index + 1].toString()
+				this.prop("Value")[2 * index + 1].toString()
 			);
 		}
 
 		return null;
 	}
 	RemoveValue(index) {
-		if (this.Value !== null && this.Value !== void 0) {
-			let arr = [...this.Value];
+		if (this.prop("Value") !== null && this.prop("Value") !== void 0) {
+			let arr = [...this.prop("Value")];
 			arr.splice(2 * index, 2);
 			this.prop("Value", Int32Array.of(...arr));
 		}
@@ -118,7 +118,7 @@ export default class TagFloat extends ATag {
 				throw new Error.UnsafeIntegerRange(value);
 			}
 
-			let arr = [...this.Value];
+			let arr = [...this.prop("Value")];
 			arr.push(value);
 			this.prop("Value", Int32Array.of(...arr));
 		} else {
@@ -129,6 +129,6 @@ export default class TagFloat extends ATag {
 	}
 
 	GetBytePerValue() {
-		return super.GetBytePerValue(4) * this.Value.length;
+		return super.GetBytePerValue(4) * this.prop("Value").length;
 	}
 };

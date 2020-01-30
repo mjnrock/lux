@@ -11,8 +11,8 @@ export default class TagCompound extends ATag {
 	GetSchema(id = 1, pid = 0, depth = "") {
 		let schema = `${id}.${pid}.${this.Type}`;
 		let nid = id;
-		for (let i in this.Value) {
-			let r = `${this.Value[i].GetSchema(nid + 1, id, ":")}`;
+		for (let i in this.prop("Value")) {
+			let r = `${this.prop("Value")[i].GetSchema(nid + 1, id, ":")}`;
 			schema += r;
 			r = r.split(":").filter((e) => e.length > 0);
 			nid = Math.max.apply(Math, r.map((t) => +t.split(".")[0]));
@@ -22,32 +22,32 @@ export default class TagCompound extends ATag {
 	}
 
 	ToArray() {
-		return Object.values(this.Value);
+		return Object.values(this.prop("Value"));
 	}
 
 	GetTag(input) {
 		if (typeof input === "string" || input instanceof String) {
-			return this.Value[input];
+			return this.prop("Value")[input];
 		}
 
-		return this.Value[Object.keys(this.Value)[input]];
+		return this.prop("Value")[Object.keys(this.prop("Value"))[input]];
 	}
 	AddTag(tag) {
 		if (tag instanceof ATag) {
-			this.Value[tag.GetKey()] = tag;
+			this.prop("Value")[tag.GetKey()] = tag;
 		}
 
 		return this;
 	}
 	RemoveTag(input) {
 		if (typeof input === "string" || input instanceof String) {
-			delete this.Value[input];
+			delete this.prop("Value")[input];
 		} else if (input instanceof ATag) {
 			input = input.GetKey();
-			delete this.Value[input];
+			delete this.prop("Value")[input];
 		}
 
-		delete this.Value[Object.keys(this.Value)[input]];
+		delete this.prop("Value")[Object.keys(this.prop("Value"))[input]];
 
 		return this;
 	}
@@ -56,17 +56,17 @@ export default class TagCompound extends ATag {
 			input = input.GetKey();
 		}
 			
-		return this.Value[input] !== null && this.Value[input] !== void 0;
+		return this.prop("Value")[input] !== null && this.prop("Value")[input] !== void 0;
 	}
 
 	Size() {
-		return Object.keys(this.Value).length;
+		return Object.keys(this.prop("Value")).length;
 	}
 
 	Serialize(level) {
 		let obj = {};
-		for (let i in this.Value) {
-			obj[i] = this.Value[i].Serialize(Enum.Serialization.OBJECT);
+		for (let i in this.prop("Value")) {
+			obj[i] = this.prop("Value")[i].Serialize(Enum.Serialization.OBJECT);
 		}
 
 		return super.Serialize(level, this.GetType(), this.GetKey(), obj, this.GetOrdinality());

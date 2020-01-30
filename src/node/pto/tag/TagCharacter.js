@@ -49,8 +49,8 @@ export default class TagCharacter extends ATag {
 					value = [...value].map((e) => String.fromCharCode(+e));
 				}
 
-				if (this.Value.length > 0) {
-					arr = [...this.Value].map((e) => String.fromCharCode(+e));
+				if (this.prop("Value").length > 0) {
+					arr = [...this.prop("Value")].map((e) => String.fromCharCode(+e));
 					arr = arr.concat(value);
 				} else {
 					arr = value;
@@ -64,7 +64,7 @@ export default class TagCharacter extends ATag {
 		return this;
 	}
 	RemoveValue(index) {
-		let arr = [...this.Value];
+		let arr = [...this.prop("Value")];
 		arr.splice(index, 1);
 		this.prop("Value", Uint8Array.of(...arr));
 
@@ -72,7 +72,7 @@ export default class TagCharacter extends ATag {
 	}
 
 	GetValues() {
-		return [...this.Value].map((e) => String.fromCharCode(+e));
+		return [...this.prop("Value")].map((e) => String.fromCharCode(+e));
 	}
 	GetValue(index) {
 		if (index === null || index === void 0) {
