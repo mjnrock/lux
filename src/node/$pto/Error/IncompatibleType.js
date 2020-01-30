@@ -1,4 +1,4 @@
-import EnumTagType from "../Enum/TagType";
+import EnumTagType from "../enum/TagType";
 import { AException } from "./AException";
 
 class IncompatibleType extends AException {

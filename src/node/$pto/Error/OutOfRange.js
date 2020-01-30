@@ -1,5 +1,5 @@
 import { AException } from "./AException";
-import EnumTagType from "./../Enum/TagType";
+import EnumTagType from "../enum/TagType";
 
 class OutOfRange extends AException {
 	constructor(tagType, rangeMin, rangeMax, passedValue) {

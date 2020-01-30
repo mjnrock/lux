@@ -1,6 +1,6 @@
 import { ATag } from "./ATag";
-import Enum from "../Enum/package";
-import Error from "../Error/package";
+import Enum from "../enum/package";
+import Error from "../error/package";
 
 class TagFloat extends ATag {
 	constructor(key, value) {

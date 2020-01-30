@@ -1,6 +1,6 @@
 import { ATag } from "./ATag";
-import Enum from "../Enum/package";
-import { InvalidDataType } from "../Error/InvalidDataType";
+import Enum from "../enum/package";
+import { InvalidDataType } from "../error/InvalidDataType";
 
 class TagList extends ATag {
 	constructor(key, type) {

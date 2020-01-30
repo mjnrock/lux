@@ -1,8 +1,8 @@
-import Enum from "./Enum/package";
-import Error from "./Error/package";
-import Tag from "./Tag/package";
-import Utility from "./Utility/package";
-import Mutator from "./Mutator/package";
+import Enum from "./enum/package";
+import Error from "./error/package";
+import Tag from "./tag/package";
+import Utility from "./utility/package";
+import Mutator from "./mutator/package";
 
 export default {
 	Enum,

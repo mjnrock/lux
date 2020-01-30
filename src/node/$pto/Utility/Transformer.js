@@ -1,6 +1,6 @@
-import Enum from "../Enum/package";
-import Tag from "../Tag/package";
-import Error from "../Error/package";
+import Enum from "../enum/package";
+import Tag from "../tag/package";
+import Error from "../error/package";
 import { ByteBuffer } from "./ByteBuffer";
 
 class Transformer {

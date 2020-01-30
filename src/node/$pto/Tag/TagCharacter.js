@@ -1,6 +1,6 @@
 import { ATag } from "./ATag";
-import Enum from "../Enum/package";
-import { IncorrectParameterCount } from "../Error/IncorrectParameterCount";
+import Enum from "../enum/package";
+import { IncorrectParameterCount } from "../error/IncorrectParameterCount";
 
 class TagCharacter extends ATag {
 	constructor(key, value) {

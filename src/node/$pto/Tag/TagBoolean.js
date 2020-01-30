@@ -1,5 +1,5 @@
 import { ATag } from "./ATag";
-import Enum from "../Enum/package";
+import Enum from "../enum/package";
 
 class TagBoolean extends ATag {
 	constructor(key, value) {

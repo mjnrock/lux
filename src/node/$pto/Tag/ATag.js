@@ -1,98 +1,103 @@
-import Enum from "../Enum/package";
-import Error from "../Error/package";
+import Node from "./../../Node";
+
+import Enum from "../enum/package";
+import Error from "../error/package";
 import Tag from "./package";
 
-class ATag {
-	constructor(type, key, value) {		
-		this.Type = type;
-		this.Key = key;
-		this.Value = value;
-		this.Ordinality = Date.now();
+class ATag extends Node {
+	constructor(type, key, value) {
+        super();
+
+		this.meta("Type", type);
+        this.meta("Key", key);
+        
+		this.prop("Value", value);
+		this.prop("Ordinality", Date.now());
 	}
 
 	GetSchema(id = 1, pid = 0, depth = "") {
-		return `${depth}${id}.${pid}.${this.Type}`;
+		return `${depth}${id}.${pid}.${this.meta("Type")}`;
 	}
 
 	GetType() {
-		return this.Type;
+		return this.meta("Type");
 	}
 	SetType(type) {
-		this.Type = type;
+		this.meta("Type", type);
 
 		return this;
 	}
 
 	GetOrdinality() {
-		return +this.Ordinality;
+		return +this.prop("Ordinality");
 	}
 	SetOrdinality(order) {
-		this.Ordinality = +order;
+		this.prop("Ordinality", +order);
 
 		return this;
 	}
 
 	GetKey() {
-		return this.Key;
+		return this.meta("Key");
 	}
 	SetKey(key) {
-		this.Key = key;
+		this.meta("Key", key);
 
 		return this;
 	}
 
 	GetValues() {
-		return this.Value;
+		return this.prop("Value");
 	}
 	SetValues(array, value) {
 		if(typeof value === "number") {
-			this.Value = array.of(value);
+			this.prop("Value", array.of(value));
 		} else if(typeof value === "string" || value instanceof String) {
-			this.Value = array.of(value);
+			this.prop("Value", array.of(value));
 		} else if(value && value.length > 0) {
-			this.Value = array.of(...value);
+			this.prop("Value", array.of(...value));
 		} else {
-			this.Value = [];
+			this.prop("Value", []);
 		}
 
 		return this;
 	};
 
 	IsEmpty() {
-		return this.Value !== null && this.Value !== void 0;
+		return this.prop("Value") !== null && this.prop("Value") !== void 0;
 	};
 	SetValue(array, min, max, index, value) {
 		if(value >= min && value <= max) {
-			let arr = [...this.Value];
+			let arr = [...this.prop("Value")];
 			arr[index] = +value;
-			this.Value = array.of(...arr);
+			this.prop("Value", array.of(...arr));
 		} else if(value < min || value > max) {
-			throw new Error.OutOfRange(this.Type, min, max, value);
+			throw new Error.OutOfRange(this.meta("Type"), min, max, value);
 		}
 
 		return this;
 	};
 	AddValue(array, min, max, value) {
 		if(value >= min && value <= max) {
-			let arr = [...this.Value];
+			let arr = [...this.prop("Value")];
 			arr.push(+value);
-			this.Value = array.of(...arr);
+			this.prop("Value", array.of(...arr));
 		} else if(value < min || value > max) {
-			throw new Error.OutOfRange(this.Type, min, max, value);
+			throw new Error.OutOfRange(this.meta("Type"), min, max, value);
 		}
 
 		return this;
 	};
 	RemoveValue(array, index) {
-		let arr = [...this.Value];
+		let arr = [...this.prop("Value")];
 		arr.splice(index, 1);
-		this.Value = array.of(...arr);
+		this.prop("Value", array.of(...arr));
 
 		return this;
 	};
 	GetValue(index) {
-		if(this.Value !== null && this.Value !== void 0) {
-			return this.Value[index];
+		if(this.prop("Value") !== null && this.prop("Value") !== void 0) {
+			return this.prop("Value")[index];
 		}
 
 		return null;
@@ -100,8 +105,8 @@ class ATag {
 
 	GetBuffer() {
 		if(!this.IsEmpty()) {
-			if(this.Value["buffer"] !== null && this.Value["buffer"] !== void 0) {
-				return this.Value.buffer;
+			if(this.prop("Value")["buffer"] !== null && this.prop("Value")["buffer"] !== void 0) {
+				return this.prop("Value").buffer;
 			}
 		}
 
@@ -115,15 +120,15 @@ class ATag {
 		let bytes = 0;
 		++bytes;    //  Tag Type
 		++bytes;    //  Key Length
-		bytes += this.Key.length;    //  Key 
+		bytes += this.meta("Key").length;    //  Key 
 		++bytes;    //  Ordinality Length
-		bytes += this.Ordinality.toString().length;    //  Ordinality
+		bytes += this.prop("Ordinality").toString().length;    //  Ordinality
 		++bytes;    //  Value Length
 
 		if(this instanceof Tag.TagCompound || this instanceof Tag.TagList) {
 			++bytes; //  Amount of child Tags
 		} else {
-			bytes += this.Value.BYTES_PER_ELEMENT * this.Value.length;  //  Size of Value payload in bytes
+			bytes += this.prop("Value").BYTES_PER_ELEMENT * this.prop("Value").length;  //  Size of Value payload in bytes
 		}
 
 		return bytes;

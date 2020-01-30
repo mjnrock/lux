@@ -1,5 +1,5 @@
 import { ATag } from "./ATag";
-import Enum from "../Enum/package";
+import Enum from "../enum/package";
 
 class TagCompound extends ATag {
 	constructor(key) {
