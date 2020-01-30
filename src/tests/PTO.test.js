@@ -11,14 +11,16 @@ export function RunTest() {
 
     // console.log(tc1);
 
-    tc1.GetTag("Kiszkas").watch("Value", e => console.log(e.getPayload()));
+    // tc1.GetTag("Kiszkas").watch("Value", e => console.log(e.getPayload()));
     // ti1.watch("Value", e => console.log(e.getPayload()));
 
     ti1.SetValues(9);
     ti1.SetValues([14, 5]);
     ti1.SetValue(4, 65);
 
-    console.log(tc1.Serialize(PTO.Enum.Serialization.OBJECT));
+    // console.log(tc1.Serialize(PTO.Enum.Serialization.OBJECT));
+
+    console.log(PTO.Utility.Transformer.ToHierarchy(tc1));
 }
 
 RunTest();

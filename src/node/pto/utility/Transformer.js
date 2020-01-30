@@ -79,9 +79,9 @@ export default class Transformer {
 			} else if (json[i] instanceof Array) {
 				t = new Tag.TagList(i);
 				let c = Transformer.InferTagStructure(i, json[i]);
-				if (c && Object.keys(c.Value).length > 0) {
-					let values = Object.values(c.Value),
-						types = values.map((t) => t.Type);
+				if (c && Object.keys(c.prop("Value")).length > 0) {
+					let values = Object.values(c.prop("Value")),
+						types = values.map((t) => t.meta("Type"));
 
 					if (
 						types.length !==
@@ -125,18 +125,18 @@ export default class Transformer {
 							//  Everything else
 							t = new Tag.TagCompound(i);
 							let c = Transformer.InferTagStructure(i, json[i]);
-							t.Value = c.Value;
+							t.prop("Value", c.prop("Value"));
 						}
 					} else {
 						//  Homogenous
 						t.ContentType = types[0];
-						t.Value = values;
+						t.prop("Value", values);
 					}
 				}
 			} else if (typeof json[i] === "object") {
 				t = new Tag.TagCompound(i);
 				let c = Transformer.InferTagStructure(i, json[i]);
-				t.Value = c.Value;
+				t.prop("Value", c.prop("Value"));
 			}
 			tc.AddTag(t);
 		}
@@ -171,41 +171,41 @@ export default class Transformer {
 
 				BB.WriteTiny(tag.Size()); //  VALUE
 			} else if (input instanceof Tag.ATag) {
-				BB.WriteTiny(Array.from(tag.Value).length); //  VALUE_LENGTH
+				BB.WriteTiny(Array.from(tag.prop("Value")).length); //  VALUE_LENGTH
 
 				switch (tag.GetType()) { //  VALUE
 					case Enum.TagType.BOOL:
-						BB.WriteBoolean(Array.from(tag.Value));
+						BB.WriteBoolean(Array.from(tag.prop("Value")));
 						break;
 
 					case Enum.TagType.TINY:
-						BB.WriteTiny(Array.from(tag.Value));
+						BB.WriteTiny(Array.from(tag.prop("Value")));
 						break;
 					case Enum.TagType.SHORT:
-						BB.WriteShort(Array.from(tag.Value));
+						BB.WriteShort(Array.from(tag.prop("Value")));
 						break;
 					case Enum.TagType.INT:
-						BB.WriteInt(Array.from(tag.Value));
+						BB.WriteInt(Array.from(tag.prop("Value")));
 						break;
 					case Enum.TagType.LONG:
-						BB.WriteInt(Array.from(tag.Value));
+						BB.WriteInt(Array.from(tag.prop("Value")));
 						break;
 
 					case Enum.TagType.FLOAT:
-						BB.WriteInt(Array.from(tag.Value));
+						BB.WriteInt(Array.from(tag.prop("Value")));
 						break;
 					case Enum.TagType.DOUBLE:
-						BB.WriteDouble(Array.from(tag.Value));
+						BB.WriteDouble(Array.from(tag.prop("Value")));
 						break;
 
 					case Enum.TagType.CHARACTER:
-						BB.WriteTiny(Array.from(tag.Value));
+						BB.WriteTiny(Array.from(tag.prop("Value")));
 						break;
 					case Enum.TagType.STRING:
-						BB.WriteTiny(Array.from(tag.Value));
+						BB.WriteTiny(Array.from(tag.prop("Value")));
 						break;
 					case Enum.TagType.UUID:
-						BB.WriteTiny(Array.from(tag.Value));
+						BB.WriteTiny(Array.from(tag.prop("Value")));
 						break;
 					default:
 						break;
@@ -330,7 +330,7 @@ export default class Transformer {
 
 		if (tag instanceof Tag.TagCompound || tag instanceof Tag.TagList) {
 			array.push(tag);
-			let tags = tag.Value;
+			let tags = tag.prop("Value");
 			for (let i in tags) {
 				Transformer.FlattenTagStructure(tags[i], array);
 			}
@@ -365,8 +365,8 @@ export default class Transformer {
 		});
 
 		if (tag instanceof Tag.TagCompound || tag instanceof Tag.TagList) {
-			for (let i in tag.Value) {
-				array = Transformer.ToHierarchy(tag.Value[i], array, ID);
+			for (let i in tag.prop("Value")) {
+				array = Transformer.ToHierarchy(tag.prop("Value")[i], array, ID);
 			}
 		}
 
@@ -586,8 +586,8 @@ export default class Transformer {
 			tagCompound instanceof Tag.TagCompound ||
 			tagCompound instanceof Tag.TagList
 		) {
-			let tag = Enum.TagType.GetClass(tagCompound.Type).name;
-			xml += `<${tag} key="${tagCompound.Key}" ordinality="${tagCompound.Ordinality}"${
+			let tag = Enum.TagType.GetClass(tagCompound.meta("Type")).name;
+			xml += `<${tag} key="${tagCompound.meta("Key")}" ordinality="${tagCompound.prop("Ordinality")}"${
 				tagCompound instanceof Tag.TagList
 					? ` content-type="${
 							Enum.TagType.GetClass(tagCompound.ContentType)
@@ -595,21 +595,21 @@ export default class Transformer {
 						}"`
 					: ""
 			}>`;
-			let tags = tagCompound.Value;
+			let tags = tagCompound.prop("Value");
 			for (let i in tags) {
 				let x = Transformer.ToXML(tags[i]);
 				xml += x;
 			}
 			xml += `</${tag}>`;
 		} else if (tagCompound instanceof Tag.ATag) {
-			let tag = Enum.TagType.GetClass(tagCompound.Type).name,
+			let tag = Enum.TagType.GetClass(tagCompound.meta("Type")).name,
 				values = "";
 
-			for (let i in tagCompound.Value) {
-				values += `<Value>${tagCompound.Value[i]}</Value>`;
+			for (let i in tagCompound.prop("Value")) {
+				values += `<Value>${tagCompound.prop("Value")[i]}</Value>`;
 			}
 
-			xml += `<${tag} key="${tagCompound.Key}" ordinality="${tagCompound.Ordinality}">${values}</${tag}>`;
+			xml += `<${tag} key="${tagCompound.meta("Key")}" ordinality="${tagCompound.prop("Ordinality")}">${values}</${tag}>`;
 		}
 
 		return xml;
@@ -735,9 +735,9 @@ export default class Transformer {
 			return {
 				ID: t.ID,
 				ParentID: t.ParentID,
-				TagType: t.Tag.Type,
-				Key: t.Tag.Key,
-				Ordinality: t.Tag.Ordinality,
+				TagType: t.Tag.meta("Type"),
+				Key: t.Tag.meta("Key"),
+				Ordinality: t.Tag.prop("Ordinality"),
 				Value: value,
 				Options: options
 			};
@@ -884,8 +884,8 @@ export default class Transformer {
 
 		if (tag instanceof Tag.TagCompound || tag instanceof Tag.TagList) {
 			let lastEntry = array[array.length - 1];
-			for (let i in tag.Value) {
-				array = Transformer.ToSchema(tag.Value[i], array, ID, lastEntry);
+			for (let i in tag.prop("Value")) {
+				array = Transformer.ToSchema(tag.prop("Value")[i], array, ID, lastEntry);
 			}
 		}
 
