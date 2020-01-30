@@ -1,4 +1,4 @@
-import PTO from "../package";
+import PTO from "./../package";
 
 class General {
 	/**

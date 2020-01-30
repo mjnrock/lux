@@ -1,5 +1,5 @@
 import { ATag } from "./ATag";
-import Enum from "../enum/package";
+import Enum from "./../enum/package";
 
 class TagTiny extends ATag {
 	constructor(key, value) {

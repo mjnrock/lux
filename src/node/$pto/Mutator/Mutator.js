@@ -1,4 +1,4 @@
-import PTO from "../package.js"
+import PTO from "./../package.js"
 
 class Mutator {
 	constructor() {

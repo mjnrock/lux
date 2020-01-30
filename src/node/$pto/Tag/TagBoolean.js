@@ -1,5 +1,5 @@
 import { ATag } from "./ATag";
-import Enum from "../enum/package";
+import Enum from "./../enum/package";
 
 class TagBoolean extends ATag {
 	constructor(key, value) {
@@ -9,7 +9,7 @@ class TagBoolean extends ATag {
 	}
 
 	SetValues(value) {
-		this.Value = new Uint8Array();
+		this.prop("Value", new Uint8Array());
 		this.SetValue(0, value);
 
 		return this;

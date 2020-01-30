@@ -1,13 +1,13 @@
 import { ATag } from "./ATag";
-import Enum from "../enum/package";
-import { InvalidDataType } from "../error/InvalidDataType";
+import Enum from "./../enum/package";
+import { InvalidDataType } from "./../error/InvalidDataType";
 
 class TagList extends ATag {
 	constructor(key, type) {
 		super(Enum.TagType.LIST, key, null);
 
 		this.ContentType = type;
-		this.Value = [];
+		this.prop("Value", []);
 	}
 
 	GetSchema(id = 1, pid = 0, depth = "") {
@@ -54,7 +54,7 @@ class TagList extends ATag {
 		if (tag instanceof ATag) {
 			if (tag.GetType() === this.GetContentType()) {
 				if (!(this.Value instanceof Array)) {
-					this.Value = [];
+					this.prop("Value", []);
 				}
 				if (!this.Has(tag.Key)) {
 					this.Value.push(tag);

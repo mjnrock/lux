@@ -1,6 +1,6 @@
 import { ATag } from "./ATag";
-import Enum from "../enum/package";
-import { IncorrectParameterCount } from "../error/IncorrectParameterCount";
+import Enum from "./../enum/package";
+import { IncorrectParameterCount } from "./../error/IncorrectParameterCount";
 
 class TagCharacter extends ATag {
 	constructor(key, value) {
@@ -10,7 +10,7 @@ class TagCharacter extends ATag {
 	}
 
 	SetValues(value) {
-		this.Value = new Uint8Array();
+		this.prop("Value", new Uint8Array());
 
 		this.AddValue(value);
 
@@ -32,7 +32,7 @@ class TagCharacter extends ATag {
 			Array.prototype.splice.apply(values, [index, 1].concat(value));
 		}
 
-		this.Value = [];
+		this.prop("Value", []);
 		this.AddValue(values);
 	}
 	AddValue(value) {
@@ -57,7 +57,7 @@ class TagCharacter extends ATag {
 				}
 
 				arr = [...arr].map((c) => (c ? c.charCodeAt(0) : null));
-				this.Value = Uint8Array.of(...arr);
+				this.prop("Value", Uint8Array.of(...arr));
 			}
 		}
 
@@ -66,7 +66,7 @@ class TagCharacter extends ATag {
 	RemoveValue(index) {
 		let arr = [...this.Value];
 		arr.splice(index, 1);
-		this.Value = Uint8Array.of(...arr);
+		this.prop("Value", Uint8Array.of(...arr));
 
 		return this;
 	}

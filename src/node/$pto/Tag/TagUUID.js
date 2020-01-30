@@ -1,5 +1,5 @@
 import { TagString } from "./TagString";
-import Enum from "../enum/package";
+import Enum from "./../enum/package";
 
 class TagUUID extends TagString {
 	constructor(key, value) {

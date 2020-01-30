@@ -1,7 +1,7 @@
 import Node from "./../../Node";
 
-import Enum from "../enum/package";
-import Error from "../error/package";
+import Enum from "./../enum/package";
+import Error from "./../error/package";
 import Tag from "./package";
 
 class ATag extends Node {
@@ -96,8 +96,8 @@ class ATag extends Node {
 		return this;
 	};
 	GetValue(index) {
-		if(this.prop("Value") !== null && this.prop("Value") !== void 0) {
-			return this.prop("Value")[index];
+		if(!this.propIsEmpty("Value")) {
+			return this.aprop("Value", +index);
 		}
 
 		return null;

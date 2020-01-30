@@ -1,4 +1,4 @@
-import Tag from "../tag/package";
+import Tag from "./../tag/package";
 
 let EnumTagType = {
 	INT: 1,

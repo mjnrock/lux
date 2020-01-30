@@ -1,6 +1,6 @@
 import { ATag } from "./ATag";
-import Enum from "../enum/package";
-import Error from "../error/package";
+import Enum from "./../enum/package";
+import Error from "./../error/package";
 
 class TagFloat extends ATag {
 	constructor(key, value) {
@@ -15,7 +15,7 @@ class TagFloat extends ATag {
 		}
 
 		if (this.Value === null || this.Value === void 0) {
-			this.Value = new Int32Array();
+			this.prop("Value", new Int32Array());
 		}
 
 		if (value !== null && value !== void 0) {
@@ -48,7 +48,7 @@ class TagFloat extends ATag {
 			let arr = [...this.Value];
 			arr[2 * index] = l;
 			arr[2 * index + 1] = r;
-			this.Value = Int32Array.of(...arr);
+			this.prop("Value", Int32Array.of(...arr));
 		} else {
 			throw new Error.UndefinedValue(value);
 		}
@@ -78,7 +78,7 @@ class TagFloat extends ATag {
 			let arr = [...this.Value];
 			arr.push(l);
 			arr.push(r);
-			this.Value = Int32Array.of(...arr);
+			this.prop("Value", Int32Array.of(...arr));
 		} else {
 			throw new Error.UndefinedValue(value);
 		}
@@ -101,7 +101,7 @@ class TagFloat extends ATag {
 		if (this.Value !== null && this.Value !== void 0) {
 			let arr = [...this.Value];
 			arr.splice(2 * index, 2);
-			this.Value = Int32Array.of(...arr);
+			this.prop("Value", Int32Array.of(...arr));
 		}
 
 		return this;
@@ -120,7 +120,7 @@ class TagFloat extends ATag {
 
 			let arr = [...this.Value];
 			arr.push(value);
-			this.Value = Int32Array.of(...arr);
+			this.prop("Value", Int32Array.of(...arr));
 		} else {
 			throw new Error.UndefinedValue(value);
 		}

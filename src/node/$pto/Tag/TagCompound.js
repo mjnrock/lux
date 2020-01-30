@@ -1,11 +1,11 @@
 import { ATag } from "./ATag";
-import Enum from "../enum/package";
+import Enum from "./../enum/package";
 
 class TagCompound extends ATag {
 	constructor(key) {
 		super(Enum.TagType.COMPOUND, key, null);
 
-		this.Value = {};
+		this.prop("Value", {});
 	}
 
 	GetSchema(id = 1, pid = 0, depth = "") {

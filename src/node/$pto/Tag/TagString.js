@@ -1,6 +1,6 @@
 import { ATag } from "./ATag";
-import Enum from "../enum/package";
-import { IncorrectParameterCount } from "../error/IncorrectParameterCount";
+import Enum from "./../enum/package";
+import { IncorrectParameterCount } from "./../error/IncorrectParameterCount";
 
 class TagString extends ATag {
 	constructor(key, value) {
@@ -10,16 +10,16 @@ class TagString extends ATag {
 	}
 
 	SetValues(value) {
-		this.Value = new Uint8Array();
+		this.prop("Value", new Uint8Array());
 		
 		if (value !== null && value !== void 0) {
 			if (value instanceof Array) {
 				value = value.filter((v) => v !== "" && v !== 0);
-				this.Value = Uint8Array.of(...value);
+				this.prop("Value", Uint8Array.of(...value));
 			} else if (typeof value === "string" || value instanceof String) {
 				let string = [];
 				[...value].forEach((c) => string.push(c.charCodeAt(0)));
-				this.Value = Uint8Array.of(...string);
+				this.prop("Value", Uint8Array.of(...string));
 			}
 		}
 
@@ -44,7 +44,7 @@ class TagString extends ATag {
 			Array.prototype.splice.apply(values, [index, 1].concat(value));
 		}
 
-		this.Value = [];
+		this.prop("Value", []);
 		this.AddValue(values);
 	}
 	AddValue(value) {
@@ -75,7 +75,7 @@ class TagString extends ATag {
 				}
 
 				arr = [...arr.join(s)].map((c) => c.charCodeAt(0));
-				this.Value = Uint8Array.of(...arr);
+				this.prop("Value", Uint8Array.of(...arr));
 			}
 		}
 
@@ -87,7 +87,7 @@ class TagString extends ATag {
 
 		values.splice(index, 1);
 
-		this.Value = [];
+		this.prop("Value", []);
 		this.AddValue(values);
 	}
 
