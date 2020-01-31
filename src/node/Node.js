@@ -47,7 +47,15 @@ export default class Node {
 
         
         //* STATE
-        this._state = state;           // A contained state object for storing data within the Node
+        this._state = {};           // A contained state object for storing data within the Node
+
+        if(Object.keys(state).length) {
+            let entries = Object.entries(state);
+
+            for(let [ key, value ] of entries) {
+                this.prop(key, value);
+            }
+        }
 
         this._registerModule("state");
 
@@ -388,7 +396,7 @@ export default class Node {
         return this;
     }
     getState() {
-        return this;
+        return this._state;
     }
 
     setProp(prop, value, typeKey = []) {

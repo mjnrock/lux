@@ -11,11 +11,12 @@ export default class Task extends MasterNode {
 
         this.load("Timer", new Timer());
 
-        this.flagOnIsReactionary();
         this.flagOnIsReactionStateSave();
+        this.flagOnIsReactionary();
         this.eventReactionReemit(
             "timer-start",
-            "timer-stop"
+            "timer-stop",
+            "timer-tick"
         );
     }
 };

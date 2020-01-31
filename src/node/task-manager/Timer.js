@@ -6,10 +6,12 @@ export default class Timer extends Node {
             StartTime: null,
             Elapsed: null,
             Duration: null,
-            Sprints: []
+            Sprints: [],
+            _interval: null
         }, [
             "timer-start",
-            "timer-stop"
+            "timer-stop",
+            "timer-tick"
         ]);
     }
 
@@ -22,15 +24,25 @@ export default class Timer extends Node {
             this.SetTimer(duration);
         }
 
-        this.prop("IsRunning", true);
         this.prop("StartTime", Date.now());
+        this.prop("_interval", setInterval(
+            () => {
+                this.prop("Elapsed", Date.now() - this.prop("StartTime"));
+                this.emit("timer-tick", this.prop("Elapsed"));
+
+                if(this.IsCompleted()) {
+                    clearInterval(this.prop("_interval"));
+                    this.StopTimer();
+                }
+            },
+            500
+        ));
         
         this.emit("timer-start");
         
         return this;
     }
     StopTimer() {
-        this.prop("IsRunning", false);
         this.prop("StartTime", null);
         this.aprop("Sprints", -1, Date.now() - this.prop("StartTime"));        
         
@@ -44,5 +56,12 @@ export default class Timer extends Node {
     }
     IsTimerActive() {
         return !!this.prop("StartTime");
+    }
+    IsCompleted() {
+        if(!(this.propIsEmpty("Elapsed") && this.propIsEmpty("Duration"))) {
+            return this.prop("Elapsed") >= this.prop("Duration");
+        }
+
+        return false;
     }
 };

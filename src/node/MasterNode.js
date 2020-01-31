@@ -351,7 +351,8 @@ export default class MasterNode extends Node {
                 let name = this.getNodeName(e.getEmitter());
 
                 if(name) {
-                    this.processSubStateChange(name, e.getEmitter()._state);
+                    // this.processSubStateChange(name, e.getEmitter()._state);     //! The _state is frozen at this point, thus the line below for quick "unfreezing"
+                    this.processSubStateChange(name, { ...e.getEmitter()._state });
                 }
             };
             
