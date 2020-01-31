@@ -5,6 +5,7 @@ import WebSocket from "./WebSocket.test";
 import Logic from "./Logic.test";
 import MasterNode from "./MasterNode.test";
 import PTO from "./PTO.test";
+import TaskManager from "./TaskManager.test";
 
 export default {
     Observations,
@@ -13,5 +14,6 @@ export default {
     WebSocket,
     Logic,
     MasterNode,
-    PTO
+    PTO,
+    TaskManager
 };

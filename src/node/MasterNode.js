@@ -1,10 +1,11 @@
 import Node from "./Node";
 import Reaction from "./Reaction";
 import Event from "./Event";
+import { GenerateUUID } from "../core/helper";
 
 export default class MasterNode extends Node {
-    constructor() {
-        super();
+    constructor(state = {}, events = []) {
+        super(state, events = []);
 
         //* HIVE
         this._subordinates = {};
@@ -309,6 +310,23 @@ export default class MasterNode extends Node {
 
     eventReaction(name, eventType, reaction) {
         return this.reaction(name, Reaction.createEventReaction(eventType, reaction));
+    }
+    eventReactionReemit(...eventTypes) {
+        let arr = [];
+
+        for(let eventType of eventTypes) {
+            if(!this.hasEvent(eventType)) {
+                this.addEvent(eventType);
+            }
+
+            arr.push(this.eventReaction(GenerateUUID(), eventType, this.reemit.bind(this)));
+        }
+
+        if(arr.length === 1) {
+            return arr[ 0 ];
+        }
+
+        return arr;
     }
 
     processSubStateChange(name, data) {

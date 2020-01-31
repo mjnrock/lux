@@ -26,20 +26,20 @@ export default class WebSocket extends Node {
         this._registerModule("data-connector");
     }
 
-    getLastResponse() {
+    GetLastResponse() {
         return this.prop("LastResponse");
     }
 
-    getUrl() {
+    GetUrl() {
         let host = `${ this.meta("Host") }:${ this.meta("Port") }`,
             url = `${ this.meta("Protocol")  }//${ host }/`;
 
         return url;
     }
 
-    connect() {
+    Connect() {
         if(this.metaIsEmpty("Connection")) {
-            this.meta("Connection", new WS(this.getUrl()));
+            this.meta("Connection", new WS(this.GetUrl()));
 
             this.meta("Connection").on("open", () => this.emit("open"));
             this.meta("Connection").on("message", (msg) => {
@@ -74,7 +74,7 @@ export default class WebSocket extends Node {
 
         return this;
     }
-    destroy() {
+    Destroy() {
         if(!this.metaIsEmpty("Connection")) {
             this.meta("Connection").terminate();
 
@@ -84,7 +84,7 @@ export default class WebSocket extends Node {
         return this;
     }
 
-    send(payload) {
+    Send(payload) {
         let data = payload;
         
         if(typeof payload === "object" || Array.isArray(payload))  {

@@ -11,7 +11,7 @@ import Watcher from "./Watcher";
     //? Maybe erase the prop data completely whenever a new .fetch() is invoked and replace with standard/static Enum text flags (e.g. PENDING = UUID, etc.)
 
 export default class Node {
-    constructor() {
+    constructor(state = {}, events = []) {
         //* BASE
         this._ids = {};                // A generic id container for any purpose, attached to a category (e.g. [ category ] = id) (i.e. MasterNode entries)
 
@@ -34,6 +34,10 @@ export default class Node {
             "prop-change::array": e => e
         };
 
+        if(events.length) {
+            this.addEvent(...events);
+        }
+
         this._listeners = {};       // Listeners receive a *specific* event (i.e. the listened event)
         this._subscribers = {};     // Subscribers receive *all* events
         this._watchers = {};        // Watchers receive the "prop-change" event when a specific prop changes (i.e. the watched prop)
@@ -43,7 +47,7 @@ export default class Node {
 
         
         //* STATE
-        this._state = {};           // A contained state object for storing data within the Node
+        this._state = state;           // A contained state object for storing data within the Node
 
         this._registerModule("state");
 
@@ -166,7 +170,7 @@ export default class Node {
     addEvent(...events) {
         for(let name of events) {
             if(typeof name === "string" || name instanceof String) {
-                this._events[ name ] = null;
+                this._events[ name ] = e => e;
             }
         }
 
@@ -243,6 +247,10 @@ export default class Node {
         })(this);
 
         return this;
+    }
+    reemit(e) {
+        //? this.emit will automatically add @this as an emitter is the argument is an <Event>
+        return this.emit(e);
     }
     
     /**

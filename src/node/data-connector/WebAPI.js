@@ -20,11 +20,11 @@ export default class WebAPI extends Node {
         this._registerModule("data-connector");
     }
 
-    getLastResponse() {
+    GetLastResponse() {
         return this.prop("LastResponse");
     }
 
-    getUrl(endpoint, params = {}) {
+    GetUrl(endpoint, params = {}) {
         let host = `${ this.meta("Host") }:${ this.meta("Port") }`,
             url = `${ this.meta("Protocol")  }//${ host }/${ endpoint.replace(/\/$/, "").replace(/^\/+/g, "") }/`,
             p = Object.entries(params).reduce((a, [ k, v ], i) => {
@@ -39,7 +39,7 @@ export default class WebAPI extends Node {
     }
 
     async JSON(endpoint, params = {}) {
-        let url = this.getUrl(endpoint, params);
+        let url = this.GetUrl(endpoint, params);
         
         this.emit("request", { endpoint, params, url });
         
