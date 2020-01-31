@@ -25,7 +25,7 @@ export default class Timer extends Node {
         }
 
         this.prop("StartTime", Date.now());
-        this.prop("_interval", Timer.AccurateInterval(500, 
+        this.prop("_interval", Timer.setInterval(500, 
             () => {
                 this.prop("Elapsed", Date.now() - this.prop("StartTime"));
                 this.emit("timer-tick", this.prop("Elapsed"));
@@ -67,23 +67,24 @@ export default class Timer extends Node {
     
     /**
      * A replacement for setInterval() that attempts to keep drift in check.
-     * The function will offset the next interval with the drift to attempt to compensate over the long run.
+     * The function will offset the next interval with the drift to attempt to compensate over the long run using timeouts.
      * @param {number} time 
      * @param {function} fn 
      */
-    static AccurateInterval(time, fn) {
+    static setInterval(time, fn) {
         var cancel, nextAt, timeout, wrapper, _ref;
 
         nextAt = new Date().getTime() + time;
         timeout = null;
 
-        if(typeof time === 'function') {
-            _ref = [time, fn], fn = _ref[0], time = _ref[1];
+        if(typeof time === "function") {
+            _ref = [ time, fn ], fn = _ref[ 0 ], time = _ref[ 1 ];
         }
 
         wrapper = () => {
             nextAt += time;
             timeout = setTimeout(wrapper, nextAt - new Date().getTime());
+
             return fn();
         };
         cancel = () => {
