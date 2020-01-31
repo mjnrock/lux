@@ -25,17 +25,16 @@ export default class Timer extends Node {
         }
 
         this.prop("StartTime", Date.now());
-        this.prop("_interval", setInterval(
+        this.prop("_interval", Timer.AccurateInterval(500, 
             () => {
                 this.prop("Elapsed", Date.now() - this.prop("StartTime"));
                 this.emit("timer-tick", this.prop("Elapsed"));
 
                 if(this.IsCompleted()) {
-                    clearInterval(this.prop("_interval"));
+                    this.prop("_interval").cancel();
                     this.StopTimer();
                 }
-            },
-            500
+            }
         ));
         
         this.emit("timer-start");
@@ -63,5 +62,38 @@ export default class Timer extends Node {
         }
 
         return false;
+    }
+
+    
+    /**
+     * A replacement for setInterval() that attempts to keep drift in check.
+     * The function will offset the next interval with the drift to attempt to compensate over the long run.
+     * @param {number} time 
+     * @param {function} fn 
+     */
+    static AccurateInterval(time, fn) {
+        var cancel, nextAt, timeout, wrapper, _ref;
+
+        nextAt = new Date().getTime() + time;
+        timeout = null;
+
+        if(typeof time === 'function') {
+            _ref = [time, fn], fn = _ref[0], time = _ref[1];
+        }
+
+        wrapper = () => {
+            nextAt += time;
+            timeout = setTimeout(wrapper, nextAt - new Date().getTime());
+            return fn();
+        };
+        cancel = () => {
+            return clearTimeout(timeout);
+        };
+
+        timeout = setTimeout(wrapper, nextAt - new Date().getTime());
+
+        return {
+            cancel: cancel
+        };
     }
 };

@@ -7,7 +7,7 @@ export function RunTest() {
     task.node("Timer").listen("timer-tick", e => console.log(e.getEmitter(0).IsCompleted()));
     task.node("Timer").listen("timer-stop", e => console.log(e.getEmitter(0).prop("Elapsed")));
 
-    task.node("Timer").StartTimer(2500);
+    task.node("Timer").StartTimer(4500);
 }
 
 RunTest();
