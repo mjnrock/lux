@@ -1,4 +1,4 @@
-import PTO from "./../node/pto/package";
+import PTO from "./../node/$pto/package";
 
 export function RunTest() {
     let tc1 = new PTO.Tag.TagCompound("Cats");
