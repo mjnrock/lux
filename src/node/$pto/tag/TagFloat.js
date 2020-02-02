@@ -87,7 +87,6 @@ export default class TagFloat extends ATag {
 	}
 	GetValue(index) {
 		if (this.prop("Value") !== null && this.prop("Value") !== void 0) {
-			console.log([this.prop("Value"), index]);
 			return +"".concat(
 				this.prop("Value")[2 * index].toString(),
 				".",

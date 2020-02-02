@@ -45,7 +45,7 @@ let debug = (...args) => {
 };
 // console.log = debug;
 console.log(" ----- TESTS: MasterNode -----");
-Lux.Tests.PTO.RunTest();
+// Lux.Tests.PTO.RunTest();
 console.log(" ----- END: MasterNode -----");
 
 // console.log(" ----- TESTS: Fetch -----");
