@@ -6,406 +6,245 @@ import { GenerateUUID } from "../core/helper";
 export default class MasterNode extends Node {
     constructor(state = {}, events = []) {
         super(state, events = []);
+        
+        this.prop("_subState", {});
 
-        //* HIVE
-        this._subordinates = {};
+        this._entities = {};
+        this._reactions = {};
+        this._responses = [     // Custom reaction to Events passed through .next(), seeded with a "state copier" on Entity<Node> e.prop-change
+            e => {        
+                if(e.getType() === "prop-change" || e.getType() === "prop-change::array" || e.getType() === "prop-change::object") {
+                    let emitter = e.getEmitter(),
+                        name = this.findEntityName(emitter.UUID());
 
-        this._registerModule("hive");
+                        if(name) {
+                            let newValue = Object.freeze(JSON.parse(JSON.stringify(emitter._state))),
+                                oldValue = this.oprop("_subState", name);
 
+                            this.oprop("_subState", name, newValue);
 
-        //* BEHAVIOR
-        this.prop("SubState", {});
-        this._behavioralFlags = {
-            isReactionary: false,
-            isReactionStateSave: false
-        }
-        this._actions = {};
-        this._reactions = {};   //? The main purpose of Reactions are to formalize the event listening between the <MasterNode> and a subordinate <Node> with default behavior and conditional executions.  Since <Nodes> are .subscribed to, this makes multi-listening more practical and formalizable.
+                            let obj = {
+                                name: name,
+                                current: newValue,
+                                previous: oldValue
+                            };
 
-        this._registerModule("behavior");
+                            this.emit("substate-change", obj);
+
+                            return obj;
+                        }
+                }
+            }
+        ];
 
         this.addEvent(
-            "load",
-            "unload",
-            "direct",
-            "command",
-            "spy",
-            "action",
-            "reaction",
+            "attach",
+            "detach",
             "substate-change"
         );
+
+        this.setNext(this.react);
+        this.addEventReaction(
+            "prop-change",
+            "prop-change::array",
+            "prop-change::object",
+        )
     }
 
-    //* HIVE
-    getSubordinate(name) {
-        return this._subordinates[ name ];
-    }
-    setSubordinate(name, node) {
-        if(name !== null && name !== void 0 && node !== null && node !== void 0 && arguments.length === 2) {
-            this._subordinates[ name ] = node;
+    $(name) {
+        if(name) {
+            return this.oprop("_subState", name);
         }
 
-        return this;
+        return this.prop("_subState");
     }
-    removeSubordinate(name) {
-        delete this._subordinates[ name ];
-
-        return this;
-    }
-
-    load(name, node) {
-        if(name !== null && name !== void 0 && node instanceof Node && arguments.length === 2) {
-            this.setSubordinate(name, node);
-            node.subscribe(this);
-
-            this.emit("load", name, node);
-        }
-
-        return this;
-    }
-    unload(name) {
-        if(name !== null && name !== void 0 && arguments.length === 2) {
-            this.removeSubordinate(name, node);
-            node.unsubscribe(this);
-
-            this.emit("unload", name);
-        }
-
-        return this;
-    }
-
-    node(name, node) {
-        if(name !== null && name !== void 0 && arguments.length === 1) {
-            return this.getSubordinate(name);
-        }
-
-        return this.load(name, node);
-    }
-    nodes(...names) {
-        let nodes = [];
-        for(let name of names) {
-            let node = this.node(name);
-
-            nodes.push(node);
-        }
-
-        return nodes;
-    }
-
-    getNodeName(nodeOrUUID) {
-        let nodes = Object.entries(this._subordinates),
-            value = nodeOrUUID;
-
-        if(nodeOrUUID instanceof Node) {
-            value = nodeOrUUID.UUID();
-        }
-
-        let [ pNode ] = nodes.filter(([ k, v ]) => v.UUID() === value);
-
-        if(Array.isArray(pNode) && pNode.length === 2) {
-            return pNode[ 0 ];
-        }
-
-        return false;
-    }
-
-    /**
-     * result = @fn(node, @name)
-     * 
-     * @param {string} name 
-     * @param {function} fn
-     */
-    direct(name, fn) {
-        let node = this.getSubordinate(name);
-
-        if(node instanceof Node && typeof fn === "function") {
-            let result = fn(name, node);
-
-            this.emit("direct", name, result, node.UUID());
-        }
-
-        return this;
-    }
-    /**
-     * result = @fn(node, nodes)
-     * 
-     * @param {function} fn 
-     */
-    command(fn) {
-        if(typeof fn !== "function") {
-            return false;
-        }
-
-        let results = {},
-            entries = Object.entries(this._subordinates);
-
-        for(let [ name, node ] of entries) {
-            if(node instanceof Node) {
-                let result = fn(name, node);
-
-                results[ name ] = [ result, node.UUID() ];
+    findEntityName(uuid) {
+        for(let [ name, entity ] of Object.entries(this._entities)) {
+            if(entity.UUID() === uuid) {
+                return name;
             }
         }
-    
-        this.emit("command", results);
-
-        return this;
     }
 
 
-    /**
-     * An elevated .watch to spy on subordinates' state
-     * @returns {bool} Allows determinant of success
-     */
-    spy(name, prop, callback) {
-        let node = this.getSubordinate(name);
 
-        if(node instanceof Node) {
-            node.watch(prop, e => {
-                this.emit("spy", name, e);
+    hasEntity(nameOrUUID) {
+        let ent = this.getEntity(nameOrUUID);
 
-                callback(name, e);
-            });
-
+        if(ent instanceof Node) {
             return true;
         }
 
-        return false;
-    }
-    /**
-     * An elevated .prop for the subordinate
-     * @param {string} name 
-     * @param {string} prop 
-     * @param {any} value 
-     * @returns {<prop result>|false} Allows determinant of success
-     */
-    sprop(name, prop, value) {
-        let node = this.getSubordinate(name);
-
-        if(node instanceof Node) {
-            return node.prop(prop, value);
+        for(let entity of Object.values(this._entities)) {
+            if(entity.UUID() === nameOrUUID) {
+                return true;
+            }
         }
 
         return false;
     }
-    /**
-     * An elevated .aprop for the subordinate
-     * @param {string} name 
-     * @param {string} prop 
-     * @param {string} key 
-     * @param {any} value 
-     * @returns {<prop result>|false} Allows determinant of success
-     */
-    saprop(name, prop, key, value) {
-        let node = this.getSubordinate(name);
+    getEntity(nameOrUUID) {
+        let ent = this._entities [ nameOrUUID ];
 
-        if(node instanceof Node) {
-            return node.aprop(prop, key, value);
+        if(ent instanceof Node) {
+            return ent;
         }
 
-        return false;
-    }
-    /**
-     * An elevated .oprop for the subordinate
-     * @param {string} name 
-     * @param {string} prop 
-     * @param {string} key 
-     * @param {any} value 
-     * @returns {<prop result>|false} Allows determinant of success
-     */
-    soprop(name, prop, key, value) {
-        let node = this.getSubordinate(name);
-
-        if(node instanceof Node) {
-            return node.oprop(prop, key, value);
+        for(let entity of Object.values(this._entities)) {
+            if(entity.UUID() === nameOrUUID) {
+                return entity;
+            }
         }
 
-        return false;
+        return this._entities;
     }
-
-
-    //* BEHAVIOR
-    hasAction(name) {
-        return this._actions[ name ] !== void 0;
-    }
-    getAction(name) {
-        return this._actions[ name ];
-    }
-    setAction(name, fn) {
-        if(name !== null && name !== void 0 && typeof fn === "function" && arguments.length === 2) {
-            this._actions[ name ] = fn;
-        }
-    }
-    action(name, fn) {
-        if(name !== null && name !== void 0 && arguments.length === 1) {
-            return this.getAction(name);
+    setEntity(name, nodeOrState, events = []) {
+        if(name) {
+            if(nodeOrState instanceof Node) {
+                this._entities[ name ] = nodeOrState;
+            } else if(typeof nodeOrState === "object") {
+                this._entities[ name ] = new Node(nodeOrState, events);
+            } else {
+                this._entities[ name ] = new Node();
+            }
         }
 
-        return this.setAction(name, fn);
+        return this;
+    }
+    removeEntity(name) {
+        delete this._entities[ name ];
+
+        return this;
     }
 
-    do(name, ...args) {
-        if(name !== null && name !== void 0) {
-            let action = this.getAction(name);
+    attach(name, node) {
+        if(arguments.length === 1 && name instanceof Node) {
+            node = name;
+            name = node.UUID();
+        }
 
-            if(typeof action === "function") {
-                let result = action(...args);
+        if((typeof name === "string" || name instanceof String) && node instanceof Node) {
+            this.setEntity(name, node);
+            this.subscribeTo(node);
 
-                this.emit("action", name, result);
+            this.emit("attach", name, node);
+        }
+
+        return this;
+    }
+    detach(nameOrNode) {
+        let name, node;
+
+        if(typeof nameOrNode === "string" || nameOrNode instanceof String) {
+            name = nameOrNode;
+            node = this.getEntity(name);
+        } else if(nameOrNode instanceof Node) {
+            name = nameOrNode.UUID();
+            node = nameOrNode;
+        }
+
+        if(this.getEntity(name)) {
+            this.removeEntity(name);
+            this.unsubscribeTo(node);
+
+            this.emit("detach", name, node);
+        }
+
+        return this;
+    }
+
+
+
+    getReaction(name) {
+        if(name) {
+            return this._reactions[ name ];
+        }
+
+        return this._reactions;
+    }
+    setReaction(name, reaction) {
+        if(arguments.length === 1) {
+            reaction = name;
+
+            if(name instanceof Reaction) {
+                name = reaction.getName() || reaction.UUID();
+            } else if(typeof name === "function") {
+                name = GenerateUUID();
+            } 
+        }
+
+        if(reaction instanceof Reaction) {
+            this._reactions[ name ] = reaction;
+        } else if(typeof reaction === "function") {
+            this.setReaction(
+                name,
+                new Reaction(name, reaction)
+            );
+        }
+
+        return this;
+    }
+    removeReaction(name) {
+        delete this._reactions[ name ];
+
+        return this;
+    }
+
+    addEventReaction(...events) {
+        for(let name of events) {
+            if(typeof name === "string" || name instanceof String) {
+                let reaction = Reaction.createEventReaction(
+                        name,
+                        this.respond.bind(this)
+                    );
+
+                this.setReaction(name, reaction);
             }
         }
 
         return this;
     }
 
-    hasReaction(name) {
-        return this._reactions[ name ] instanceof Reaction;
-    }
-    getReaction(name) {
-        return this._reactions[ name ];
-    }
-    setReaction(name, fn, cond = true) {
-        if(name !== null && name !== void 0 && typeof cond === "function" && typeof fn === "function" && arguments.length === 3) {
-            this._reactions[ name ] = new Reaction(name, fn, cond);
-        }
-        
-        if(fn instanceof Reaction) {
-            this._reactions[ name ] = fn;
-        }
-
-        return this;
-    }
-    reaction(name, fn, cond) {
-        if(name !== null && name !== void 0 && arguments.length === 1) {
-            return this.getReaction(name);
-        }
-
-        return this.setReaction(name, fn, cond);
-    }
-
-    react(name, ...args) {
-        if(name !== null && name !== void 0) {
-            let reaction = this.getReaction(name);
+    /**
+     * Functionally, this thing will "catch" all <Event>s emitted by an attached <Node> via the this.next(this.react) chain.
+     * @param {*} e 
+     */
+    react(e) {
+        if(e instanceof Event) {
+            let reaction = this.getReaction(e.getType());
 
             if(reaction instanceof Reaction) {
-                let result = reaction.run(...args);
-
-                if(result === true) {
-                    this.emit("reaction", name);
-
-                    // if(name === "SaveState") {
-                    //     if(args[ 0 ] instanceof Event) {
-                    //         let event = args[ 0 ],
-                    //             subName = this.getNodeName(event.getEmitter());
-
-                    //         this.emit("substate-change", this.getSubState(subName));
-                    //     }
-                    // }
-                }
-
-                return result;
+                reaction.run(e);
             }
+        }
+
+        return e;
+    }
+
+    getResponse(index) {
+        if(index === void 0) {
+            return this._responses;
+        }
+
+        return this._responses[ index ];
+    }
+    addResponse(response) {
+        if(typeof response === "function") {
+            this._responses.push(response);
+        }
+
+        return this;
+    }
+    deleteResponse(index) {
+        if(typeof index === "number" && index >= 0) {
+            return this._responses.splice(index, 1);
         }
     }
 
     respond(e) {
-        if(this._behavioralFlags.isReactionary) {
-            let keys = Object.keys(this._reactions),
-                responses = [];
-
-            for(let key of keys) {
-                let response = this.react(key, e);
-
-                if(response === true) {
-                    responses.push(e);
-                }
-            }
-
-            return responses;
+        for(let response of this._responses) {
+            response(e);
         }
-
-        return false;
-    }
-
-    eventReaction(name, eventType, reaction) {
-        return this.reaction(name, Reaction.createEventReaction(eventType, reaction));
-    }
-    eventReactionReemit(...eventTypes) {
-        let arr = [];
-
-        for(let eventType of eventTypes) {
-            if(!this.hasEvent(eventType)) {
-                this.addEvent(eventType);
-            }
-
-            arr.push(this.eventReaction(GenerateUUID(), eventType, this.reemit.bind(this)));
-        }
-
-        if(arr.length === 1) {
-            return arr[ 0 ];
-        }
-
-        return arr;
-    }
-
-    /**
-     * @name supports dot-notation for deeper dives
-     * @param {string|selector} name 
-     */
-    getSubState(name) {
-        if(name === void 0) {
-            return this.prop("SubState");
-        }
-
-        return this.oprop("SubState", name);
-    }
-
-    processSubStateChange(name, data) {
-        let newValue = Object.freeze(data),
-            oldValue = this.oprop("SubState", name);
-
-        this.oprop(
-            "SubState",
-            name,
-            newValue
-        );
-
-        this.emit("substate-change", newValue, oldValue);
-    }
-
-    flagOnIsReactionary() {
-        this._behavioralFlags.isReactionary = true;
-        this.setNext(this.respond);
-        
-        if(this._behavioralFlags.isReactionStateSave) {
-            let reaction = e => {
-                let name = this.getNodeName(e.getEmitter());
-
-                if(name) {
-                    // this.processSubStateChange(name, e.getEmitter()._state);     //! The _state is frozen at this point, thus the line below for quick "unfreezing"
-                    this.processSubStateChange(name, { ...e.getEmitter()._state });
-                }
-            };
-            
-            this.eventReaction("SaveState", "prop-change", reaction);
-        }
-
-        return this;
-    }
-    flagOffIsReactionary() {
-        this._behavioralFlags.isReactionary = false;
-        this.setNext(null);
-
-        return this;
-    }
-
-    flagOnIsReactionStateSave() {
-        this._behavioralFlags.isReactionStateSave = true;
-
-        return this;
-    }
-    flagOffIsReactionStateSave() {
-        this._behavioralFlags.isReactionStateSave = false;
 
         return this;
     }
