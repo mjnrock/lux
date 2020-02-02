@@ -10,32 +10,8 @@ export default class MasterNode extends Node {
         this.prop("_subState", {});
 
         this._entities = {};
-        this._reactions = {};
-        this._responses = [     // Custom reaction to Events passed through .next(), seeded with a "state copier" on Entity<Node> e.prop-change
-            e => {        
-                if(e.getType() === "prop-change" || e.getType() === "prop-change::array" || e.getType() === "prop-change::object") {
-                    let emitter = e.getEmitter(),
-                        name = this.findEntityName(emitter.UUID());
-
-                        if(name) {
-                            let newValue = Object.freeze(JSON.parse(JSON.stringify(emitter._state))),
-                                oldValue = this.oprop("_subState", name);
-
-                            this.oprop("_subState", name, newValue);
-
-                            let obj = {
-                                name: name,
-                                current: newValue,
-                                previous: oldValue
-                            };
-
-                            this.emit("substate-change", obj);
-
-                            return obj;
-                        }
-                }
-            }
-        ];
+        this._reactions = {};       // These are reactions to <Event>s passed into .next() and packaged into <Reaction> classes; they are event-specific
+        this._responses = [];       // These are meant to work like reducers in React, with their invocation initiated by a .next() call that does not pass an Event
 
         this.addEvent(
             "attach",
@@ -44,7 +20,7 @@ export default class MasterNode extends Node {
         );
 
         this.setNext(this.react);
-        this.addEventReaction(
+        this.addReactionEvent(
             "prop-change",
             "prop-change::array",
             "prop-change::object",
@@ -190,12 +166,36 @@ export default class MasterNode extends Node {
         return this;
     }
 
-    addEventReaction(...events) {
+    addReactionEvent(...events) {
+        let fn = e => {        
+            if(e instanceof Event && (e.getType() === "prop-change" || e.getType() === "prop-change::array" || e.getType() === "prop-change::object")) {
+                let emitter = e.getEmitter(),
+                    name = this.findEntityName(emitter.UUID());
+
+                    if(name) {
+                        let newValue = Object.freeze(JSON.parse(JSON.stringify(emitter._state))),
+                            oldValue = this.oprop("_subState", name);
+
+                        this.oprop("_subState", name, newValue);
+
+                        let obj = {
+                            name: name,
+                            current: newValue,
+                            previous: oldValue
+                        };
+
+                        this.emit("substate-change", obj);
+
+                        return obj;
+                    }
+            }
+        };
+
         for(let name of events) {
             if(typeof name === "string" || name instanceof String) {
                 let reaction = Reaction.createEventReaction(
                         name,
-                        this.respond.bind(this)
+                        fn.bind(this)
                     );
 
                 this.setReaction(name, reaction);
@@ -216,6 +216,8 @@ export default class MasterNode extends Node {
             if(reaction instanceof Reaction) {
                 reaction.run(e);
             }
+        } else {
+            this.respond(...arguments);
         }
 
         return e;
@@ -241,9 +243,11 @@ export default class MasterNode extends Node {
         }
     }
 
-    respond(e) {
+    respond(...args) {
         for(let response of this._responses) {
-            response(e);
+            if(typeof response === "function") {
+                response(...args);
+            }
         }
 
         return this;
