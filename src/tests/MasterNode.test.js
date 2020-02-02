@@ -62,8 +62,6 @@ export function RunTest() {
     console.log(mn1.$());
 }
 
-RunTest();
-
 export default {
     RunTest
 };
