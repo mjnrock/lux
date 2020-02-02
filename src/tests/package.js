@@ -4,7 +4,7 @@ import WebAPI from "./WebAPI.test";
 import WebSocket from "./WebSocket.test";
 import Logic from "./Logic.test";
 import MasterNode from "./MasterNode.test";
-import PTO from "./PTO.test";
+import PTO from "./$PTO.test";
 import TaskManager from "./TaskManager.test";
 
 export default {
