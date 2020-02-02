@@ -23,8 +23,6 @@ export function RunTest() {
     console.log(PTO.Utility.Transformer.ToHierarchy(tc1));
 }
 
-RunTest();
-
 export default {
     RunTest
 };

@@ -10,8 +10,6 @@ export function RunTest() {
     task.node("Timer").StartTimer(4500);
 }
 
-RunTest();
-
 export default {
     RunTest
 };

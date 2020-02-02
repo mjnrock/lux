@@ -6,7 +6,9 @@ class ReactorComponent extends Component {
 
     constructor(props) {
         super(props);
+    }
 
+    componentDidMount() {
         this.$ = this.context.getSubState;
 
         this.watch("substate-change", e => this.forceUpdate());
