@@ -9,9 +9,11 @@ class ReactorComponent extends Component {
     }
 
     componentDidMount() {
-        this.$ = this.context.getSubState;
-
         this.context.watch("substate-change", this.forceUpdate);
+    }
+
+    $(name) {
+        return this.context.getSubState(name);
     }
 };
 
