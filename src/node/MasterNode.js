@@ -10,8 +10,8 @@ export default class MasterNode extends Node {
         this.prop("_subState", {});
 
         this._entities = {};
-        this._reactions = {};       // These are reactions to <Event>s passed into .next() and packaged into <Reaction> classes; they are event-specific
-        this._responses = [];       // These are meant to work like reducers in React, with their invocation initiated by a .next() call that does not pass an Event
+        this._reactions = {};       // These are reactions to <Event>s passed into .next() and packaged into <Reaction> classes; they are event-specific if used with .addReactionEvent()
+        this._responses = [];       // These are meant to work like reducers in React, with their invocation initiated by a .next() call that does not pass an <Event>; if it will, use _reactions
 
         this.addEvent(
             "attach",
