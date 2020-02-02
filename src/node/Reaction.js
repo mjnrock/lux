@@ -24,6 +24,33 @@ export default class Reaction {
         return this._response;
     }
 
+    is(input) {
+        if(input instanceof Reaction) {
+            return true;
+        }
+
+        if(typeof input === "object") {
+            let lookup = {
+                    "_uuid": false,
+                    "_name": false,
+                    "_condition": false,
+                    "_response": false
+                };
+
+            for(let key of lookup) {
+                if(key in input) {
+                    lookup[ key ] = true;
+                }
+            }
+
+            let result = Object.values(lookup).reduce((a, v) => a && v, true);
+
+            return result;
+        }
+
+        return false;
+    }
+
     run(...args) {
         let cond = this.getCondition();
 

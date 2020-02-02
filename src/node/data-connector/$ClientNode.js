@@ -4,6 +4,7 @@ import Packet from "./Packet";
 import WebAPI from "./WebAPI";
 import WebSocket from "./WebSocket";
 
+//!FIXME This uses the old MasterNode setup
 export default class ClientNode extends MasterNode {
     constructor({ api = {}, ws = {} } = {}) {
         super();

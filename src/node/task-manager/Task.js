@@ -3,6 +3,7 @@ import Node from "../Node";
 
 import Timer from "./Timer";
 
+//!FIXME This uses the old MasterNode setup
 export default class Task extends MasterNode {
     constructor(content) {
         super({
