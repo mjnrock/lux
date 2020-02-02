@@ -10,7 +10,8 @@ export default class MasterNode extends Node {
         this._subordinates = {};
 
         this.addEvent(
-            "attach"
+            "attach",
+            "detach"
         );
     }
 
@@ -41,6 +42,11 @@ export default class MasterNode extends Node {
     }
 
     attach(name, node) {
+        if(arguments.length === 1 && name instanceof Node) {
+            node = name;
+            name = node.UUID();
+        }
+
         if((typeof name === "string" || name instanceof String) && node instanceof Node) {
             this.setSubordinate(name, node);
             this.subscribeTo(node);
@@ -50,12 +56,24 @@ export default class MasterNode extends Node {
 
         return this;
     }
-    detach(name) {
-        let sub = this.getSubordinate(name);
+    detach(nameOrNode) {
+        let name, node;
 
-        if(sub instanceof Node) {
-            this.removeSubordinate(name);
-            this
+        if(typeof nameOrNode === "string" || nameOrNode instanceof String) {
+            name = nameOrNode;
+            node = this.getSubordinate(name);
+        } else if(nameOrNode instanceof Node) {
+            name = nameOrNode.UUID();
+            node = nameOrNode;
         }
+
+        if(this.getSubordinate(name)) {
+            this.removeSubordinate(name);
+            this.unsubscribeTo(node);
+
+            this.emit("detach", name, node);
+        }
+
+        return this;
     }
 };

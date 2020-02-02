@@ -15,16 +15,25 @@ export function RunTest() {
     // console.log(mn1.getSubordinate("Sub1"));
     // console.log(mn1.getSubordinate("Sub2"));
 
-    
-    let n1 = new Node({ node: 1 });
-    let mn1 = new MasterNode();
+    //* Subscriptions: Attachment and Detachment
+    // let n1 = new Node({ node: 1 });
+    // let mn1 = new MasterNode();
 
-    mn1.setNext(e => console.log(e.getType(), e.getPayload(0)));
+    // mn1.setNext(e => console.log(e.getType(), e.getPayload(0)));
 
-    mn1.subscribeTo(n1);
-    n1.prop("cat", 1);
-    mn1.unsubscribeTo(n1);
-    n1.prop("cat", 5);
+    // // mn1.subscribeTo(n1);
+    // // n1.prop("cat", 1);
+    // // mn1.unsubscribeTo(n1);
+    // // n1.prop("cat", 5);
+
+    // mn1.attach(n1);
+    // console.log(Object.keys(mn1._subscribers).length);
+    // console.log(Object.keys(n1._subscribers).length);
+    // n1.prop("cat", 1);
+    // mn1.detach(n1);
+    // console.log(Object.keys(mn1._subscribers).length);
+    // console.log(Object.keys(n1._subscribers).length);
+    // n1.prop("cat", 5);
 }
 
 RunTest();
