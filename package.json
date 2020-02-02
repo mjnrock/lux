@@ -32,7 +32,7 @@
         "grunt-contrib-watch": "^1.1.0"
     },
     "scripts": {
-        "prepublish": "babel --plugins transform-object-rest-spread src --out-dir lib",
+        "prepublish": "babel --plugins transform-object-rest-spread @babel/plugin-proposal-class-properties src --out-dir lib",
         "deploy": "npm version patch && npm publish --access=public",
         "start": "npm run prepublish && clear && node lib/index.js"
     },
