@@ -9,7 +9,7 @@ class ReactorComponent extends Component {
     }
 
     componentDidMount() {
-        this.context.watch("substate-change", this.forceUpdate);
+        this.context.listen("substate-change", this.forceUpdate);
     }
 
     $(name) {

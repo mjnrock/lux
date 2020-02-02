@@ -322,6 +322,13 @@ export default class Node {
 
         return false;
     }
+    subscribeTo(node) {
+        if(node instanceof Node) {
+            return node.subscribe(this);
+        }
+
+        return false;
+    }
     /**
      * @param {Subscription} subscription
      */
@@ -329,7 +336,25 @@ export default class Node {
         if(subscriptionOrUUID instanceof Subscription) {
             delete this._subscribers[ subscriptionOrUUID.UUID() ];
         } else {
-            delete this._subscribers[ subscriptionOrUUID ];
+            if(this._subscribers[ subscriptionOrUUID ]) {
+                delete this._subscribers[ subscriptionOrUUID ];
+            } else {
+                for(let subscription of Object.values(this._subscribers)) {
+
+                    if(subscription.getSubscribor().UUID() === subscriptionOrUUID || subscription.getSubscribee().UUID() === subscriptionOrUUID) {
+                        delete this._subscribers[ subscription.UUID() ];
+
+                        return;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+    unsubscribeTo(node) {
+        if(node instanceof Node) {
+            return node.unsubscribe(this.UUID());
         }
 
         return false;

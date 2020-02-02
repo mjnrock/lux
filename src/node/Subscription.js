@@ -1,7 +1,12 @@
 import { GenerateUUID } from "./../core/helper";
+import Node from "./Node";
 
 export default class Subscription {
     constructor(subscribor, subscribee) {
+        if(!(subscribor instanceof Node) || !(subscribee instanceof Node)) {
+            throw new Error("Subscriptions only accept <Node> parameters");
+        }
+
         this._uuid = GenerateUUID();
         this._subscribor = subscribor;
         this._subscribee = subscribee;

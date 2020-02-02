@@ -308,6 +308,25 @@ export default class MasterNode extends Node {
         }
     }
 
+    respond(e) {
+        if(this._behavioralFlags.isReactionary) {
+            let keys = Object.keys(this._reactions),
+                responses = [];
+
+            for(let key of keys) {
+                let response = this.react(key, e);
+
+                if(response === true) {
+                    responses.push(e);
+                }
+            }
+
+            return responses;
+        }
+
+        return false;
+    }
+
     eventReaction(name, eventType, reaction) {
         return this.reaction(name, Reaction.createEventReaction(eventType, reaction));
     }
@@ -327,6 +346,18 @@ export default class MasterNode extends Node {
         }
 
         return arr;
+    }
+
+    /**
+     * @name supports dot-notation for deeper dives
+     * @param {string|selector} name 
+     */
+    getSubState(name) {
+        if(name === void 0) {
+            return this.prop("SubState");
+        }
+
+        return this.oprop("SubState", name);
     }
 
     processSubStateChange(name, data) {
@@ -377,36 +408,5 @@ export default class MasterNode extends Node {
         this._behavioralFlags.isReactionStateSave = false;
 
         return this;
-    }
-
-    respond(e) {
-        if(this._behavioralFlags.isReactionary) {
-            let keys = Object.keys(this._reactions),
-                responses = [];
-
-            for(let key of keys) {
-                let response = this.react(key, e);
-
-                if(response === true) {
-                    responses.push(e);
-                }
-            }
-
-            return responses;
-        }
-
-        return false;
-    }
-
-    /**
-     * @name supports dot-notation for deeper dives
-     * @param {string|selector} name 
-     */
-    getSubState(name) {
-        if(name === void 0) {
-            return this.prop("SubState");
-        }
-
-        return this.oprop("SubState", name);
     }
 };
