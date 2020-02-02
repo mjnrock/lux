@@ -16,7 +16,7 @@
         "ws": "^7.2.1"
     },
     "devDependencies": {
-        "@babel/plugin-proposal-class-properties": "^7.8.3",
+        "@babel/preset-es2017": "^7.0.0-beta.53",
         "babel-cli": "^6.26.0",
         "babel-core": "^6.26.3",
         "babel-plugin-transform-object-rest-spread": "^6.26.0",
@@ -38,7 +38,7 @@
     },
     "babel": {
         "presets": [
-            "es2015"
+            "@babel/preset-es2017"
         ]
     }
 }
