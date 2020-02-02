@@ -1,6 +1,6 @@
 {
     "name": "@lespantsfancy/lux",
-    "version": "0.1.54",
+    "version": "0.1.53",
     "description": "Adds some functionality to stuff to be used in ways consistent with that added functionality",
     "license": "UNLICENSED",
     "repository": "mjnrock/lux",
@@ -16,11 +16,9 @@
         "ws": "^7.2.1"
     },
     "devDependencies": {
-        "@babel/preset-es2017": "^7.0.0-beta.53",
         "babel-cli": "^6.26.0",
         "babel-core": "^6.26.3",
         "babel-plugin-transform-object-rest-spread": "^6.26.0",
-        "babel-preset-env": "^1.7.0",
         "babel-preset-es2015": "^6.24.1",
         "browser-env": "^3.3.0",
         "esm": "^3.2.25",
@@ -33,13 +31,13 @@
         "grunt-contrib-watch": "^1.1.0"
     },
     "scripts": {
-        "prepublish": "babel src --out-dir lib",
+        "prepublish": "babel --plugins transform-object-rest-spread src --out-dir lib",
         "deploy": "npm version patch && npm publish --access=public",
         "start": "npm run prepublish && clear && node lib/index.js"
     },
     "babel": {
         "presets": [
-            "@babel/preset-es2017"
+            "es2015"
         ]
     }
 }

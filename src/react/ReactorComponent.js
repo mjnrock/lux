@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Context from "./Context";
 
-export default class ReactorComponent extends Component {
+class ReactorComponent extends Component {
     static contextType = Context;
 
     constructor(props) {
@@ -12,3 +12,7 @@ export default class ReactorComponent extends Component {
         this.watch("substate-change", e => this.forceUpdate());
     }
 };
+
+ReactorComponent.contextType = Context;
+
+export default ReactorComponent;
