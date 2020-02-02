@@ -11,7 +11,7 @@ class ReactorComponent extends Component {
     componentDidMount() {
         this.$ = this.context.getSubState;
 
-        this.watch("substate-change", e => this.forceUpdate());
+        this.context.watch("substate-change", e => this.forceUpdate());
     }
 };
 
