@@ -1,6 +1,6 @@
 {
     "name": "@lespantsfancy/lux",
-    "version": "0.1.51",
+    "version": "0.1.52",
     "description": "Adds some functionality to stuff to be used in ways consistent with that added functionality",
     "license": "UNLICENSED",
     "repository": "mjnrock/lux",
@@ -32,13 +32,13 @@
         "grunt-contrib-watch": "^1.1.0"
     },
     "scripts": {
-        "prepublish": "babel --presets @babel/preset-es2017 src --out-dir lib",
+        "prepublish": "babel --plugins transform-object-rest-spread --plugins @babel/plugin-proposal-class-properties src --out-dir lib",
         "deploy": "npm version patch && npm publish --access=public",
         "start": "npm run prepublish && clear && node lib/index.js"
     },
     "babel": {
         "presets": [
-            "es2015"
+            "@babel/preset-es2017"
         ]
     }
 }
