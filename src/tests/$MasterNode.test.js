@@ -45,7 +45,7 @@ export function RunTest() {
 
     mn1.attach("Bob", n1);
     mn1.attach("Cat", n2);
-    // n1.listen("prop-change", e => console.log(100, e.getPayload(0)));     // Listener to visually track events
+    mn1.listen("substate-change", e => console.log(100, e.getPayload(0)));     // Listener to visually track events
     mn1.addResponse(e => {
         console.log(99, e.getType());
     });
