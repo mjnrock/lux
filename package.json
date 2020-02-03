@@ -12,8 +12,7 @@
     ],
     "dependencies": {
         "node-fetch": "^2.6.0",
-        "peerjs": "^1.2.0",
-        "ws": "^7.2.1"
+        "peerjs": "^1.2.0"
     },
     "devDependencies": {
         "babel-cli": "^6.26.0",
