@@ -1,12 +1,12 @@
 import React from "react";
 import Node from "./../node/package";
 
-const MNode = new Node.MasterNode();
+const MasterNode = new Node.MasterNode();
 
-const NodeContext = React.createContext(MNode);
+const NodeContext = React.createContext(MasterNode);
 
 export default {
-    MNode,
-    
+    MasterNode,
+
     NodeContext
 };
