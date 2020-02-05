@@ -5,4 +5,8 @@ const MNode = new Node.MasterNode();
 
 const NodeContext = React.createContext(MNode);
 
-export default NodeContext;
+export default {
+    MNode,
+    
+    NodeContext
+};
