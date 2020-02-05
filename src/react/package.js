@@ -9,5 +9,7 @@ export function Connect(clazz) {
 
 export default {    
     Connect,
+    
+    Context,
     ReactorComponent
 };
