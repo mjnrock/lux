@@ -18,6 +18,6 @@ class ReactorComponent extends Component {
     }
 };
 
-ReactorComponent.contextType = Context;
+ReactorComponent.contextType = Context.NodeContext;
 
 export default ReactorComponent;
