@@ -116,7 +116,7 @@ export default class Struct {
      * @param {Subscription|string<UUID>} subOrUUID 
      */
     unsubscribe(subOrUUID) {
-        let hashCode = function (str) {
+        let hashCode = str => {
             let hash = 0, i, chr;
 
             if(str.length === 0) {
@@ -128,7 +128,7 @@ export default class Struct {
                 hash = ((hash << 5) - hash) + chr;
                 hash |= 0; // Convert to 32bit integer
             }
-            
+
             return hash;
         };
 
