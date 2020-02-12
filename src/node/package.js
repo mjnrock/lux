@@ -7,7 +7,7 @@ import Struct from "./Struct";
 import Node from "./Node";
 import MasterNode from "./MasterNode";
 
-import Modules from "./Modules/package";
+import Modules from "./modules/package";
 
 export default {
     Event,
