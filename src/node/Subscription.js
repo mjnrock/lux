@@ -1,9 +1,10 @@
 import { GenerateUUID } from "./../core/helper";
 import Node from "./Node";
+import Struct from "./$Struct";
 
 export default class Subscription {
     constructor(subscribor, subscribee) {
-        if(!(subscribor instanceof Node) || !(subscribee instanceof Node)) {
+        if(!(subscribor instanceof Node) || !(subscribee instanceof Node || subscribee instanceof Struct)) {
             throw new Error("Subscriptions only accept <Node> parameters");
         }
 

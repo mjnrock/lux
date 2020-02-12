@@ -3,6 +3,7 @@ import Subscription from "./Subscription";
 import Listener from "./Listener";
 import Watcher from "./Watcher";
 import Reaction from "./Reaction";
+import Struct from "./Struct";
 import Node from "./Node";
 import MasterNode from "./MasterNode";
 
@@ -17,6 +18,7 @@ export default {
     Listener,
     Watcher,
     Reaction,
+    Struct,
     Node,
     MasterNode,
 

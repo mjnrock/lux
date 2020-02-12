@@ -6,6 +6,7 @@ import Logic from "./Logic.test";
 import MasterNode from "./MasterNode.test";
 import PTO from "./$PTO.test";
 import TaskManager from "./TaskManager.test";
+import Struct from "./Struct.test";
 
 export default {
     Observations,
@@ -15,5 +16,6 @@ export default {
     Logic,
     MasterNode,
     PTO,
-    TaskManager
+    TaskManager,
+    Struct
 };
