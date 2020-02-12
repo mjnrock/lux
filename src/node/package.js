@@ -7,10 +7,7 @@ import Struct from "./Struct";
 import Node from "./Node";
 import MasterNode from "./MasterNode";
 
-import Logic from "./logic/package";
-import DataConnector from "./data-connector/package";
-import ChatMessage from "./chat-message/package";
-import InputController from "./input-controller/package";
+import Modules from "./Modules/package";
 
 export default {
     Event,
@@ -22,8 +19,5 @@ export default {
     Node,
     MasterNode,
 
-    Logic,
-    DataConnector,
-    ChatMessage,
-    InputController
+    Modules
 };
