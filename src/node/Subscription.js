@@ -1,6 +1,6 @@
 import { GenerateUUID } from "./../core/helper";
 import Node from "./Node";
-import Struct from "./$Struct";
+import Struct from "./Struct";
 
 export default class Subscription {
     constructor(subscribor, subscribee) {
