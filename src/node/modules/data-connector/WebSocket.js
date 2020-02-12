@@ -1,6 +1,6 @@
 import WS from "ws";
 
-import Node from "./../Node";
+import Node from "./../../Node";
 import Packet from "./Packet";
 
 export default class WebSocket extends Node {

@@ -1,4 +1,4 @@
-import Node from "./../Node";
+import Node from "./../../Node";
 
 export default class AControl extends Node {
     constructor(name) {

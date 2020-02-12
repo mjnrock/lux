@@ -1,4 +1,4 @@
-import { GenerateUUID } from "./../../core/helper";
+import { GenerateUUID } from "./../../../core/helper";
 
 export default class Member {
     constructor(username, uuid = null) {
