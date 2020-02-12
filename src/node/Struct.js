@@ -113,6 +113,10 @@ export default class Struct {
 
         prop.slice(0, prop.length - removeProps).forEach(v => {
             value = value[ v ];
+
+            if(value === void 0) {
+                return;
+            }
         });
 
         return value;
