@@ -1,5 +1,5 @@
-import Node from "../node/Node";
-import MasterNode from "../node/MasterNode";
+import Node from "./../src/node/Node";
+import MasterNode from "./../src/node/MasterNode";
 
 export function RunTest() {    
     //* Entity: Assignment and Removal
@@ -46,21 +46,25 @@ export function RunTest() {
     mn1.attach("Bob", n1);
     mn1.attach("Cat", n2);
     mn1.listen("substate-change", e => console.log(100, e.getPayload(0)));     // Listener to visually track events
-    mn1.addResponse(e => {
-        console.log(99, e.getType());
+    mn1.addResponse((...args) => {
+        console.log(99, ...args);
     });
+
+    mn1.next("Fish");
 
     n1.prop("node", 5124);
     n1.prop("node", 64);
     n2.prop("node", "asFWERTWEF");
 
-    console.log(n1.getState());
-    console.log(n2.getState());
-    console.log(mn1.getState());
+    // console.log(n1.getState());
+    // console.log(n2.getState());
+    // console.log(mn1.getState());
     console.log(mn1.$("Bob"));
     console.log(mn1.$("Cat"));
     console.log(mn1.$());
 }
+
+RunTest();
 
 export default {
     RunTest

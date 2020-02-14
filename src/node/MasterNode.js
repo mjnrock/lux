@@ -28,12 +28,16 @@ export default class MasterNode extends Node {
     }
 
     $(name) {
+        return this.getSubState(name);
+    }
+    getSubState(name) {
         if(name) {
             return this.oprop("_subState", name);
         }
 
         return this.prop("_subState");
     }
+
     findEntityName(uuid) {
         for(let [ name, entity ] of Object.entries(this._entities)) {
             if(entity.UUID() === uuid) {
@@ -99,7 +103,7 @@ export default class MasterNode extends Node {
             name = node.UUID();
         }
 
-        if(typeof node === "object") {
+        if(!(node instanceof Node) && typeof node === "object") {
             node = new Node(node);
         }
 
@@ -171,7 +175,7 @@ export default class MasterNode extends Node {
     }
 
     addReactionEvent(...events) {
-        let fn = e => {        
+        let fn = e => {
             if(e instanceof Event && (e.getType() === "prop-change" || e.getType() === "prop-change::array" || e.getType() === "prop-change::object")) {
                 let emitter = e.getEmitter(),
                     name = this.findEntityName(emitter.UUID());
