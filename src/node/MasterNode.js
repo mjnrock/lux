@@ -64,7 +64,7 @@ export default class MasterNode extends Node {
         return false;
     }
     getEntity(nameOrUUID) {
-        let ent = this._entities [ nameOrUUID ];
+        let ent = this._entities[ nameOrUUID ];
 
         if(ent instanceof Node) {
             return ent;

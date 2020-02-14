@@ -10,6 +10,25 @@ export const Bitmask = {
     }
 };
 
+export function StringifyCyclic(input, spaces = null) {
+    const getCircularReplacer = () => {
+        const seen = new WeakSet();
+        
+        return (key, value) => {
+            if (typeof value === "object" && value !== null) {
+                if (seen.has(value)) {
+                    return;
+                }
+                seen.add(value);
+            }
+    
+            return value;
+        };
+    };
+    
+    return JSON.stringify(input, getCircularReplacer(), spaces);
+};
+
 export function GenerateUUID() {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
         // eslint-disable-next-line
