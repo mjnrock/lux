@@ -99,6 +99,10 @@ export default class MasterNode extends Node {
             name = node.UUID();
         }
 
+        if(typeof node === "object") {
+            node = new Node(node);
+        }
+
         if((typeof name === "string" || name instanceof String) && node instanceof Node) {
             this.setEntity(name, node);
             this.subscribeTo(node);
