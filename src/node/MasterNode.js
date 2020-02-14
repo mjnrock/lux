@@ -111,6 +111,8 @@ export default class MasterNode extends Node {
             this.setEntity(name, node);
             this.subscribeTo(node);
 
+            this.oprop("_subState", name, Object.freeze(JSON.parse(JSON.stringify(node._state))));
+
             this.emit("attach", name, node);
         }
 
