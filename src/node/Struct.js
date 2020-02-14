@@ -1,7 +1,6 @@
 import { GenerateUUID } from "../core/helper";
 
 import Node from "./Node";
-import Watcher from "./Watcher";
 import Subscription from "./Subscription";
 import Event from "./Event";
 

@@ -1,10 +1,24 @@
 export const Bitmask = {
-    Add(base, flag) {
-        return base |= flag;
+    Add(base, ...flags) {
+        for(let flag of flags) {
+            base |= flag;
+        }
+
+        return base;
     },
-    Remove(base, flag) {
-        return base &= ~flag;
+    Remove(base, ...flags) {
+        for(let flag of flags) {
+            base &= ~flag;
+        }
+
+        return base;
     },
+    // Add(base, flag) {
+    //     return base |= flag;
+    // },
+    // Remove(base, flag) {
+    //     return base &= ~flag;
+    // },
     Has(base, flag) {
         return (base & flag) === flag;
     }
