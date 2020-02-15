@@ -43,7 +43,10 @@ export function RunTest() {
                                         [
                                             [
                                                 new Node.Struct({
-                                                    cat: 8
+                                                    cat: 8,
+                                                    cat2: new Node.Struct({
+                                                        cat: 9
+                                                    })
                                                 })
                                             ]
                                         ]
