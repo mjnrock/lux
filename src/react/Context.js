@@ -9,6 +9,7 @@ const ObserverContext = React.createContext(Observer);
 
 export default {
     MasterNode,
+    Observer,
 
     MasterNodeContext,
     ObserverContext
