@@ -25,6 +25,25 @@ export default class Observer {
         this.setNext(onNext);
     }
 
+    $(prop, ...args) {
+        if(!this._subject) {
+            return;
+        }
+
+        if(prop) {
+            if(typeof this._subject[ prop ] === "function") {
+                return this._subject[ prop ](...args);
+            }
+
+            return this._subject[ prop ];
+        }
+
+        return this._subject;
+    }
+
+    getSubject() {
+        return this._subject;
+    }
     setSubject(subject) {
         this._subject = subject;
 
@@ -33,13 +52,13 @@ export default class Observer {
 
         return this;
     }
+
     setNext(onNext) {
         this._next = onNext;
 
         return this;
     }
 
-    //TODO Test that the recursion works in general and for deeply-nested objects
     analyze(obj) {
         if(!obj || (Object.entries(obj).length === 0 && obj.constructor === Object)) {
             return;
@@ -56,23 +75,6 @@ export default class Observer {
                 }
             });
         }
-
-
-
-
-
-        // Object.values(obj).forEach(value => {
-        //     if(value instanceof Struct) {
-        //         this.register(value);
-
-        //         this.analyze(value._state);
-        //     }
-        //     // else if(typeof value === "object" || Array.isArray(value)) {
-        //     //     for(let i in value) {
-        //     //         this.analyze(value[ i ]);
-        //     //     }
-        //     // }
-        // });
 
         return this;
     }
