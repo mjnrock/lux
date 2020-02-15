@@ -19,6 +19,8 @@ export default class Observer {
 
     //TODO Test that the recursion works in general and for deeply-nested objects
     analyze(obj) {
+        obj = obj || this._subject;
+
         Object.keys(obj).forEach(key => {
             if(obj instanceof Struct || obj instanceof Node) {
                 this.register(obj[ key ]);
