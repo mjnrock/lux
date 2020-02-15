@@ -57,15 +57,21 @@ export function RunTest() {
                     ]
                 ]
             ]
-        }
+        },
+        GetTest: null
     });
 
-    let obs = new Node.Observer(s1, e => console.log(1, e.getType(), e.getEmitter().UUID()));
+    let obs = new Node.Observer(s1, e => console.log(1, e.getType(), e.getPayload()));
     s1.cat = 11;
     s1.test.cat = 22;
     s1.test2.test3.cat = 33;
 
-    console.log(obs._registry)
+    
+    s1.GET("GetTest", "http://api.open-notify.org/astros.json");
+
+    // setTimeout(() => {
+    //     console.log(s1._state);
+    // }, 1000);
 }
 
 RunTest();

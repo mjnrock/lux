@@ -1,9 +1,12 @@
+import fetch from "node-fetch";     // Required for the async prop setters
 import { GenerateUUID } from "../core/helper";
 
 import Node from "./Node";
 import Subscription from "./Subscription";
 import Event from "./Event";
 
+//! This class will NOT allow for new additions to its _state.  Once it has been initialized, props cannot be added, only updated.
+    // If using .GET, ensure that the holding prop has been setup (e.g. { [ GET_RESULT_PROP ]: null })
 export default class Struct {
     constructor(state = {}, validators = {}) {
         this._uuid = GenerateUUID();
@@ -56,6 +59,42 @@ export default class Struct {
                 return true;
             }
         });
+    }
+
+    GET(prop, url, { reducer = null, opts = { method: "GET", mode: "cors" }, jsonResponse = true } = {}) {
+        let _this = this;
+
+        fetch(url, opts)
+            .then(response => response[ jsonResponse ? "json" : "blob" ]())
+            .then(data => {
+                let value;
+                
+                if(data === void 0) {
+                    return false;
+                }
+
+                if(typeof reducer === "function") {
+                    value = reducer(data);
+                } else {
+                    value = data;
+                }
+
+                _this[ prop ] = value;
+            });
+    }
+    //TODO Untested
+    async POST(prop, url) {
+        let poster = async (prop, url) => {
+            let response = await fetch(url, {
+                method: "POST",
+                mode: "cors",
+                body: JSON.stringify(this[ prop ])
+            });
+
+            return await response;
+        };
+
+        return await poster(prop, url);
     }
 
     /**
