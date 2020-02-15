@@ -34,7 +34,7 @@ export default class Observer {
         return this;
     }
     setNext(onNext) {
-        this._next = onNext.bind(this);
+        this._next = onNext;
 
         return this;
     }
