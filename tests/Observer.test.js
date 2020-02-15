@@ -2,6 +2,7 @@ import Node from "./../src/node/package";
 
 export function RunTest() {    
     let s1 = new Node.Struct({
+        // Shallow tests
         cat: 1,
         test: new Node.Struct({
             cat: 2
@@ -22,6 +23,8 @@ export function RunTest() {
                 })
             ]
         },
+
+        // Deep nesting tests
         cats: {
             cattss: {
                 catttsss: {
