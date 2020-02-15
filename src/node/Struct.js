@@ -91,13 +91,14 @@ export default class Struct {
      * @returns {string<UUID>|false} Will return of the Node (if passed), or the generated UUID if a nextable or function was passed
      */
     subscribe(nodeNextOrFn) {
-        let uuid;
+        let uuid,
+            sub;
 
         if (nodeNextOrFn instanceof Node) {
-            let sub = new Subscription(nodeNextOrFn, this);
-
+            sub = new Subscription(nodeNextOrFn, this);
             uuid = sub.UUID();
         } else if (typeof nodeNextOrFn === "function" || typeof nodeNextOrFn.next === "function") {
+            sub = nodeNextOrFn.next || nodeNextOrFn;
             uuid = GenerateUUID();
         }
 
