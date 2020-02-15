@@ -4,6 +4,10 @@ import Reaction from "./Reaction";
 
 export default class Observer {
     constructor(subject, onNext = null) {
+        this.init(subject, onNext);
+    }
+
+    init(subject, onNext = null) {
         if(!(subject instanceof Struct) && !(subject instanceof Node)) {
             throw new Error("[Invalid Type]: Observer can only accept <Struct|Node> objects");
         }
@@ -15,6 +19,19 @@ export default class Observer {
         this._reactions = {};   //? Consider this an event-specific reducer | This allows for event-specific handling (Note: ALL events will ALWAYS be passed to this._next, iff this._next is a function)
 
         this.analyze(this._subject);
+    }
+
+    setSubject(subject) {
+        this._subject = subject;
+
+        this.analyze(this._subject);
+
+        return this;
+    }
+    setNext(onNext) {
+        this._next = onNext;
+
+        return this;
     }
 
     //TODO Test that the recursion works in general and for deeply-nested objects
