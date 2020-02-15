@@ -3,12 +3,12 @@ import Event from "./Event";
 import Reaction from "./Reaction";
 
 export default class Observer {
-    constructor(struct, onNext = null) {
-        if(!(struct instanceof Struct) && !(struct instanceof Node)) {
+    constructor(subject, onNext = null) {
+        if(!(subject instanceof Struct) && !(subject instanceof Node)) {
             throw new Error("[Invalid Type]: Observer can only accept <Struct|Node> objects");
         }
 
-        this._subject = struct;
+        this._subject = subject;
         this._registry = {};
         this._next = onNext;    //? Consider this a root reducer | If typeof this._next === "function", EVERY event will invoke it (even if there is ALSO a reaction)
 
