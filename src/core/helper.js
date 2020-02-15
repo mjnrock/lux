@@ -24,6 +24,15 @@ export const Bitmask = {
     }
 };
 
+export function ArrayToObject(array, key) {
+    return array.reduce((obj, item) => {
+        return {
+            ...obj,
+            [ item[ key ] ]: item
+        };
+    }, {});
+};
+
 export function StringifyCyclic(input, spaces = null) {
     const getCircularReplacer = () => {
         const seen = new WeakSet();
@@ -144,6 +153,7 @@ export function Clamp(value, min = null, max = null) {
 
 export default {
     GenerateUUID,
+    ArrayToObject,
     StringifyCyclic,
     // LoadImage,
     // LoadImages,
