@@ -59,8 +59,10 @@ export default class Observer {
 
     next(e) {
         if(e instanceof Event) {
-            for(let type in this._reactions) {
-                this._reactions[ type ].run(e);
+            let reactions = this.getReactions(e.getType());
+
+            for(let reaction of reactions) {
+                reaction.run(e);
             }
 
             if(typeof this._next === "function") {
@@ -71,23 +73,23 @@ export default class Observer {
         return;
     }
 
-    getReaction(type) {
-        if(type) {
-            return this._reactions[ type ];
+    getReactions(type, toArray = true) {
+        if(toArray) {
+            return Array.from(this._reactions[ type ]);
         }
 
-        return this._reactions;
+        return this._reactions[ type ];
     }
-    setReaction(type, callback) {
+    
+    addReaction(type, callback) {
         if(typeof callback === "function") {
+            if(!Array.isArray(this._reactions[ type ])) {
+                this._reactions[ type ] = new Set();
+            }
+
             let reaction = Reaction.createEventReaction(type, callback);
 
-            this._reactions[ type ] = reaction;
+            this._reactions[ type ].add(reaction);
         }
-    }
-    removeReaction(type) {
-        delete this._reactions[ type ];
-
-        return this;
     }
 };

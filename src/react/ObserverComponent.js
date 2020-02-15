@@ -7,7 +7,9 @@ class ObserverComponent extends Component {
     }
 
     componentDidMount() {
-        this.context.setReaction("change", this.forceUpdate.bind(this));
+        if(!this.context.getReactions("change")) {
+            this.context.addReaction("change", this.forceUpdate.bind(this));
+        }
     }
 };
 
