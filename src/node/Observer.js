@@ -10,9 +10,9 @@ export default class Observer {
 
         this._subject = struct;
         this._registry = {};
-        this._next = onNext;    //? If typeof this._next === "function", EVERY event will invoke it (even if there is ALSO a reaction)
+        this._next = onNext;    //? Consider this a root reducer | If typeof this._next === "function", EVERY event will invoke it (even if there is ALSO a reaction)
 
-        this._reactions = {};   //? This allows for event-specific handling (Note: ALL events will ALWAYS be passed to this._next, iff this._next is a function)
+        this._reactions = {};   //? Consider this an event-specific reducer | This allows for event-specific handling (Note: ALL events will ALWAYS be passed to this._next, iff this._next is a function)
 
         this.analyze(this._subject);
     }
