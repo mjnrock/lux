@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import Context from "./Context";
-import Node from "./../node/Node";
+import Node from "../node/Node";
 
-class ReactorComponent extends Component {
+class MasterNodeComponent extends Component {
     // static contextType = Context;
 
     constructor(props) {
@@ -50,6 +50,6 @@ class ReactorComponent extends Component {
     }
 };
 
-ReactorComponent.contextType = Context.NodeContext;
+MasterNodeComponent.contextType = Context.MasterNodeContext;
 
-export default ReactorComponent;
+export default MasterNodeComponent;

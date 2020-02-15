@@ -1,15 +1,28 @@
 import Context from "./Context";
-import ReactorComponent from "./ReactorComponent";
+import MasterNodeComponent from "./MasterNodeComponent";
+import ObserverComponent from "./ObserverComponent";
 
-export function Connect(clazz) {
-    clazz.contextType = Context.NodeContext;
+export const EnumContextType = {
+    MASTER_NODE: 1,
+    OBSERVER: 2
+};
+
+export function Connect(clazz, type = EnumContextType.MASTER_NODE) {
+    if(type === EnumContextType.MASTER_NODE) {
+        clazz.contextType = Context.MasterNodeContext;
+    } else if(type === EnumContextType.OBSERVER) {
+        clazz.contextType = Context.ObserverContext;
+    }
 
     return clazz;
 };
 
 export default {    
+    EnumContextType,
+
     Connect,
     
     Context,
-    ReactorComponent
+    MasterNodeComponent,
+    ObserverComponent
 };

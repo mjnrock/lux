@@ -2,11 +2,14 @@ import React from "react";
 import Node from "./../node/package";
 
 const MasterNode = new Node.MasterNode();
+const Observer = new Node.Observer();
 
-const NodeContext = React.createContext(MasterNode);
+const MasterNodeContext = React.createContext(MasterNode);
+const ObserverContext = React.createContext(Observer);
 
 export default {
     MasterNode,
 
-    NodeContext
+    MasterNodeContext,
+    ObserverContext
 };
