@@ -8,7 +8,7 @@ export default class Observer {
     }
 
     init(subject, onNext = null) {
-        if(!(subject instanceof Struct) && !(subject instanceof Node)) {
+        if(subject && !(subject instanceof Struct) && !(subject instanceof Node)) {
             throw new Error("[Invalid Type]: Observer can only accept <Struct|Node> objects");
         }
 
