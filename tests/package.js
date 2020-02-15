@@ -7,6 +7,7 @@ import MasterNode from "./MasterNode.test";
 import PTO from "./$PTO.test";
 import TaskManager from "./TaskManager.test";
 import Struct from "./Struct.test";
+import Observer from "./Observer.test";
 
 export default {
     Observations,
@@ -17,5 +18,6 @@ export default {
     MasterNode,
     PTO,
     TaskManager,
-    Struct
+    Struct,
+    Observer
 };
