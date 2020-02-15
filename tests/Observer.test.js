@@ -21,6 +21,36 @@ export function RunTest() {
                     cat: 6
                 })
             ]
+        },
+        cats: {
+            cattss: {
+                catttsss: {
+                    cattttssss: new Node.Struct({
+                        cat: 7
+                    })
+                }
+            },
+            catsts: [
+                [
+                    [
+                        [
+                            [
+                                [
+                                    [
+                                        [
+                                            [
+                                                new Node.Struct({
+                                                    cat: 8
+                                                })
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
         }
     });
 
