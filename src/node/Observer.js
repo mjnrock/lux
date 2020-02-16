@@ -130,7 +130,7 @@ export default class Observer {
     
     addReaction(type, callback) {
         if(typeof callback === "function") {
-            if(!Array.isArray(this._reactions[ type ])) {
+            if(!(this._reactions[ type ] instanceof Set)) {
                 this._reactions[ type ] = new Set();
             }
 
