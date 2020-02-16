@@ -29,7 +29,7 @@ class ObserverComponent extends Component {
     }
 };
 
-Context.ObserverContext.BATCH = {
+Context.Observer.BATCH = {
     EventCount: 0,
     Timeouts: [],
     Threshold: 10
