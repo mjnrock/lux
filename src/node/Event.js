@@ -5,6 +5,7 @@ export default class Event {
         this._uuid = GenerateUUID();
         this._type = type;
         this._payload = payload;
+        this._timestamp = Date.now();
 
         // This is intentionally not safe, as is meant for tracking emitters in an otherwise-secured scope
         this._emitters = emitter ? [
@@ -52,6 +53,10 @@ export default class Event {
         }
         
         return this._payload;
+    }
+
+    getTimestamp() {
+        return this._timestamp;
     }
 
     getEmitter(index = 0) {
