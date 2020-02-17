@@ -27,7 +27,7 @@ export default class Struct {
 
         return new Proxy(this, {
             get: (obj, prop) => {
-                if (obj._state[prop]) {    // Allow proxy to look into state as a first priority, else return the native prop
+                if (obj._state[prop] !== void 0) {    // Allow proxy to look into state as a first priority, else return the native prop
                     return obj._state[prop];
                 }
 
@@ -46,6 +46,8 @@ export default class Struct {
                             shouldProceed = this._validators[prop].test(value);
                         }
                     }
+
+                    console.log(shouldProceed, obj._state[prop], obj._validators[prop], value);
 
                     if (shouldProceed === true) {    // Force correct behavior of validator by not allowing truthy/falsey values
                         let oldValue = obj._state[prop];
