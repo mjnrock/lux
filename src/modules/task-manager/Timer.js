@@ -1,4 +1,4 @@
-import Node from "./../../Node";
+import Node from "./../../node/Node";
 
 export default class Timer extends Node {
     constructor() {

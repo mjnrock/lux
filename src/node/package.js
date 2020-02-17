@@ -8,8 +8,6 @@ import Observer from "./Observer";
 import Node from "./Node";
 import MasterNode from "./MasterNode";
 
-import Modules from "./modules/package";
-
 export default {
     Event,
     Subscription,
@@ -19,7 +17,5 @@ export default {
     Struct,
     Observer,
     Node,
-    MasterNode,
-
-    Modules
+    MasterNode
 };

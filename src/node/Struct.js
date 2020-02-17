@@ -1,5 +1,5 @@
 import fetch from "node-fetch";     // Required for the async prop setters
-import { GenerateUUID } from "../core/helper";
+import { GenerateUUID } from "./../core/helper";
 
 import Node from "./Node";
 import Subscription from "./Subscription";

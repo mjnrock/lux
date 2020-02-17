@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Context from "./Context";
-import Node from "../node/Node";
+import Node from "./../node/Node";
 
 class MasterNodeComponent extends Component {
     // static contextType = Context;

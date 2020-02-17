@@ -1,4 +1,4 @@
-import Node from "./../../Node";
+import Node from "./../../node/Node";
 import Attribute from "./Attribute";
 
 class Condition extends Node {

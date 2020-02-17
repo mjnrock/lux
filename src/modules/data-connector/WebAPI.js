@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 
-import Node from "./../../Node";
+import Node from "./../../node/Node";
 
 export default class WebAPI extends Node {
     constructor(host, port, isSSL = false) {

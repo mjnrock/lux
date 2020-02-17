@@ -1,5 +1,5 @@
-import MasterNode from "./../../MasterNode"
-import Node from "./../../Node";
+import MasterNode from "./../../node/MasterNode"
+import Node from "./../../node/Node";
 
 import Timer from "./Timer";
 

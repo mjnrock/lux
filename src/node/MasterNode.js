@@ -1,7 +1,7 @@
 import Node from "./Node";
 import Reaction from "./Reaction";
 import Event from "./Event";
-import { GenerateUUID } from "../core/helper";
+import { GenerateUUID } from "./../core/helper";
 
 export default class MasterNode extends Node {
     constructor(state = {}, events = []) {

@@ -1,5 +1,5 @@
 import Controller from "./Controller";
-import Node from "./../../Node";
+import Node from "./../../node/Node";
 
 //! This has not bee remodified AT ALL
 export default class MultiController extends Node {

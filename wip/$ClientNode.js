@@ -1,4 +1,4 @@
-import MasterNode from "../MasterNode";
+import MasterNode from "./../MasterNode";
 
 import Packet from "./Packet";
 import WebAPI from "./WebAPI";
