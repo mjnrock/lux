@@ -47,8 +47,6 @@ export default class Struct {
                         }
                     }
 
-                    console.log(shouldProceed, obj._state[prop], obj._validators[prop], value);
-
                     if (shouldProceed === true) {    // Force correct behavior of validator by not allowing truthy/falsey values
                         let oldValue = obj._state[prop];
 
