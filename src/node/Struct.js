@@ -8,11 +8,12 @@ import Event from "./Event";
 //! This class will NOT allow for new additions to its _state.  Once it has been initialized, props cannot be added, only updated.
     // If using .GET, ensure that the holding prop has been setup (e.g. { [ GET_RESULT_PROP ]: null })
 export default class Struct {
-    constructor(state = {}, validators = {}) {
+    constructor(state = {}, validators = {}, mappers = {}) {
         this._uuid = GenerateUUID();
 
         this._state = state;
         this._validators = validators;  // Optional: allows for fn => true|false or RegExp validations to determine if an update should occur
+        this._mappers = mappers;  // Optional: allows for fn => true|false or RegExp validations to determine if an update should occur
 
         this._subscriptions = {};   // A { UUID: Subscription|nextable|fn } KVP.  If entry is nextable or a fn, a UUID will be automatically generated for internal use
         // this._trackers = {};    // A helper mapper to bind Struct UUIDs to a _state key
@@ -27,30 +28,34 @@ export default class Struct {
 
         return new Proxy(this, {
             get: (obj, prop) => {
-                if (obj._state[prop] !== void 0) {    // Allow proxy to look into state as a first priority, else return the native prop
-                    return obj._state[prop];
+                if (obj._state[ prop ] !== void 0) {    // Allow proxy to look into state as a first priority, else return the native prop
+                    return obj._state[ prop ];
                 }
 
-                return obj[prop];
+                return obj[ prop ];
             },
             set: (obj, prop, value) => {
                 if (prop in obj._state) {    // Only allow state manipulations to a <Struct> to functionally freeze the instantiation
                     let shouldProceed = true;   // Default to proceed if validator does not exist for @prop
 
-                    if (this._validators[prop]) {
+                    if (this._validators[ prop ]) {
                         shouldProceed = false;  // Override default to false if a validator exists | Validator will then determine if should proceed
 
-                        if (typeof this._validators[prop] === "function") {
-                            shouldProceed = this._validators[prop](value, prop);
-                        } else if (this._validators[prop] instanceof RegExp) {
-                            shouldProceed = this._validators[prop].test(value);
+                        if (typeof this._validators[ prop ] === "function") {
+                            shouldProceed = this._validators[ prop ](value, prop);
+                        } else if (this._validators[ prop ] instanceof RegExp) {
+                            shouldProceed = this._validators[ prop ].test(value);
                         }
                     }
 
                     if (shouldProceed === true) {    // Force correct behavior of validator by not allowing truthy/falsey values
-                        let oldValue = obj._state[prop];
+                        if(typeof this._mappers[ prop ] === "function") {
+                            value = this._mappers[ prop ](value);
+                        }
+                        
+                        let oldValue = obj._state[ prop ];
 
-                        obj._state[prop] = value;
+                        obj._state[ prop ] = value;
 
                         obj.broadcast(Struct.PackageEventChange(this, prop, value, oldValue));
                     }
@@ -59,6 +64,13 @@ export default class Struct {
                 return true;
             }
         });
+    }
+    
+    getState() {
+        return this._state;
+    }
+    getValidators() {
+        return this._state;
     }
 
     GET(prop, url, { reducer = null, opts = { method: "GET", mode: "cors" }, jsonResponse = true } = {}) {
@@ -221,7 +233,7 @@ export default class Struct {
      * @param {*} previous 
      */
     static PackageEventChange(emitter, prop, current, previous) {
-        let props = Array.isArray(prop) ? prop : [prop];
+        let props = Array.isArray(prop) ? prop : [ prop ];
 
         return new Event("change", {
             prop: props,
