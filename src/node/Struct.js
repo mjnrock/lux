@@ -207,6 +207,20 @@ export default class Struct {
         return this;
     }
 
+    watch(attr, callback) {
+        this.subscribe(e => {
+            if(e.getType() === "change") {
+                let { prop } = e.getPayload();
+
+                if(prop[ 0 ] === attr) {
+                    callback(e, this);
+                }
+            }
+        });
+
+        return this;
+    }
+
     // /**
     //  * This is to allow for the nesting of Structs.  The e._payload.prop array will gain additional values for each level of bubbling.
     //  * @param {Event} e 
