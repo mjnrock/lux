@@ -8,7 +8,7 @@ import Event from "./Event";
 //! This class will NOT allow for new additions to its _state.  Once it has been initialized, props cannot be added, only updated.
     // If using .GET, ensure that the holding prop has been setup (e.g. { [ GET_RESULT_PROP ]: null })
 export default class Struct {
-    constructor(state = {}, validators = {}, reducers = {}) {
+    constructor(state = {}, { validators = {}, reducers = {} } = {}) {
         this._uuid = GenerateUUID();
 
         this._state = state;
