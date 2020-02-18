@@ -8,12 +8,12 @@ import Event from "./Event";
 //! This class will NOT allow for new additions to its _state.  Once it has been initialized, props cannot be added, only updated.
     // If using .GET, ensure that the holding prop has been setup (e.g. { [ GET_RESULT_PROP ]: null })
 export default class Struct {
-    constructor(state = {}, validators = {}, mappers = {}) {
+    constructor(state = {}, validators = {}, reducers = {}) {
         this._uuid = GenerateUUID();
 
         this._state = state;
         this._validators = validators;  // Optional: allows for fn => true|false or RegExp validations to determine if an update should occur
-        this._mappers = mappers;  // Optional: allows for fn => true|false or RegExp validations to determine if an update should occur
+        this._reducers = reducers;  // Optional: allows for fn => true|false or RegExp validations to determine if an update should occur
 
         this._subscriptions = {};   // A { UUID: Subscription|nextable|fn } KVP.  If entry is nextable or a fn, a UUID will be automatically generated for internal use
         // this._trackers = {};    // A helper mapper to bind Struct UUIDs to a _state key
@@ -49,10 +49,10 @@ export default class Struct {
                     }
 
                     if (shouldProceed === true) {    // Force correct behavior of validator by not allowing truthy/falsey values
-                        if(typeof this._mappers[ prop ] === "function") {
-                            value = this._mappers[ prop ](value);
+                        if(typeof this._reducers[ prop ] === "function") {
+                            value = this._reducers[ prop ](value);
                         }
-                        
+
                         let oldValue = obj._state[ prop ];
 
                         obj._state[ prop ] = value;
