@@ -24,15 +24,11 @@ export const Bitmask = {
     }
 };
 
-export function ArrayToObject(array, key) {
-    return array.reduce((obj, item) => {
-        return {
-            ...obj,
-            [ item[ key ] ]: item
-        };
-    }, {});
-};
-
+/**
+ * !WARNING: This is NOT production safe!
+ * @param {Object} input 
+ * @param {int} spaces The "pretty print" indentation amount
+ */
 export function StringifyCyclic(input, spaces = null) {
     let log = console.warn || console.info || console.log;
     log(`[Development Only]: This function performs a shallow object check by storing objects it has seen.  It will therefore NOT display occurences of that object after the 1st time.  This will very likely cause an object to appear to be missing information.  Use with caution.`);
@@ -69,6 +65,9 @@ export function A2OA(array, key = null) {
     }, []);
 }
 
+/**
+ * Will generate a UUID based on the v4 spec
+ */
 export function GenerateUUID() {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
         // eslint-disable-next-line
@@ -170,7 +169,6 @@ export function Clamp(value, min = null, max = null) {
 
 export default {
     GenerateUUID,
-    ArrayToObject,
     StringifyCyclic,
     A2OA,
     // LoadImage,
