@@ -34,6 +34,9 @@ export function ArrayToObject(array, key) {
 };
 
 export function StringifyCyclic(input, spaces = null) {
+    let log = console.warn || console.log;
+    log(`[Development Only]: This is function will reliably miss duplicate information (by its design), and as such, should NOT be used in production situations.`);;
+
     const getCircularReplacer = () => {
         const seen = new WeakSet();
 
