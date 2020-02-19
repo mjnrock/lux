@@ -58,8 +58,8 @@ export function StringifyCyclic(input, spaces = null) {
 /**
  * "Array to Object Array" will take an <Array> and convert it into an Array of objects with @key || index assigned as the key
  * This is function is useful for situations that require arrays of objects, such as React Native's FlatList
- * @param {*} array 
- * @param {*} key 
+ * @param {Array} array 
+ * @param {? string|number : null} key If falsey (e.g. default), the index of the item will be used as the key
  */
 export function A2OA(array, key = null) {
     return array.reduce((a, v, i) => {
