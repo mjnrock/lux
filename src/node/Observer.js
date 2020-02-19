@@ -1,3 +1,5 @@
+import { GenerateUUID } from "./../core/helper";
+
 import Struct from "./Struct";
 import Event from "./Event";
 import Reaction from "./Reaction";
