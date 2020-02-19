@@ -55,6 +55,20 @@ export function StringifyCyclic(input, spaces = null) {
     return JSON.stringify(input, getCircularReplacer(), spaces);
 };
 
+/**
+ * "Array to Object Array" will take an <Array> and convert it into an Array of objects with @key || index assigned as the key
+ * This is function is useful for situations that require arrays of objects, such as React Native's FlatList
+ * @param {*} array 
+ * @param {*} key 
+ */
+export function A2OA(array, key = null) {
+    return array.reduce((a, v, i) => {
+        a.push({ [ key || i ]: v });
+
+        return a;
+    }, []);
+}
+
 export function GenerateUUID() {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
         // eslint-disable-next-line
@@ -158,6 +172,7 @@ export default {
     GenerateUUID,
     ArrayToObject,
     StringifyCyclic,
+    A2OA,
     // LoadImage,
     // LoadImages,
     Clamp,
