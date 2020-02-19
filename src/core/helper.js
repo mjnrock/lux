@@ -34,7 +34,7 @@ export function ArrayToObject(array, key) {
 };
 
 export function StringifyCyclic(input, spaces = null) {
-    let log = console.warn || console.log;
+    let log = console.warn || console.info || console.log;
     log(`[Development Only]: This function performs a shallow object check by storing objects it has seen.  It will therefore NOT display occurences of that object after the 1st time.  This will very likely cause an object to appear to be missing information.  Use with caution.`);
 
     const getCircularReplacer = () => {
