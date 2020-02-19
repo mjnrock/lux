@@ -4,6 +4,8 @@ import Reaction from "./Reaction";
 
 export default class Observer {
     constructor(subject, onNext = null) {
+        this._uuid = GenerateUUID();
+
         this._subject = null;
         this._registry = {};
         this._next = null;    //? Consider this a root reducer | If typeof this._next === "function", EVERY event will invoke it (even if there is ALSO a reaction)
@@ -11,6 +13,13 @@ export default class Observer {
         this._reactions = {};   //? Consider this an event-specific reducer | This allows for event-specific handling (Note: ALL events will ALWAYS be passed to this._next, iff this._next is a function)
 
         this.init(subject, onNext);
+    }
+
+    /**
+     * Alias exposure for this._uuid
+     */
+    UUID() {
+        return this._uuid;
     }
 
     init(subject, onNext = null) {

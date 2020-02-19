@@ -65,6 +65,13 @@ export default class Struct {
             }
         });
     }
+
+    /**
+     * Alias exposure for this._uuid
+     */
+    UUID() {
+        return this._uuid;
+    }
     
     getState() {
         return this._state;
@@ -107,13 +114,6 @@ export default class Struct {
         };
 
         return await poster(prop, url);
-    }
-
-    /**
-     * Alias exposure for this._uuid
-     */
-    UUID() {
-        return this._uuid;
     }
 
     /**
