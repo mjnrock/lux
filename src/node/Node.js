@@ -88,12 +88,12 @@ export default class Node {
     getIDs() {
         return this._ids;
     }
-    getID(cat) {
-        return this._ids[ cat ];
+    getID(scope) {
+        return this._ids[ scope ];
     }
-    setID(cat, id) {
-        if(cat !== null && cat !== void 0 && id !== null && id !== void 0 && arguments.length === 2) {
-            this._ids[ cat ] = id;
+    setID(scope, id) {
+        if(scope !== null && scope !== void 0 && id !== null && id !== void 0 && arguments.length === 2) {
+            this._ids[ scope ] = id;
         }
 
         return this;

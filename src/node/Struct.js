@@ -16,15 +16,6 @@ export default class Struct {
         this._reducers = reducers;  // Optional: allows for fn => true|false or RegExp validations to determine if an update should occur
 
         this._subscriptions = {};   // A { UUID: Subscription|nextable|fn } KVP.  If entry is nextable or a fn, a UUID will be automatically generated for internal use
-        // this._trackers = {};    // A helper mapper to bind Struct UUIDs to a _state key
-
-        // for (let [key, value] of Object.entries(this._state)) {
-        //     if (value instanceof Struct) {
-        //         value.subscribe(this.bubble.bind(this));
-
-        //         this._trackers[value.UUID()] = key;
-        //     }
-        // }
 
         return new Proxy(this, {
             get: (obj, prop) => {
@@ -136,6 +127,10 @@ export default class Struct {
         }
     }
 
+    trigger(type, payload) {
+        this.broadcast(new Event(type, payload, this));
+    }
+
     /**
      * Operates similarly, but not identically, to the Node.subscribe().  It is a "combination" of Node.subscribe(), a nextable, and a callback.
      * @param {Node|nextable|fn} nodeNextOrFn 
@@ -221,24 +216,6 @@ export default class Struct {
         return this;
     }
 
-    // /**
-    //  * This is to allow for the nesting of Structs.  The e._payload.prop array will gain additional values for each level of bubbling.
-    //  * @param {Event} e 
-    //  */
-    // bubble(e) {
-    //     if (e instanceof Event && e.getType() === "change") {
-    //         let key = this._trackers[e.getEmitter().UUID()];
-
-    //         if (key) {
-    //             let { prop, current, previous } = e.getPayload();
-
-    //             this.broadcast(Struct.PackageEventChange(this, [key, ...prop], current, previous));
-    //         }
-    //     }
-    // }
-
-
-
     /**
      * A helper function to package a change Event
      * @param {Struct} emitter The event emitter
@@ -255,23 +232,4 @@ export default class Struct {
             previous: previous
         }, emitter)
     }
-    // /**
-    //  * A helper function to utilize a @prop array to extract the value from the @scope with an optional short-circuit with @removeProps
-    //  * @param {Struct} scope The object to traverse
-    //  * @param {string[]} prop An array transformation of an object dot notation (e.g. Obj.Cat.Dog --> @prop = [ "Cat", "Dog" ], @scope = Obj)
-    //  * @param {int} removeProps This will short-circuit the prop extraction (e.g. @removeProps = 1 and @prop = [ "tier1", "tier2", "tier3" ] will ignore the "tier3", and instead return @scope[ "tier1" ][ "tier2" ]);
-    //  */
-    // static GetBubbleProp(scope, prop, removeProps = 0) {
-    //     let value = scope;
-
-    //     prop.slice(0, prop.length - removeProps).forEach(v => {
-    //         value = value[v];
-
-    //         if (value === void 0) {
-    //             return;
-    //         }
-    //     });
-
-    //     return value;
-    // }
 };

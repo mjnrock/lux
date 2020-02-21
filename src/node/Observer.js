@@ -34,6 +34,8 @@ export default class Observer {
 
         this.setSubject(subject);
         this.setNext(onNext);
+
+        return this;
     }
 
     $(prop, ...args) {
@@ -129,8 +131,8 @@ export default class Observer {
         return;
     }
 
-    getReactions(type, toArray = true) {
-        let ret = this._reactions[ type ];
+    getReactions(eventType, toArray = true) {
+        let ret = this._reactions[ eventType ];
 
         if(ret && toArray) {
             return Array.from(ret);
@@ -139,15 +141,17 @@ export default class Observer {
         return ret;
     }
     
-    addReaction(type, callback) {
+    addReaction(eventType, callback) {
         if(typeof callback === "function") {
-            if(!(this._reactions[ type ] instanceof Set)) {
-                this._reactions[ type ] = new Set();
+            if(!(this._reactions[ eventType ] instanceof Set)) {
+                this._reactions[ eventType ] = new Set();
             }
 
-            let reaction = Reaction.createEventReaction(type, callback);
+            let reaction = Reaction.createEventReaction(eventType, callback);
 
-            this._reactions[ type ].add(reaction);
+            this._reactions[ eventType ].add(reaction);
         }
+
+        return this;
     }
 };
