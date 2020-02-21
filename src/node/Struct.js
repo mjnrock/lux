@@ -145,6 +145,20 @@ export default class Struct {
         return this._handlers[ type ];
     }
     setHandler(type, callback) {
+        if(arguments.length === 1){
+            let iter = Array.isArray(type) ? type : (typeof type === "object" ? Object.entries(type) : []);
+            
+            iter.forEach(v => {
+                if(Array.isArray(v) && v.length === 2) {
+                    let [ t, fn ] = v;
+
+                    if(typeof fn === "function") {
+                        this._handlers[ t ] = fn;
+                    }
+                }
+            });
+        }
+
         if(typeof callback === "function") {
             this._handlers[ type ] = callback;
         }
