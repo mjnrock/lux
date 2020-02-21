@@ -8,7 +8,7 @@ import Event from "./Event";
 //! This class will NOT allow for new additions to its _state.  Once it has been initialized, props cannot be added, only updated.
     // If using .GET, ensure that the holding prop has been setup (e.g. { [ GET_RESULT_PROP ]: null })
 export default class Struct {
-    constructor(state = {}, { validators = {}, reducers = {} } = {}) {
+    constructor(state = {}, { validators = {}, reducers = {}, handlers = {} } = {}) {
         this._uuid = GenerateUUID();
 
         this._state = state;
@@ -16,6 +16,7 @@ export default class Struct {
         this._reducers = reducers;  // Optional: allows for fn => true|false or RegExp validations to determine if an update should occur
 
         this._subscriptions = {};   // A { UUID: Subscription|nextable|fn } KVP.  If entry is nextable or a fn, a UUID will be automatically generated for internal use
+        this._handlers = handlers;
 
         return new Proxy(this, {
             get: (obj, prop) => {
@@ -128,7 +129,27 @@ export default class Struct {
     }
 
     trigger(type, payload) {
-        this.broadcast(new Event(type, payload, this));
+        let e = new Event(type, payload, this),
+            handler = this.getHandler(type);
+
+        if(typeof handler === "function") {
+            handler(e);
+        }
+
+        this.broadcast(e);
+
+        return this;
+    }
+
+    getHandler(type) {
+        return this._handlers[ type ];
+    }
+    setHandler(type, callback) {
+        if(typeof callback === "function") {
+            this._handlers[ type ] = callback;
+        }
+
+        return this;
     }
 
     /**
