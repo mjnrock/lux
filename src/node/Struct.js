@@ -129,14 +129,13 @@ export default class Struct {
     }
 
     trigger(type, payload) {
-        let e = new Event(type, payload, this),
-            handler = this.getHandler(type);
+        let handler = this.getHandler(type);
 
         if(typeof handler === "function") {
-            handler(e);
+            handler(type, payload);
         }
 
-        this.broadcast(e);
+        this.broadcast(new Event(type, payload, this));
 
         return this;
     }
