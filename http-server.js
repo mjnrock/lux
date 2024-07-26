@@ -5,6 +5,11 @@ const fs = require("fs");
 
 const httpPORT = 3000;
 http.createServer((req, res) => {
+    if (path.normalize(decodeURI(req.url)) !== decodeURI(req.url)) {
+        res.statusCode = 403;
+        res.end();
+        return;
+    }
     let uri = url.parse(req.url).pathname,
         filename = path.join(process.cwd(), uri);
     let mimes = {
